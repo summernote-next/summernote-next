@@ -1,0 +1,7 @@
+*
+!dist/
+!dist/**
+!font/
+!font/**
+!LICENSE
+!README.md

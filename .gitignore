@@ -1,0 +1,7 @@
+/.env
+/.idea/
+/.playwright-mcp/
+/.tmp/
+/coverage/
+/node_modules/
+/dist/*.zip
