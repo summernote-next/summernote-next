@@ -16,6 +16,7 @@ Summernote Next is a maintained MIT-licensed fork of Summernote (https://github.
 | --- | --- |
 | Live examples | <https://juergen-schwind.com/summernote-next> |
 | GitHub repository | <https://github.com/summernote-next/summernote-next> |
+| Original repository | <https://github.com/summernote/summernote/> |
 | Maintainer | Jürgen Schwind |
 | Contact | <mailto:info@juergen-schwind.de> |
 | Website | <https://juergen-schwind.com> |
