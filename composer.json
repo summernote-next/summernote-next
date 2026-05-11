@@ -26,6 +26,6 @@
         "source": "https://github.com/summernote-next/summernote-next"
     },
     "require": {
-        "php": ">=7.4"
+        "twbs/bootstrap": "^5.3"
     }
 }
