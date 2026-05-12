@@ -147,6 +147,19 @@ const zhCN = {
   "specialChar": {
     "specialChar": "特殊字符",
     "select": "选取特殊字符",
+    "insert": "插入所选符号",
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows 和 Linux",
+    },
+    "links": {
+      "examples": "示例",
+      "project": "项目",
+      "issues": "问题",
+    },
   },
 };
 

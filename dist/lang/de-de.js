@@ -256,7 +256,8 @@
   },
   "specialChar": {
     "specialChar": "SONDERZEICHEN",
-    "select": "Sonderzeichen auswählen"
+    "select": "Sonderzeichen auswählen",
+    "insert": "Ausgewähltes Sonderzeichen einfügen"
   },
   "output": {
     "noSelection": "Keine Auswahl getroffen!"

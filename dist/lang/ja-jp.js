@@ -161,7 +161,20 @@
   },
   "specialChar": {
     "specialChar": "SPECIAL CHARACTERS",
-    "select": "Select Special characters"
+    "select": "Select Special characters",
+    "insert": "選択した記号を挿入"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows と Linux"
+    },
+    "links": {
+      "examples": "サンプル",
+      "project": "プロジェクト",
+      "issues": "課題"
+    }
   }
 }; });
 })(globalThis);

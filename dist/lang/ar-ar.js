@@ -162,7 +162,20 @@
   },
   "specialChar": {
     "specialChar": "محارف خاصة",
-    "select": "اختر المحرف الخاص"
+    "select": "اختر المحرف الخاص",
+    "insert": "أدرج الرمز المحدد"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows وLinux"
+    },
+    "links": {
+      "examples": "أمثلة",
+      "project": "المشروع",
+      "issues": "المشكلات"
+    }
   }
 }; });
 })(globalThis);

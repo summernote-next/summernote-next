@@ -150,9 +150,22 @@ const esES = {
   "specialChar": {
     "specialChar": "CARACTERES ESPECIALES",
     "select": "Seleccionar caracteres especiales",
+    "insert": "Insertar el símbolo seleccionado",
   },
   "output": {
     "noSelection": "¡No ha seleccionado nada!",
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows y Linux",
+    },
+    "links": {
+      "examples": "Ejemplos",
+      "project": "Proyecto",
+      "issues": "Problemas",
+    },
   },
 };
 

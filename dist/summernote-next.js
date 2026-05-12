@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-09T07:28Z
+Date: 2026-05-12T13:25Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -1148,7 +1148,8 @@ var summernote = (function() {
 		},
 		specialChar: {
 			specialChar: "SPECIAL CHARACTERS",
-			select: "Select Special characters"
+			select: "Select Special characters",
+			insert: "Insert selected symbol"
 		},
 		output: { noSelection: "No Selection Made!" },
 		helpDialog: {

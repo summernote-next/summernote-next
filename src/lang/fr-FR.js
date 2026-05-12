@@ -147,6 +147,19 @@ const frFR = {
   "specialChar": {
     "specialChar": "Caractères spéciaux",
     "select": "Choisir des caractères spéciaux",
+    "insert": "Insérer le symbole sélectionné",
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows et Linux",
+    },
+    "links": {
+      "examples": "Exemples",
+      "project": "Projet",
+      "issues": "Problèmes",
+    },
   },
 };
 

@@ -149,6 +149,19 @@ const koKR = {
   "specialChar": {
     "specialChar": "특수문자",
     "select": "특수문자를 선택하세요",
+    "insert": "선택한 기호 삽입",
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows 및 Linux",
+    },
+    "links": {
+      "examples": "예제",
+      "project": "프로젝트",
+      "issues": "이슈",
+    },
   },
 };
 

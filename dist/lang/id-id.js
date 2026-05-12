@@ -161,7 +161,20 @@
   },
   "specialChar": {
     "specialChar": "KARAKTER KHUSUS",
-    "select": "Pilih karakter khusus"
+    "select": "Pilih karakter khusus",
+    "insert": "Sisipkan simbol yang dipilih"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows dan Linux"
+    },
+    "links": {
+      "examples": "Contoh",
+      "project": "Proyek",
+      "issues": "Masalah"
+    }
   }
 }; });
 })(globalThis);

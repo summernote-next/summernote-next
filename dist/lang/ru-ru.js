@@ -161,7 +161,20 @@
   },
   "specialChar": {
     "specialChar": "SPECIAL CHARACTERS",
-    "select": "Select Special characters"
+    "select": "Select Special characters",
+    "insert": "Вставить выбранный символ"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows и Linux"
+    },
+    "links": {
+      "examples": "Примеры",
+      "project": "Проект",
+      "issues": "Проблемы"
+    }
   }
 }; });
 })(globalThis);
