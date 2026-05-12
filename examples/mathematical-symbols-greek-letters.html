@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Greek Letters and Mathematical Symbols</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="./index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Greek letters &amp; math symbols</li>
+        </ol>
+      </nav>
+
+      <h1>Insert Greek letters from a legacy-style special characters picker</h1>
+
+      <p class="page-copy">
+        This example uses <code>./assets/symbols_mathematical-symbols_Greek-letters.json</code> and mirrors the old
+        Summernote special characters plugin pattern from the jQuery build: a toolbar button opens a symbol grid,
+        the current selection is preserved with <code>editor.saveRange</code>, and the chosen character is inserted
+        back into the editor.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="greek-symbols-open" type="button">Open symbol picker</button>
+                <button class="btn btn-outline-secondary" id="greek-symbols-euler" type="button">Insert Euler identity</button>
+                <button class="btn btn-outline-secondary" id="greek-symbols-reset" type="button">Reset content</button>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" id="greek-symbols-mode-switch" type="checkbox" role="switch">
+                <label class="form-check-label" for="greek-symbols-mode-switch" id="greek-symbols-mode-label">Insert immediately on click</label>
+                <div class="form-text" id="greek-symbols-mode-copy">Off by default: click selects, the footer button inserts.</div>
+              </div>
+              <div id="greek-symbols-editor">
+                <p>Type an equation and use the Ω toolbar button to insert characters such as Δ, π, Σ, θ, or ∞.</p>
+                <p>Examples: area = πr<sup>2</sup>, Δx → 0, Ω = 2πf, ∑<sub>n=1</sub><sup>∞</sup>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Selection output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="greek-symbols-output">Ready. Open the picker and choose a symbol.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Greek letters &amp; math symbols</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>const response = await fetch('./assets/symbols_mathematical-symbols_Greek-letters.json');
+const symbols = await response.json();
+
+function GreekLettersButton(context) {
+  const ui = context.ui;
+  return ui.button({
+    contents: '&amp;Omega;',
+    tooltip: 'Insert Greek letter or mathematical symbol',
+    click() {
+      context.invoke('editor.saveRange');
+      openPicker(context.invoke('editor.getSelectedText'));
+    },
+  }).render();
+}
+
+summernote.create('#greek-symbols-editor', {
+  height: 260,
+  dialogsInBody: true,
+  specialCharPicker: {
+    insertOnClick: false,
+    descriptionText: '',
+  },
+  toolbar: [
+    ['style', ['bold', 'italic', 'underline']],
+    ['insert', ['greekLetters', 'link']],
+    ['view', ['codeview']],
+  ],
+  buttons: {
+    greekLetters: GreekLettersButton,
+  },
+});
+
+document.getElementById('greek-symbols-mode-switch').addEventListener('change', (event) => {
+  const insertOnClick = event.currentTarget.checked;
+  const instance = summernote.getInstance('#greek-symbols-editor');
+
+  instance.options.specialCharPicker.insertOnClick = insertOnClick;
+  instance.options.specialCharPicker.descriptionText = insertOnClick ? {
+    'en-US': 'Click a symbol to insert it immediately.',
+    'de-DE': 'Klicke auf ein Zeichen, um es direkt einzufügen.',
+  } : '';
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="greek-symbols-modal" tabindex="-1" aria-labelledby="greek-symbols-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+          <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <h2 class="modal-title h5 mb-1" id="greek-symbols-modal-title">Greek letters and mathematical symbols</h2>
+              <p class="mb-0 text-secondary" id="greek-symbols-modal-description" hidden></p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="symbol-picker-preview mb-3" id="greek-symbols-preview">
+              <div class="symbol-picker-preview-glyph" id="greek-symbols-preview-glyph" aria-hidden="true">Ω</div>
+              <div class="symbol-picker-preview-meta">
+                <p class="fw-semibold mb-1" id="greek-symbols-preview-name">Greek capital letter omega</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-secondary" id="greek-symbols-preview-entity">&amp;Omega;</span>
+                  <span class="badge text-bg-secondary" id="greek-symbols-preview-decimal">&#937;</span>
+                  <span class="badge text-bg-secondary" id="greek-symbols-preview-hex">&#x3A9;</span>
+                </div>
+              </div>
+            </div>
+            <div class="symbol-picker-grid-wrapper">
+              <div class="symbol-picker-grid" id="greek-symbols-grid" role="grid" aria-label="Available Greek letters and mathematical symbols"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary" id="greek-symbols-close" type="button" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-primary" id="greek-symbols-insert" type="button">Insert selected symbol</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', async() => {
+        const target = '#greek-symbols-editor';
+        const assetPath = './assets/symbols_mathematical-symbols_Greek-letters.json';
+        const initialMarkup = `
+          <p>Type an equation and use the Ω toolbar button to insert characters such as Δ, π, Σ, θ, or ∞.</p>
+          <p>Examples: area = πr<sup>2</sup>, Δx → 0, Ω = 2πf, ∑<sub>n=1</sub><sup>∞</sup>.</p>
+        `;
+        const output = document.getElementById('greek-symbols-output');
+        const modalElement = document.getElementById('greek-symbols-modal');
+        const modalTitle = document.getElementById('greek-symbols-modal-title');
+        const modalDescription = document.getElementById('greek-symbols-modal-description');
+        const modeSwitch = document.getElementById('greek-symbols-mode-switch');
+        const modeLabel = document.getElementById('greek-symbols-mode-label');
+        const modeCopy = document.getElementById('greek-symbols-mode-copy');
+        const grid = document.getElementById('greek-symbols-grid');
+        const preview = document.getElementById('greek-symbols-preview');
+        const closeButton = document.getElementById('greek-symbols-close');
+        const insertButton = document.getElementById('greek-symbols-insert');
+        const previewGlyph = document.getElementById('greek-symbols-preview-glyph');
+        const previewName = document.getElementById('greek-symbols-preview-name');
+        const previewEntity = document.getElementById('greek-symbols-preview-entity');
+        const previewDecimal = document.getElementById('greek-symbols-preview-decimal');
+        const previewHex = document.getElementById('greek-symbols-preview-hex');
+        const COLUMN_COUNT = 12;
+        const pickerModal = new bootstrap.Modal(modalElement);
+        const defaultPickerOptions = {
+          insertOnClick: false,
+          descriptionText: '',
+        };
+        const directInsertDescription = {
+          'en-US': 'Click a symbol to insert it immediately.',
+          'de-DE': 'Klicke auf ein Zeichen, um es direkt einzufügen.',
+        };
+        const pickerModeLabels = {
+          label: {
+            'en-US': 'Insert immediately on click',
+            'de-DE': 'Direkt beim Klicken einfügen',
+          },
+          off: {
+            'en-US': 'Off by default: click selects, the footer button inserts.',
+            'de-DE': 'Standardmäßig aus: Klick wählt aus, der Button unten fügt ein.',
+          },
+          on: {
+            'en-US': 'On: clicking a symbol inserts it immediately and hides the preview.',
+            'de-DE': 'Aktiv: Ein Klick fügt sofort ein und blendet die Vorschau aus.',
+          },
+          outputOn: {
+            'en-US': 'Enabled direct insert on click.',
+            'de-DE': 'Direktes Einfügen per Klick aktiviert.',
+          },
+          outputOff: {
+            'en-US': 'Disabled direct insert on click.',
+            'de-DE': 'Direktes Einfügen per Klick deaktiviert.',
+          },
+        };
+        let symbols = [];
+        let selectedIndex = 0;
+        let gridButtons = [];
+        let savedSelection = null;
+
+        function getEditorContext() {
+          return summernote.getInstance(target);
+        }
+
+        function getPickerOptions() {
+          const context = getEditorContext();
+          return {
+            ...defaultPickerOptions,
+            ...context.options.specialCharPicker,
+          };
+        }
+
+        function resolveLocalizedText(value, lang) {
+          if (typeof value === 'string') {
+            return value;
+          }
+
+          if (!value || typeof value !== 'object') {
+            return '';
+          }
+
+          const baseLang = lang.split('-')[0];
+
+          return value[lang] || value[baseLang] || value['en-US'] || value.en || '';
+        }
+
+        function getPickerStrings() {
+          const context = getEditorContext();
+          const lang = context.options.lang || 'en-US';
+          const langInfo = context.options.langInfo || {};
+          const specialChar = langInfo.specialChar || {};
+          const shortcut = langInfo.shortcut || {};
+          const options = getPickerOptions();
+
+          return {
+            title: specialChar.select || 'Select special characters',
+            tooltip: specialChar.specialChar || 'Special characters',
+            insert: specialChar.insert || 'Insert selected symbol',
+            close: shortcut.close || 'Close',
+            description: resolveLocalizedText(options.descriptionText, lang),
+            gridLabel: specialChar.select || 'Select special characters',
+          };
+        }
+
+        function getModeStrings() {
+          const context = getEditorContext();
+          const lang = context.options.lang || 'en-US';
+
+          return {
+            label: resolveLocalizedText(pickerModeLabels.label, lang),
+            off: resolveLocalizedText(pickerModeLabels.off, lang),
+            on: resolveLocalizedText(pickerModeLabels.on, lang),
+            outputOn: resolveLocalizedText(pickerModeLabels.outputOn, lang),
+            outputOff: resolveLocalizedText(pickerModeLabels.outputOff, lang),
+          };
+        }
+
+        function applyPickerPresentation() {
+          const options = getPickerOptions();
+          const strings = getPickerStrings();
+
+          modalTitle.textContent = strings.title;
+          modalDescription.textContent = strings.description;
+          modalDescription.hidden = strings.description === '';
+          preview.hidden = options.insertOnClick;
+          insertButton.hidden = options.insertOnClick;
+          insertButton.textContent = strings.insert;
+          closeButton.textContent = strings.close;
+          closeButton.setAttribute('aria-label', strings.close);
+          insertButton.setAttribute('aria-label', strings.insert);
+          grid.setAttribute('aria-label', strings.gridLabel);
+        }
+
+        function applyModeSwitchPresentation() {
+          const options = getPickerOptions();
+          const strings = getModeStrings();
+
+          modeSwitch.checked = options.insertOnClick;
+          modeSwitch.setAttribute('aria-checked', String(options.insertOnClick));
+          modeLabel.textContent = strings.label;
+          modeCopy.textContent = options.insertOnClick ? strings.on : strings.off;
+        }
+
+        function createRangeAtEnd(editable) {
+          const walker = document.createTreeWalker(editable, NodeFilter.SHOW_TEXT);
+          let lastTextNode = null;
+
+          while (walker.nextNode()) {
+            lastTextNode = walker.currentNode;
+          }
+
+          const range = document.createRange();
+
+          if (lastTextNode) {
+            range.setStart(lastTextNode, lastTextNode.textContent.length);
+            range.setEnd(lastTextNode, lastTextNode.textContent.length);
+            return range;
+          }
+
+          range.selectNodeContents(editable);
+          range.collapse(false);
+          return range;
+        }
+
+        function captureEditorSelection() {
+          const context = getEditorContext();
+          const editable = context.layoutInfo.editable[0];
+          const selection = window.getSelection();
+          const activeRange = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+          const container = activeRange?.commonAncestorContainer?.nodeType === Node.TEXT_NODE
+            ? activeRange.commonAncestorContainer.parentElement
+            : activeRange?.commonAncestorContainer;
+
+          if (activeRange && container && editable.contains(container)) {
+            savedSelection = activeRange.cloneRange();
+            return savedSelection;
+          }
+
+          const cachedRange = context.modules.editor.getLastRange();
+
+          if (cachedRange) {
+            savedSelection = cachedRange.nativeRange().cloneRange();
+            return savedSelection;
+          }
+
+          savedSelection = createRangeAtEnd(editable);
+          return savedSelection;
+        }
+
+        function restoreBrowserSelection() {
+          const context = getEditorContext();
+          const editable = context.layoutInfo.editable[0];
+          const selection = window.getSelection();
+          const nextRange = savedSelection ? savedSelection.cloneRange() : createRangeAtEnd(editable);
+
+          editable.focus();
+          selection.removeAllRanges();
+          selection.addRange(nextRange);
+          return {
+            context,
+            editable,
+            selection,
+            range: nextRange,
+          };
+        }
+
+        function syncEditorRange(editor) {
+          editor.getLastRange();
+        }
+
+        function insertTextAtSavedSelection(text) {
+          const { context, selection, range } = restoreBrowserSelection();
+          const editor = context.modules.editor;
+
+          editor.beforeCommand();
+          range.deleteContents();
+          const textNode = document.createTextNode(text);
+          range.insertNode(textNode);
+
+          const afterRange = document.createRange();
+          afterRange.setStart(textNode, textNode.textContent.length);
+          afterRange.setEnd(textNode, textNode.textContent.length);
+          selection.removeAllRanges();
+          selection.addRange(afterRange);
+          savedSelection = afterRange.cloneRange();
+          syncEditorRange(editor);
+          editor.afterCommand();
+        }
+
+        function insertHtmlAtSavedSelection(markup) {
+          const { context, selection, range } = restoreBrowserSelection();
+          const editor = context.modules.editor;
+
+          editor.beforeCommand();
+          range.deleteContents();
+
+          const fragment = range.createContextualFragment(markup);
+          const lastNode = fragment.lastChild;
+          range.insertNode(fragment);
+
+          const afterRange = document.createRange();
+          if (lastNode) {
+            afterRange.setStartAfter(lastNode);
+            afterRange.setEndAfter(lastNode);
+          } else {
+            afterRange.selectNodeContents(context.layoutInfo.editable[0]);
+            afterRange.collapse(false);
+          }
+
+          selection.removeAllRanges();
+          selection.addRange(afterRange);
+          savedSelection = afterRange.cloneRange();
+          syncEditorRange(editor);
+          editor.afterCommand();
+        }
+
+        function renderOutput(label, symbol) {
+          const payload = symbol ? {
+            label,
+            symbol: symbol.glyph,
+            name: symbol.name,
+            entity: symbol.entity,
+            decimal: symbol.decimal,
+            hex: symbol.hex,
+            html: summernote.invoke(target, 'code'),
+          } : {
+            label,
+            html: summernote.invoke(target, 'code'),
+          };
+
+          output.textContent = JSON.stringify(payload, null, 2);
+        }
+
+        function updatePreview(index) {
+          const symbol = symbols[index];
+          const options = getPickerOptions();
+
+          if (!symbol) {
+            return;
+          }
+
+          selectedIndex = index;
+
+          if (!options.insertOnClick) {
+            previewGlyph.textContent = symbol.glyph;
+            previewName.textContent = symbol.name;
+            previewEntity.textContent = symbol.entity;
+            previewDecimal.textContent = symbol.decimal;
+            previewHex.textContent = symbol.hex;
+          }
+
+          gridButtons.forEach((button, buttonIndex) => {
+            const isActive = buttonIndex === index;
+            button.classList.toggle('active', isActive);
+            button.setAttribute('aria-selected', String(isActive));
+            button.tabIndex = isActive ? 0 : -1;
+          });
+
+          gridButtons[index]?.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest',
+          });
+        }
+
+        function findSymbolIndex(selectedText) {
+          if (typeof selectedText !== 'string') {
+            return 0;
+          }
+
+          const normalized = selectedText.trim();
+
+          if (normalized.length !== 1) {
+            return 0;
+          }
+
+          return Math.max(0, symbols.findIndex((symbol) => symbol.glyph === normalized));
+        }
+
+        function insertSymbol(index = selectedIndex) {
+          const symbol = symbols[index];
+
+          if (!symbol) {
+            return;
+          }
+
+          pickerModal.hide();
+          insertTextAtSavedSelection(symbol.glyph);
+          renderOutput('Inserted symbol from the legacy-style picker.', symbol);
+        }
+
+        function openPicker(selectedText = '') {
+          applyPickerPresentation();
+          updatePreview(findSymbolIndex(selectedText));
+          pickerModal.show();
+        }
+
+        function moveSelection(offset) {
+          const nextIndex = (selectedIndex + offset + symbols.length) % symbols.length;
+          updatePreview(nextIndex);
+        }
+
+        function moveVertical(direction) {
+          let nextIndex = selectedIndex + (direction * COLUMN_COUNT);
+
+          while (nextIndex < 0) {
+            nextIndex += symbols.length;
+          }
+
+          while (nextIndex >= symbols.length) {
+            nextIndex -= symbols.length;
+          }
+
+          updatePreview(nextIndex);
+        }
+
+        function handlePickerKeydown(event) {
+          if (!modalElement.classList.contains('show')) {
+            return;
+          }
+
+          if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            moveSelection(-1);
+          } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            moveSelection(1);
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            moveVertical(-1);
+          } else if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            moveVertical(1);
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            insertSymbol();
+          }
+        }
+
+        function buildGrid() {
+          grid.innerHTML = '';
+          gridButtons = symbols.map((symbol, index) => {
+            const strings = getPickerStrings();
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'symbol-picker-button';
+            button.textContent = symbol.glyph;
+            button.title = `${symbol.name} (${symbol.entity})`;
+            button.setAttribute('role', 'gridcell');
+            button.setAttribute('aria-label', `${symbol.name}. Entity ${symbol.entity}`);
+            button.setAttribute('aria-selected', 'false');
+            button.tabIndex = -1;
+            button.addEventListener('click', () => {
+              updatePreview(index);
+              if (getPickerOptions().insertOnClick) {
+                insertSymbol(index);
+              }
+            });
+            button.addEventListener('focus', () => {
+              updatePreview(index);
+            });
+            button.setAttribute('aria-description', strings.tooltip);
+            grid.append(button);
+            return button;
+          });
+        }
+
+        function GreekLettersButton(context) {
+          const ui = context.ui;
+          const tooltip = context.options.langInfo?.specialChar?.specialChar || 'Special characters';
+          return ui.button({
+            contents: '&Omega;',
+            tooltip,
+            click() {
+              savedSelection = context.modules.editor.getLastRange().nativeRange().cloneRange();
+              context.invoke('editor.saveRange');
+              openPicker(context.invoke('editor.getSelectedText'));
+            },
+          }).render();
+        }
+
+        function applyExampleMode(insertOnClick) {
+          const context = getEditorContext();
+
+          context.options.specialCharPicker.insertOnClick = insertOnClick;
+          context.options.specialCharPicker.descriptionText = insertOnClick ? directInsertDescription : '';
+
+          applyModeSwitchPresentation();
+          applyPickerPresentation();
+          updatePreview(selectedIndex);
+        }
+
+        const response = await fetch(assetPath);
+
+        if (!response.ok) {
+          throw new Error(`Failed to load symbol asset: ${response.status} ${response.statusText}`);
+        }
+
+        symbols = (await response.json()).map((entry) => ({
+          name: entry.Character,
+          entity: entry.Entity,
+          decimal: entry.Decimal,
+          hex: entry.Hex,
+          glyph: entry['Rendering in Your Browser'],
+        }));
+
+        summernote.create(target, {
+          height: 260,
+          minHeight: 220,
+          dialogsInBody: true,
+          specialCharPicker: {
+            insertOnClick: false,
+            descriptionText: '',
+          },
+          toolbar: [
+            ['style', ['bold', 'italic', 'underline']],
+            ['insert', ['greekLetters', 'link']],
+            ['view', ['codeview']],
+          ],
+          buttons: {
+            greekLetters: GreekLettersButton,
+          },
+        });
+
+        buildGrid();
+        updatePreview(0);
+        applyExampleMode(false);
+        savedSelection = createRangeAtEnd(getEditorContext().layoutInfo.editable[0]);
+
+        modalElement.addEventListener('shown.bs.modal', () => {
+          gridButtons[selectedIndex]?.focus();
+        });
+        modalElement.addEventListener('keydown', handlePickerKeydown);
+        insertButton.addEventListener('click', () => {
+          insertSymbol();
+        });
+
+        document.getElementById('greek-symbols-open').addEventListener('click', () => {
+          captureEditorSelection();
+          summernote.invoke(target, 'editor.saveRange');
+          openPicker(summernote.invoke(target, 'editor.getSelectedText'));
+        });
+
+        modeSwitch.addEventListener('change', (event) => {
+          applyExampleMode(event.currentTarget.checked);
+          const strings = getModeStrings();
+          renderOutput(event.currentTarget.checked ? strings.outputOn : strings.outputOff);
+        });
+
+        document.getElementById('greek-symbols-euler').addEventListener('click', () => {
+          captureEditorSelection();
+          insertHtmlAtSavedSelection('<p>Euler identity: e<sup>iπ</sup> + 1 = 0 and ΔE = hν.</p>');
+          renderOutput('Inserted the preset math snippet.');
+        });
+
+        document.getElementById('greek-symbols-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup.trim());
+          savedSelection = createRangeAtEnd(getEditorContext().layoutInfo.editable[0]);
+          renderOutput('Reset content to the initial demo copy.');
+        });
+
+        renderOutput('Ready. Open the picker and choose a symbol.');
+      });
+    </script>
+  </body>
+</html>

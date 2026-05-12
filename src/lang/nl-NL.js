@@ -147,6 +147,19 @@ const nlNL = {
   "specialChar": {
     "specialChar": "SPECIALE TEKENS",
     "select": "Selecteer Speciale Tekens",
+    "insert": "Geselecteerd symbool invoegen",
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows en Linux",
+    },
+    "links": {
+      "examples": "Voorbeelden",
+      "project": "Project",
+      "issues": "Problemen",
+    },
   },
 };
 

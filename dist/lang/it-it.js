@@ -161,7 +161,20 @@
   },
   "specialChar": {
     "specialChar": "CARATTERI SPECIALI",
-    "select": "Selezione caratteri speciali"
+    "select": "Selezione caratteri speciali",
+    "insert": "Inserisci il simbolo selezionato"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows e Linux"
+    },
+    "links": {
+      "examples": "Esempi",
+      "project": "Progetto",
+      "issues": "Problemi"
+    }
   }
 }; });
 })(globalThis);

@@ -41,6 +41,9 @@ describe('summernote locale registry', () => {
     expect(locales['fr-FR'].font.bold).to.equal('Gras');
     expect(locales['zh-CN'].options.help).to.equal('帮助');
     expect(locales['ar-AR'].paragraph.paragraph).to.exist;
+    expect(locales['fr-FR'].helpDialog.links.examples).to.equal('Exemples');
+    expect(locales['zh-TW'].helpDialog.links.project).to.equal('專案');
+    expect(locales['es-ES'].specialChar.insert).to.equal('Insertar el símbolo seleccionado');
   });
 
   it('registers additional locale bundles on demand', async() => {
@@ -56,5 +59,8 @@ describe('summernote locale registry', () => {
     expect($$.summernote.lang['ja-JP'].options.help).to.equal('ヘルプ');
     expect($$.summernote.lang['zh-CN'].link.insert).to.equal('插入链接');
     expect($$.summernote.lang['zh-TW'].link.insert).to.equal('插入連結');
+    expect($$.summernote.lang['ko-KR'].helpDialog.links.examples).to.equal('예제');
+    expect($$.summernote.lang['ru-RU'].helpDialog.platform.pc).to.equal('Windows и Linux');
+    expect($$.summernote.lang['ja-JP'].specialChar.insert).to.equal('選択した記号を挿入');
   });
 });

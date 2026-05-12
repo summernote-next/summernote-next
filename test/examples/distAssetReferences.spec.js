@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,german,toolbar-colors}.html', {
+const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,german,mathematical-symbols-greek-letters,toolbar-colors}.html', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+
+const overviewPages = import.meta.glob('../../examples/index.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -48,5 +54,19 @@ describe('example asset references', () => {
     expect(cardMatches).to.have.length(2);
     expect(toolbarColorsPage).to.contain('summernote.create(\'#toolbar-colors-editor\', {');
     expect(toolbarColorsPage).to.contain('summernote.create(\'#toolbar-colors-editor-light\', {');
+  });
+
+  it('links the Greek symbols example from the overview and keeps it asset-driven', () => {
+    const overviewPage = overviewPages['../../examples/index.html'];
+    const greekSymbolsPage = examplePages['../../examples/mathematical-symbols-greek-letters.html'];
+
+    expect(overviewPage).to.contain('./mathematical-symbols-greek-letters.html');
+    expect(greekSymbolsPage).to.contain('./assets/symbols_mathematical-symbols_Greek-letters.json');
+    expect(greekSymbolsPage).to.contain('buttons: {');
+    expect(greekSymbolsPage).to.contain('editor.saveRange');
+    expect(greekSymbolsPage).to.contain('specialCharPicker: {');
+    expect(greekSymbolsPage).to.contain('insertOnClick: false');
+    expect(greekSymbolsPage).to.contain('descriptionText: \'\'');
+    expect(greekSymbolsPage).to.contain('greek-symbols-mode-switch');
   });
 });

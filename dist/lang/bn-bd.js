@@ -165,7 +165,20 @@
   },
   "specialChar": {
     "specialChar": "বিশেষ অক্ষর",
-    "select": "বিশেষ অক্ষর নির্বাচন করুন"
+    "select": "বিশেষ অক্ষর নির্বাচন করুন",
+    "insert": "নির্বাচিত চিহ্ন সন্নিবেশ করুন"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows এবং Linux"
+    },
+    "links": {
+      "examples": "উদাহরণ",
+      "project": "প্রকল্প",
+      "issues": "সমস্যাসমূহ"
+    }
   }
 }; });
 })(globalThis);

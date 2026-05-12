@@ -177,6 +177,7 @@ $$.extend(true, $$.summernote.lang, {
     specialChar: {
       specialChar: 'SPECIAL CHARACTERS',
       select: 'Select Special characters',
+      insert: 'Insert selected symbol',
     },
     output: {
       noSelection: 'No Selection Made!',

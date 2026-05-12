@@ -183,6 +183,70 @@ html[data-bs-theme="dark"] {
   background-color: var(--bs-tertiary-bg);
 }
 
+.symbol-picker-grid-wrapper {
+  max-height: min(55vh, 32rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.symbol-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+  gap: 0.35rem;
+  width: 100%;
+  align-content: start;
+}
+
+.symbol-picker-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.35rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.symbol-picker-button:hover,
+.symbol-picker-button:focus-visible {
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+}
+
+.symbol-picker-button.active {
+  border-color: var(--bs-primary);
+  background-color: var(--bs-primary);
+  color: var(--bs-primary-bg-subtle, #fff);
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--bs-primary) 20%, transparent);
+}
+
+.symbol-picker-preview {
+  display: grid;
+  grid-template-columns: minmax(5rem, 6rem) 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.symbol-picker-preview-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 5rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.9rem;
+  background-color: var(--bs-tertiary-bg);
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.symbol-picker-preview-meta code {
+  word-break: break-word;
+}
+
 .note-editor .note-placeholder {
   color: var(--bs-secondary-color);
 }
@@ -200,5 +264,9 @@ html[data-bs-theme="light"] .example-config-pre {
   .examples-project-links {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .symbol-picker-preview {
+    grid-template-columns: 1fr;
   }
 }

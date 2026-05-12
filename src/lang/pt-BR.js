@@ -148,6 +148,19 @@ const ptBR = {
   "specialChar": {
     "specialChar": "CARACTERES ESPECIAIS",
     "select": "Selecionar Caracteres Especiais",
+    "insert": "Inserir o símbolo selecionado",
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows e Linux",
+    },
+    "links": {
+      "examples": "Exemplos",
+      "project": "Projeto",
+      "issues": "Problemas",
+    },
   },
 };
 

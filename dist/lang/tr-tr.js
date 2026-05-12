@@ -162,7 +162,20 @@
   },
   "specialChar": {
     "specialChar": "ÖZEL KARAKTERLER",
-    "select": "Özel Karakterleri seçin"
+    "select": "Özel Karakterleri seçin",
+    "insert": "Seçilen simgeyi ekle"
+  },
+  "helpDialog": {
+    "brand": "Summernote Next",
+    "platform": {
+      "mac": "macOS",
+      "pc": "Windows ve Linux"
+    },
+    "links": {
+      "examples": "Örnekler",
+      "project": "Proje",
+      "issues": "Sorunlar"
+    }
   }
 }; });
 })(globalThis);
