@@ -151,6 +151,9 @@ export default class Toolbar {
     }
 
     if (event.target.closest('.note-btn, .dropdown-item, .note-dropdown-menu')) {
+      if (event.target.closest('.note-btn, .dropdown-item')) {
+        this.context.invoke('editor.saveRange');
+      }
       event.preventDefault();
     }
   }

@@ -637,8 +637,10 @@ export default class Editor {
    * @param {Boolean} [thenCollapse=false]
    */
   saveRange(thenCollapse) {
+    const currentRange = this.getLastRange();
+
     if (thenCollapse) {
-      this.getLastRange().collapse().select();
+      currentRange.collapse().select();
     }
   }
 
@@ -827,6 +829,11 @@ export default class Editor {
    * @return {Promise}
    */
   insertImage(src, param) {
+    const insertRange = this.getLastRange();
+    const normalizedInsertRange = dom.isEditable(insertRange.sc) && dom.isEditable(insertRange.ec)
+      ? range.createFromBodyElement(this.editable, insertRange.isCollapsed() && insertRange.so === 0)
+      : insertRange;
+
     return createImage(src, param).then(($image) => {
       this.beforeCommand();
 
@@ -848,7 +855,7 @@ export default class Editor {
       }
 
       $image.show();
-      this.getLastRange().insertNode($image[0]);
+      normalizedInsertRange.insertNode($image[0]);
       this.setLastRange(range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
     }).catch((e) => {

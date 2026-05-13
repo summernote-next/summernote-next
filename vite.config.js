@@ -23,13 +23,20 @@ Date: ${date}
   'minimal': `Summernote Next v${version} | (c) 2013-present Hackerwins and contributors | (c) 2026-present Jürgen Schwind and contributors | MIT license`,
 };
 
-const styles = [
-  'bs5',
-];
+const styles = {
+  bs5: {
+    entry: '/src/styles/bs5/summernote-bs5.js',
+    fileBase: 'summernote-next',
+  },
+  classic: {
+    entry: '/src/styles/classic/summernote-classic.js',
+    fileBase: 'summernote-classic',
+  },
+};
 const defaultStyle = 'bs5';
 
 let configs = {};
-for (const style of styles) {
+for (const [style, variant] of Object.entries(styles)) {
   configs[style] = defineConfig({
     // prevent to build twice while calling `build` function manually
     configFile: false,
@@ -67,10 +74,10 @@ for (const style of styles) {
       outDir: 'dist',
 
       lib: {
-        entry: `/src/styles/${style}/summernote-${style}.js`,
+        entry: variant.entry,
         name: 'summernote',
         formats: ['iife'],
-        fileName: () => 'summernote-next.js',
+        fileName: () => `${variant.fileBase}.js`,
       },
 
       rollupOptions: {
@@ -80,7 +87,8 @@ for (const style of styles) {
         },
 
         output: {
-          assetFileNames: 'summernote-next.[ext]',
+          assetFileNames: `${variant.fileBase}.[ext]`,
+          entryFileNames: `${variant.fileBase}.js`,
         },
       },
     },
@@ -91,5 +99,6 @@ export default configs[defaultStyle];
 export {
   configs,
   banners,
+  styles,
   version,
 };

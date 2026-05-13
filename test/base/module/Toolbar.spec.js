@@ -87,6 +87,7 @@ describe('Toolbar', () => {
 
   it('prevents toolbar mousedown only for actionable elements', () => {
     const preventDefault = vi.fn();
+    const invoke = vi.spyOn(context, 'invoke');
     const textInput = document.createElement('input');
     const plainDiv = document.createElement('div');
     const button = $toolbar.find('button')[0];
@@ -98,6 +99,7 @@ describe('Toolbar', () => {
 
     toolbar.handleToolbarMouseDown({ target: button, preventDefault });
     expect(preventDefault).toHaveBeenCalledOnce();
+    expect(invoke).toHaveBeenCalledWith('editor.saveRange');
   });
 
   it('ignores non-element toolbar clicks and closes dropdowns for buttons and menus', async() => {

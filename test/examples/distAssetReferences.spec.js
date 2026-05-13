@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,german,mathematical-symbols-greek-letters,toolbar-colors}.html', {
+const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,german,mathematical-symbols-greek-letters,summernote-classic,toolbar-colors}.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -15,6 +15,14 @@ const overviewPages = import.meta.glob('../../examples/index.html', {
 describe('example asset references', () => {
   it('loads the compiled dist assets without a hard-coded cache-buster', () => {
     Object.entries(examplePages).forEach(([path, markup]) => {
+      if (path.includes('summernote-classic.html')) {
+        expect(markup, `${path} should load the compiled classic stylesheet`).to.contain('/dist/summernote-classic.css');
+        expect(markup, `${path} should load the compiled classic script`).to.contain('/dist/summernote-classic.js');
+        expect(markup, `${path} should not pin the classic stylesheet to a stale version`).not.to.match(/\/dist\/summernote-classic\.css\?v=/);
+        expect(markup, `${path} should not pin the classic script to a stale version`).not.to.match(/\/dist\/summernote-classic\.js\?v=/);
+        return;
+      }
+
       expect(markup, `${path} should load the compiled dist stylesheet`).to.contain('/dist/summernote-next.css');
       expect(markup, `${path} should load the compiled dist script`).to.contain('/dist/summernote-next.js');
       expect(markup, `${path} should not pin the dist stylesheet to a stale version`).not.to.match(/\/dist\/summernote-next\.css\?v=/);
@@ -68,5 +76,19 @@ describe('example asset references', () => {
     expect(greekSymbolsPage).to.contain('insertOnClick: false');
     expect(greekSymbolsPage).to.contain('descriptionText: \'\'');
     expect(greekSymbolsPage).to.contain('greek-symbols-mode-switch');
+  });
+
+  it('links the classic example from the overview and keeps it Bootstrap-free', () => {
+    const overviewPage = overviewPages['../../examples/index.html'];
+    const classicPage = examplePages['../../examples/summernote-classic.html'];
+
+    expect(overviewPage).to.contain('./summernote-classic.html');
+    expect(classicPage).to.contain('/dist/summernote-classic.css');
+    expect(classicPage).to.contain('/dist/summernote-classic.js');
+    expect(classicPage).not.to.contain('bootstrap.min.css');
+    expect(classicPage).not.to.contain('bootstrap.bundle.min.js');
+    expect(classicPage).to.contain('summernote.create(\'#classic-editor\', {');
+    expect(classicPage).to.contain('dialogsInBody: true');
+    expect(classicPage).to.contain('class="surface surface-editor"');
   });
 });

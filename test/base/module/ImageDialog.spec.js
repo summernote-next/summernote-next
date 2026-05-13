@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from '/test/util';
 import $$ from '@/js/core/dom-query.js';
+import range from '@/js/core/range';
 import Context from '@/js/Context';
 import ImageDialog from '@/js/module/ImageDialog';
 import env from '@/js/core/env';
@@ -232,5 +233,67 @@ describe('ImageDialog', () => {
     await flushAsyncWork();
 
     expect(invoke).toHaveBeenCalledWith('editor.insertImage', 'https://example.com/direct.png');
+  });
+
+  it('restores the saved editor range before inserting image urls when dialogs render in body', async() => {
+    dialog?.destroy();
+    context?.destroy();
+
+    context = new Context(
+      $$('<div><p>hello</p></div>').appendTo('body'),
+      $$.extend({}, $$.summernote.options, {
+        toolbar: [['insert', ['picture']]],
+        dialogsInBody: true,
+      }),
+    );
+    dialog = new ImageDialog(context);
+    dialog.initialize();
+    $editable = context.layoutInfo.editable;
+
+    const textNode = $editable.find('p').first()[0].firstChild;
+    const savedRange = range.create(textNode, 0, textNode, 0).select();
+    context.invoke('editor.setLastRange', savedRange);
+
+    dialog.show();
+    await nextTick();
+    dialog.$dialog.trigger('shown.bs.modal');
+    await nextTick();
+
+    const $url = dialog.$dialog.find('.note-image-url');
+    $url.val('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
+    $url.trigger('input');
+    dialog.$dialog.find('.note-image-btn').trigger('click');
+    await flushAsyncWork();
+
+    expect($editable.find('img').length).to.equal(1);
+    expect($$('body').children('img').length).to.equal(0);
+  });
+
+  it('preserves the previously saved text range when the live selection drifts to the editable root', async() => {
+    const textNode = $editable.find('p').first()[0].firstChild;
+    const savedRange = range.create(textNode, 0, textNode, 0).select();
+    context.invoke('editor.setLastRange', savedRange);
+
+    const rootSelection = document.createRange();
+    rootSelection.setStart($editable[0], $editable[0].childNodes.length);
+    rootSelection.collapse(true);
+    const selection = document.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(rootSelection);
+
+    dialog.show();
+    await nextTick();
+    dialog.$dialog.trigger('shown.bs.modal');
+    await nextTick();
+
+    const $url = dialog.$dialog.find('.note-image-url');
+    $url.val('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
+    $url.trigger('input');
+    dialog.$dialog.find('.note-image-btn').trigger('click');
+    await flushAsyncWork();
+
+    expect($editable.find('img').length).to.equal(1);
+    expect($editable.children().first().find('img').length).to.equal(1);
+    expect($$('body').children('img').length).to.equal(0);
   });
 });

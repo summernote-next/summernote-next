@@ -58,7 +58,6 @@ export function createImage(url) {
     img.addEventListener('abort', onError);
 
     img.style.display = 'none';
-    document.body.appendChild(img);
     img.src = url;
   });
 }

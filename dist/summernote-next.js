@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-12T13:25Z
+Date: 2026-05-13T09:13Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -23,6 +23,7 @@ var summernote = (function() {
 	*/
 	var elementDataStore = /* @__PURE__ */ new WeakMap();
 	var defaultDisplayCache = /* @__PURE__ */ new Map();
+	var fallbackModalStore = /* @__PURE__ */ new WeakMap();
 	function isHtmlString(value) {
 		return typeof value === "string" && value.trim().startsWith("<") && value.trim().endsWith(">");
 	}
@@ -77,6 +78,87 @@ var summernote = (function() {
 			hasEntries = true;
 		});
 		return hasEntries ? sanitized : void 0;
+	}
+	function getFallbackModalState(element) {
+		let state = fallbackModalStore.get(element);
+		if (!state) {
+			state = {
+				backdrop: null,
+				visible: false,
+				closeHandler: null,
+				backdropHandler: null,
+				keydownHandler: null,
+				activeElement: null
+			};
+			fallbackModalStore.set(element, state);
+		}
+		return state;
+	}
+	function isFallbackModalVisible(state) {
+		return Boolean(state && state.visible);
+	}
+	function hasVisibleFallbackModal() {
+		return Array.from(document.querySelectorAll(".note-modal")).some((modal) => {
+			return isFallbackModalVisible(fallbackModalStore.get(modal));
+		});
+	}
+	function syncFallbackModalBodyState() {
+		if (hasVisibleFallbackModal()) document.body.classList.add("note-modal-open");
+		else document.body.classList.remove("note-modal-open");
+	}
+	function showFallbackModal(element) {
+		const state = getFallbackModalState(element);
+		if (state.visible) return;
+		state.visible = true;
+		state.activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		const backdrop = document.createElement("div");
+		backdrop.className = "note-modal-backdrop";
+		document.body.appendChild(backdrop);
+		state.backdrop = backdrop;
+		state.closeHandler = (event) => {
+			const dismissTarget = event.target instanceof Element ? event.target.closest("[data-bs-dismiss=\"modal\"]") : null;
+			if (dismissTarget && element.contains(dismissTarget)) {
+				event.preventDefault();
+				hideFallbackModal(element);
+			}
+		};
+		state.backdropHandler = () => {
+			hideFallbackModal(element);
+		};
+		state.keydownHandler = (event) => {
+			if (event.key === "Escape") hideFallbackModal(element);
+		};
+		element.addEventListener("click", state.closeHandler);
+		backdrop.addEventListener("click", state.backdropHandler);
+		document.addEventListener("keydown", state.keydownHandler);
+		element.style.display = "block";
+		element.classList.add("show");
+		element.removeAttribute("aria-hidden");
+		element.setAttribute("aria-modal", "true");
+		backdrop.classList.add("show");
+		syncFallbackModalBodyState();
+		$$(element).trigger("shown.bs.modal");
+	}
+	function hideFallbackModal(element) {
+		const state = fallbackModalStore.get(element);
+		if (!state || !state.visible) return;
+		state.visible = false;
+		element.classList.remove("show");
+		element.style.display = "none";
+		element.setAttribute("aria-hidden", "true");
+		element.removeAttribute("aria-modal");
+		if (state.closeHandler) element.removeEventListener("click", state.closeHandler);
+		if (state.backdrop && state.backdropHandler) state.backdrop.removeEventListener("click", state.backdropHandler);
+		if (state.keydownHandler) document.removeEventListener("keydown", state.keydownHandler);
+		if (state.backdrop) state.backdrop.remove();
+		state.backdrop = null;
+		state.closeHandler = null;
+		state.backdropHandler = null;
+		state.keydownHandler = null;
+		if (state.activeElement && typeof state.activeElement.focus === "function") state.activeElement.focus();
+		state.activeElement = null;
+		syncFallbackModalBodyState();
+		$$(element).trigger("hidden.bs.modal");
 	}
 	function normalizeClassNames(classes) {
 		return classes.flatMap((className) => typeof className === "string" ? className.split(/\s+/) : className).filter(Boolean);
@@ -479,7 +561,15 @@ var summernote = (function() {
 		}
 		modal(option) {
 			const bootstrap = getBootstrap();
-			if (!bootstrap || !bootstrap.Modal) return this;
+			if (!bootstrap || !bootstrap.Modal) {
+				this.elements.forEach((element) => {
+					if (typeof option === "string") {
+						if (option === "show") showFallbackModal(element);
+						else if (option === "hide") hideFallbackModal(element);
+					}
+				});
+				return this;
+			}
 			this.elements.forEach((element) => {
 				const instance = bootstrap.Modal.getOrCreateInstance(element, sanitizeBootstrapOptions(option));
 				if (typeof option === "string" && typeof instance[option] === "function") instance[option]();
@@ -3596,7 +3686,6 @@ var summernote = (function() {
 			img.addEventListener("error", onError);
 			img.addEventListener("abort", onError);
 			img.style.display = "none";
-			document.body.appendChild(img);
 			img.src = url;
 		});
 	}
@@ -4968,7 +5057,8 @@ var summernote = (function() {
 		* @param {Boolean} [thenCollapse=false]
 		*/
 		saveRange(thenCollapse) {
-			if (thenCollapse) this.getLastRange().collapse().select();
+			const currentRange = this.getLastRange();
+			if (thenCollapse) currentRange.collapse().select();
 		}
 		/**
 		* restoreRange
@@ -5111,6 +5201,8 @@ var summernote = (function() {
 		* @return {Promise}
 		*/
 		insertImage(src, param) {
+			const insertRange = this.getLastRange();
+			const normalizedInsertRange = dom_default.isEditable(insertRange.sc) && dom_default.isEditable(insertRange.ec) ? range_default.createFromBodyElement(this.editable, insertRange.isCollapsed() && insertRange.so === 0) : insertRange;
 			return createImage(src, param).then(($image) => {
 				this.beforeCommand();
 				if (typeof param === "function") param($image);
@@ -5123,7 +5215,7 @@ var summernote = (function() {
 					else $image.css("width", "");
 				}
 				$image.show();
-				this.getLastRange().insertNode($image[0]);
+				normalizedInsertRange.insertNode($image[0]);
 				this.setLastRange(range_default.createFromNodeAfter($image[0]).select());
 				this.afterCommand();
 			}).catch((e) => {
@@ -5649,6 +5741,7 @@ var summernote = (function() {
 			this.$window = $$(window);
 			this.$scrollbar = $$("html, body");
 			this.scrollbarClassName = "note-fullscreen-body";
+			this.fullscreenPlaceholder = null;
 			this.onResize = () => {
 				this.resizeTo({ h: this.$window.height() - this.$toolbar.outerHeight() - this.$statusbar.outerHeight() - this.$statusOutput.outerHeight() });
 			};
@@ -5712,6 +5805,7 @@ var summernote = (function() {
 			this.$scrollbar.toggleClass(this.scrollbarClassName, isFullscreen);
 			this.context.invoke("airPopover.hide");
 			if (isFullscreen) {
+				this.reparentToBody();
 				this.$editable.data("orgHeight", this.$editable.css("height"));
 				this.$codable.data("orgHeight", this.$codable.css("height"));
 				this.$editable.data("orgMaxHeight", this.$editable.css("maxHeight"));
@@ -5725,13 +5819,32 @@ var summernote = (function() {
 				this.$codable.css("height", this.$codable.data("orgHeight"));
 				this.$editable.css("maxHeight", this.$editable.data("orgMaxHeight"));
 				this.$codable.css("maxHeight", this.$codable.data("orgMaxHeight"));
+				this.restoreParent();
 			}
 			this.context.invoke("toolbar.updateFullscreen", isFullscreen);
+		}
+		reparentToBody() {
+			if (this.fullscreenPlaceholder || this.$editor.parent().is("body")) return;
+			this.fullscreenPlaceholder = document.createElement("div");
+			this.fullscreenPlaceholder.style.display = "none";
+			this.fullscreenPlaceholder.setAttribute("data-note-fullscreen-placeholder", "true");
+			this.$editor.before(this.fullscreenPlaceholder);
+			document.body.appendChild(this.$editor[0]);
+		}
+		restoreParent() {
+			if (!this.fullscreenPlaceholder || !this.fullscreenPlaceholder.parentNode) {
+				this.fullscreenPlaceholder = null;
+				return;
+			}
+			this.fullscreenPlaceholder.parentNode.insertBefore(this.$editor[0], this.fullscreenPlaceholder);
+			this.fullscreenPlaceholder.parentNode.removeChild(this.fullscreenPlaceholder);
+			this.fullscreenPlaceholder = null;
 		}
 		isFullscreen() {
 			return this.$editor.hasClass("fullscreen");
 		}
 		destroy() {
+			this.restoreParent();
 			this.$scrollbar.removeClass(this.scrollbarClassName);
 		}
 	};
@@ -7058,7 +7171,10 @@ var summernote = (function() {
 		handleToolbarMouseDown(event) {
 			if (!(event.target instanceof Element)) return;
 			if (event.target.closest("input, textarea, select, option, label")) return;
-			if (event.target.closest(".note-btn, .dropdown-item, .note-dropdown-menu")) event.preventDefault();
+			if (event.target.closest(".note-btn, .dropdown-item, .note-dropdown-menu")) {
+				if (event.target.closest(".note-btn, .dropdown-item")) this.context.invoke("editor.saveRange");
+				event.preventDefault();
+			}
 		}
 		handleToolbarClick(event) {
 			if (!(event.target instanceof Element)) return;
@@ -7422,14 +7538,16 @@ var summernote = (function() {
 			});
 		}
 		show() {
-			this.context.invoke("editor.saveRange");
+			const preservedRange = this.context.modules.editor.lastRange || this.context.invoke("editor.getLastRange");
 			this.showImageDialog().then((data) => {
 				this.ui.hideDialog(this.$dialog);
+				this.context.invoke("editor.setLastRange", preservedRange);
 				this.context.invoke("editor.restoreRange");
 				if (typeof data === "string") if (this.options.callbacks.onImageLinkInsert) this.context.triggerEvent("image.link.insert", data);
 				else this.context.invoke("editor.insertImage", data);
 				else this.context.invoke("editor.insertImagesOrCallback", data);
 			}).catch(() => {
+				this.context.invoke("editor.setLastRange", preservedRange);
 				this.context.invoke("editor.restoreRange");
 			});
 		}

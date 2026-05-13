@@ -49,7 +49,7 @@
   "scripts": {
     "dev": "vite --config vite.config.dev.js",
     "prebuild": "node ./scripts/build-fonts.js",
-    "build": "vite build",
+    "build": "node ./scripts/build-dist.js",
     "postbuild": "node ./scripts/build-language-assets.js",
     "buildall": "npm run prebuild && node ./scripts/build-all.js",
     "lint": "eslint src test scripts",
