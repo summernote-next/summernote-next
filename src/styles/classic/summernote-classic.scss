@@ -6,42 +6,42 @@
 .note-popover.popover,
 .note-modal {
   --bs-border-width: 1px;
-  --bs-border-color: #d0d7de;
-  --bs-border-color-translucent: rgba(31, 35, 40, 0.12);
-  --bs-border-radius: 0.5rem;
+  --bs-border-color: #dee2e6;
+  --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
+  --bs-border-radius: 0.375rem;
   --bs-card-inner-border-radius: calc(var(--bs-border-radius) - 1px);
   --bs-body-bg: #ffffff;
-  --bs-body-color: #1f2328;
-  --bs-secondary-color: #59636e;
-  --bs-secondary-bg: #f6f8fa;
-  --bs-tertiary-bg: #f6f8fa;
-  --bs-emphasis-color: #0f172a;
-  --bs-primary: #0969da;
-  --bs-primary-text-emphasis: #0550ae;
-  --bs-primary-bg-subtle: #ddf4ff;
-  --bs-success-text-emphasis: #1a7f37;
-  --bs-success-bg-subtle: #dafbe1;
-  --bs-info-text-emphasis: #0550ae;
-  --bs-info-bg-subtle: #ddf4ff;
-  --bs-warning-text-emphasis: #9a6700;
-  --bs-warning-bg-subtle: #fff8c5;
-  --bs-danger-text-emphasis: #cf222e;
-  --bs-danger-bg-subtle: #ffebe9;
-  --bs-light: #f6f8fa;
-  --bs-dark: #24292f;
+  --bs-body-color: #212529;
+  --bs-secondary-color: #6c757d;
+  --bs-secondary-bg: #e9ecef;
+  --bs-tertiary-bg: #f8f9fa;
+  --bs-emphasis-color: #212529;
+  --bs-primary: #0d6efd;
+  --bs-primary-text-emphasis: #0a58ca;
+  --bs-primary-bg-subtle: #cfe2ff;
+  --bs-success-text-emphasis: #0f5132;
+  --bs-success-bg-subtle: #d1e7dd;
+  --bs-info-text-emphasis: #055160;
+  --bs-info-bg-subtle: #cff4fc;
+  --bs-warning-text-emphasis: #664d03;
+  --bs-warning-bg-subtle: #fff3cd;
+  --bs-danger-text-emphasis: #842029;
+  --bs-danger-bg-subtle: #f8d7da;
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
   --bs-white: #ffffff;
   --bs-small-font-size: 0.875rem;
   --bs-body-font-size: 1rem;
   --bs-font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-  --bs-box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
-  --bs-box-shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.1);
-  --bs-box-shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.18);
-  --bs-modal-border-radius: 0.875rem;
+  --bs-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  --bs-modal-border-radius: 0.5rem;
   --bs-modal-box-shadow: var(--bs-box-shadow-lg);
   --bs-modal-header-border-color: var(--bs-border-color-translucent);
   --bs-modal-header-padding: 1rem 1.25rem;
   --bs-modal-padding: 1rem 1.25rem;
-  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .note-editor.note-frame.card,
@@ -93,20 +93,18 @@
 .note-editor .btn,
 .note-popover .btn,
 .note-modal .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  min-height: 2rem;
+  display: block;
+  min-height: auto;
   padding: 0.375rem 0.75rem;
   border: var(--bs-border-width) solid var(--bs-border-color);
-  border-radius: 0.45rem;
-  background: var(--bs-body-bg);
-  color: var(--bs-body-color);
+  border-radius: calc(var(--bs-border-radius) - 2px);
+  background: transparent;
+  color: var(--bs-secondary-color);
   text-decoration: none;
   cursor: pointer;
   pointer-events: auto;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  line-height: 1.5;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .note-editor .note-btn > *,
@@ -121,8 +119,9 @@
 .note-popover .btn:focus-visible,
 .note-modal .btn:hover,
 .note-modal .btn:focus-visible {
-  border-color: #b6bec8;
-  background: var(--bs-secondary-bg);
+  border-color: var(--bs-border-color);
+  background: var(--bs-tertiary-bg);
+  color: var(--bs-secondary-color);
   outline: 0;
 }
 
@@ -139,8 +138,8 @@
 .note-editor .btn-sm,
 .note-popover .btn-sm,
 .note-modal .btn-sm {
-  min-height: 1.875rem;
-  padding: 0.25rem 0.55rem;
+  min-height: auto;
+  padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
 }
 
@@ -181,9 +180,58 @@
 }
 
 .note-editor .btn-group,
-.note-popover .btn-group {
+.note-popover .btn-group,
+.note-modal .btn-group {
   display: inline-flex;
   flex-wrap: nowrap;
+  vertical-align: middle;
+}
+
+.note-editor .btn-group > .btn,
+.note-popover .btn-group > .btn,
+.note-modal .btn-group > .btn {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.note-editor .btn-group > .btn:not(:first-child),
+.note-popover .btn-group > .btn:not(:first-child),
+.note-modal .btn-group > .btn:not(:first-child) {
+  margin-left: calc(var(--bs-border-width) * -1);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.note-editor .btn-group > .btn:not(:last-child),
+.note-popover .btn-group > .btn:not(:last-child),
+.note-modal .btn-group > .btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.note-editor .btn-group > .btn:hover,
+.note-editor .btn-group > .btn:focus-visible,
+.note-popover .btn-group > .btn:hover,
+.note-popover .btn-group > .btn:focus-visible,
+.note-modal .btn-group > .btn:hover,
+.note-modal .btn-group > .btn:focus-visible {
+  z-index: 1;
+}
+
+.note-editor .note-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-emphasis-color);
+}
+
+.note-editor .note-toolbar > .note-btn-group,
+.note-popover .popover-body > .note-btn-group,
+.note-popover .note-popover-content > .note-btn-group {
+  margin: 0;
 }
 
 .note-editor .note-toolbar .note-btn-group,
@@ -196,12 +244,27 @@
 .note-editor .dropdown-toggle::after,
 .note-popover .dropdown-toggle::after {
   content: "";
-  width: 0;
-  height: 0;
-  margin-left: 0.35rem;
-  border-right: 0.3rem solid transparent;
-  border-left: 0.3rem solid transparent;
-  border-top: 0.35rem solid currentColor;
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  border-top: 0.3em solid currentColor;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+}
+
+.note-editor .note-style .dropdown-toggle,
+.note-popover .note-style .dropdown-toggle,
+.note-editor .note-color .dropdown-toggle,
+.note-popover .note-color .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-editor .note-color .dropdown-toggle::after,
+.note-popover .note-color .dropdown-toggle::after {
+  margin-left: 0;
 }
 
 .note-editor .note-dropdown-menu,

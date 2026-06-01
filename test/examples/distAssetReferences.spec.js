@@ -6,6 +6,12 @@ const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,defaul
   import: 'default',
 });
 
+const classicExamplePages = import.meta.glob('../../examples/summernote-classic/**/*.html', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+
 const overviewPages = import.meta.glob('../../examples/index.html', {
   eager: true,
   query: '?raw',
@@ -16,10 +22,8 @@ describe('example asset references', () => {
   it('loads the compiled dist assets without a hard-coded cache-buster', () => {
     Object.entries(examplePages).forEach(([path, markup]) => {
       if (path.includes('summernote-classic.html')) {
-        expect(markup, `${path} should load the compiled classic stylesheet`).to.contain('/dist/summernote-classic.css');
-        expect(markup, `${path} should load the compiled classic script`).to.contain('/dist/summernote-classic.js');
-        expect(markup, `${path} should not pin the classic stylesheet to a stale version`).not.to.match(/\/dist\/summernote-classic\.css\?v=/);
-        expect(markup, `${path} should not pin the classic script to a stale version`).not.to.match(/\/dist\/summernote-classic\.js\?v=/);
+        expect(markup, `${path} should redirect to the classic examples overview`).to.contain('url=/summernote-classic/');
+        expect(markup, `${path} should redirect in JavaScript as well`).to.contain('window.location.replace(\'/summernote-classic/\')');
         return;
       }
 
@@ -28,6 +32,23 @@ describe('example asset references', () => {
       expect(markup, `${path} should not pin the dist stylesheet to a stale version`).not.to.match(/\/dist\/summernote-next\.css\?v=/);
       expect(markup, `${path} should not pin the dist script to a stale version`).not.to.match(/\/dist\/summernote-next\.js\?v=/);
     });
+  });
+
+  it('loads the compiled classic assets on every generated classic example page', () => {
+    Object.entries(classicExamplePages)
+      .filter(([path]) => !path.endsWith('/index.html'))
+      .forEach(([path, markup]) => {
+        expect(markup, `${path} should load the classic example stylesheet`).to.contain('/assets/classic-examples.css');
+        expect(markup, `${path} should load the classic example helper script`).to.contain('/assets/classic-examples.js');
+        expect(markup, `${path} should load the compiled classic stylesheet`).to.contain('/dist/summernote-classic.css');
+        expect(markup, `${path} should load the compiled classic script`).to.contain('/dist/summernote-classic.js');
+        expect(markup, `${path} should not load the Bootstrap 5 Summernote stylesheet`).not.to.contain('/dist/summernote-next.css');
+        expect(markup, `${path} should not load the Bootstrap 5 Summernote script`).not.to.contain('/dist/summernote-next.js');
+        expect(markup, `${path} should not load Bootstrap CSS or JS`).not.to.match(/bootstrap(\.bundle)?\.min\.(css|js)/);
+        expect(markup, `${path} should not depend on Bootstrap modal helpers`).not.to.contain('bootstrap.Modal');
+        expect(markup, `${path} should not keep Bootstrap data attributes`).not.to.contain('data-bs-');
+        expect(markup, `${path} should include the classic example notice`).to.contain('data-classic-example-notice');
+      });
   });
 
   it('keeps an example configuration block on the default example page', () => {
@@ -78,17 +99,25 @@ describe('example asset references', () => {
     expect(greekSymbolsPage).to.contain('greek-symbols-mode-switch');
   });
 
-  it('links the classic example from the overview and keeps it Bootstrap-free', () => {
+  it('links the classic example catalog from the overview', () => {
     const overviewPage = overviewPages['../../examples/index.html'];
     const classicPage = examplePages['../../examples/summernote-classic.html'];
+    const classicOverviewPage = classicExamplePages['../../examples/summernote-classic/index.html'];
 
-    expect(overviewPage).to.contain('./summernote-classic.html');
-    expect(classicPage).to.contain('/dist/summernote-classic.css');
-    expect(classicPage).to.contain('/dist/summernote-classic.js');
-    expect(classicPage).not.to.contain('bootstrap.min.css');
-    expect(classicPage).not.to.contain('bootstrap.bundle.min.js');
-    expect(classicPage).to.contain('summernote.create(\'#classic-editor\', {');
-    expect(classicPage).to.contain('dialogsInBody: true');
-    expect(classicPage).to.contain('class="surface surface-editor"');
+    expect(overviewPage).to.contain('./summernote-classic/');
+    expect(classicPage).to.contain('/summernote-classic/');
+    expect(classicOverviewPage).to.contain('Summernote Classic example pages');
+    expect(classicOverviewPage).not.to.contain('./summernote-classic.html');
+    expect(classicOverviewPage).to.contain('./default.html');
+    expect(classicOverviewPage).to.contain('data-classic-example-notice');
+  });
+
+  it('turns the classic theme showcase into a self-styled page', () => {
+    const themePage = classicExamplePages['../../examples/summernote-classic/bootswatch.html'];
+
+    expect(themePage).to.contain('built-in example themes');
+    expect(themePage).to.contain('const themePresets = {');
+    expect(themePage).to.contain('--example-theme-');
+    expect(themePage).not.to.contain('bootswatch@');
   });
 });

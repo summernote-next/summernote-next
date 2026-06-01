@@ -9361,7 +9361,10 @@ var summernote = (function() {
 		"h6"
 	];
 	//#endregion
+	//#region src/styles/classic/summernote-classic.js
+	$$.summernote = Object.assign($$.summernote, { interface: "classic" });
+	//#endregion
 	return $$;
 })();
 
-//# sourceMappingURL=summernote-next.js.map
+//# sourceMappingURL=summernote-classic.js.map
