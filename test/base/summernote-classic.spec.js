@@ -121,4 +121,74 @@ describe('summernote classic bundle', () => {
     expect(getComputedStyle($helpDialog[0]).display).to.equal('flex');
     expect(getComputedStyle($helpItem[0]).display).to.equal('grid');
   });
+
+  it('closes the fallback modal when clicking a dismiss button inside the dialog', () => {
+    const ui = $$.summernote.ui_template({});
+    const $dialog = ui.dialog({
+      title: 'Dismiss test',
+      body: '<p>Content</p>',
+      footer: '<button type="button" data-bs-dismiss="modal">Close</button>',
+    }).render($$('body'));
+
+    ui.showDialog($dialog);
+    expect($dialog.hasClass('show')).to.be.true;
+
+    const closeBtn = $dialog.find('[data-bs-dismiss="modal"]')[0];
+    closeBtn.dispatchEvent(new Event('click', { bubbles: true }));
+
+    expect($dialog.hasClass('show')).to.be.false;
+    expect(document.querySelector('.note-modal-backdrop')).to.equal(null);
+  });
+
+  it('closes the fallback modal when clicking the backdrop', () => {
+    const ui = $$.summernote.ui_template({});
+    const $dialog = ui.dialog({
+      title: 'Backdrop test',
+      body: '<p>Content</p>',
+      footer: '<button type="button" class="note-confirm">OK</button>',
+    }).render($$('body'));
+
+    ui.showDialog($dialog);
+    expect(document.querySelector('.note-modal-backdrop')).not.to.equal(null);
+
+    const backdrop = document.querySelector('.note-modal-backdrop');
+    backdrop.dispatchEvent(new Event('click'));
+
+    expect($dialog.hasClass('show')).to.be.false;
+    expect(document.querySelector('.note-modal-backdrop')).to.equal(null);
+  });
+
+  it('closes the fallback modal when pressing Escape', () => {
+    const ui = $$.summernote.ui_template({});
+    const $dialog = ui.dialog({
+      title: 'Escape test',
+      body: '<p>Content</p>',
+      footer: '<button type="button" class="note-confirm">OK</button>',
+    }).render($$('body'));
+
+    ui.showDialog($dialog);
+    expect($dialog.hasClass('show')).to.be.true;
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect($dialog.hasClass('show')).to.be.false;
+    expect(document.querySelector('.note-modal-backdrop')).to.equal(null);
+  });
+
+  it('ignores repeated show calls when the fallback modal is already visible', () => {
+    const ui = $$.summernote.ui_template({});
+    const $dialog = ui.dialog({
+      title: 'Double show test',
+      body: '<p>Content</p>',
+      footer: '<button type="button" class="note-confirm">OK</button>',
+    }).render($$('body'));
+
+    ui.showDialog($dialog);
+    expect(document.querySelectorAll('.note-modal-backdrop').length).to.equal(1);
+
+    ui.showDialog($dialog);
+    expect(document.querySelectorAll('.note-modal-backdrop').length).to.equal(1);
+
+    ui.hideDialog($dialog);
+  });
 });

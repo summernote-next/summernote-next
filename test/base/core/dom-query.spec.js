@@ -649,5 +649,22 @@ describe('base:core.dom-query', () => {
 
       expect(() => $eventHost.on('noop', 123)).not.to.throw();
     });
+
+    it('sets delegateTarget on delegated events', () => {
+      const $host = $$('<div class="delegate-host"><button class="delegate-child"></button></div>').appendTo('body');
+      const $button = $host.find('button');
+      let receivedEvent;
+
+      $host.on('click', '.delegate-child', (event) => {
+        receivedEvent = event;
+      });
+
+      $button.trigger('click');
+
+      expect(receivedEvent).not.to.be.undefined;
+      expect(receivedEvent.delegateTarget).to.equal($button[0]);
+
+      $host.remove();
+    });
   });
 });

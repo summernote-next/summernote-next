@@ -102,6 +102,16 @@ describe('Toolbar', () => {
     expect(invoke).toHaveBeenCalledWith('editor.saveRange');
   });
 
+  it('prevents default on dropdown menu clicks without saving range', () => {
+    const preventDefault = vi.fn();
+    const invoke = vi.spyOn(context, 'invoke');
+    const $dropdownMenu = $toolbar.find('.note-dropdown-menu').first();
+
+    toolbar.handleToolbarMouseDown({ target: $dropdownMenu[0], preventDefault });
+    expect(preventDefault).toHaveBeenCalledOnce();
+    expect(invoke).not.toHaveBeenCalledWith('editor.saveRange');
+  });
+
   it('ignores non-element toolbar clicks and closes dropdowns for buttons and menus', async() => {
     const $styleButton = $toolbar.find('.dropdown-style').siblings('.dropdown-toggle');
     const $styleMenu = $toolbar.find('.dropdown-style');

@@ -296,4 +296,14 @@ describe('ImageDialog', () => {
     expect($editable.children().first().find('img').length).to.equal(1);
     expect($$('body').children('img').length).to.equal(0);
   });
+
+  it('falls back to editor.getLastRange when lastRange is not stored', async() => {
+    const invoke = vi.spyOn(context, 'invoke');
+    context.modules.editor.lastRange = null;
+
+    dialog.show();
+    await flushAsyncWork();
+
+    expect(invoke).toHaveBeenCalledWith('editor.getLastRange');
+  });
 });
