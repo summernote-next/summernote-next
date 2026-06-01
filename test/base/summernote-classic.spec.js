@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
-import '@/styles/classic/summernote-classic';
+import '@/styles/classic/summernote-next-classic';
 
 describe('summernote classic bundle', () => {
   beforeEach(() => {

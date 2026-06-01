@@ -29,8 +29,8 @@ const styles = {
     fileBase: 'summernote-next',
   },
   classic: {
-    entry: '/src/styles/classic/summernote-classic.js',
-    fileBase: 'summernote-classic',
+    entry: '/src/styles/classic/summernote-next-classic.js',
+    fileBase: 'summernote-next-classic',
   },
 };
 const defaultStyle = 'bs5';

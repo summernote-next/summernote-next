@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/paragraph-api/*.html', {
+const examplePages = import.meta.glob('../../examples/summernote-next/paragraph-api/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -8,7 +8,7 @@ const examplePages = import.meta.glob('../../examples/paragraph-api/*.html', {
 
 describe('examples paragraph API examples', () => {
   it('keeps the local index focused on the paragraph topic pages', () => {
-    const indexPage = examplePages['../../examples/paragraph-api/index.html'];
+    const indexPage = examplePages['../../examples/summernote-next/paragraph-api/index.html'];
 
     expect(indexPage).to.contain('Paragraph API');
     expect(indexPage).to.contain('./alignment.html');

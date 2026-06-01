@@ -61,17 +61,17 @@ Add an editor element and initialize it with the public API:
 </script>
 ```
 
-For the Bootstrap-free variant, load the separate `summernote-classic` bundle instead:
+For the Bootstrap-free variant, load the separate `summernote-next-classic` bundle instead:
 
 ```html
-<link rel="stylesheet" href="dist/summernote-classic.css">
+<link rel="stylesheet" href="dist/summernote-next-classic.css">
 
-<script defer src="dist/summernote-classic.js"></script>
+<script defer src="dist/summernote-next-classic.js"></script>
 ```
 
 ## Examples
 
-The maintained example catalog for this fork is available at <https://juergen-schwind.com/summernote-next>. The local `examples/` directory mirrors the public example structure and demonstrates the supported Bootstrap 5, Bootstrap-free `summernote-classic`, and Vanilla JS setups.
+The maintained example catalog for this fork is available at <https://juergen-schwind.com/summernote-next>. The local `examples/` directory mirrors the public example structure and demonstrates the supported Bootstrap 5, Bootstrap-free `summernote-next-classic`, and Vanilla JS setups.
 
 ## Development
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/insertion-api/*.html', {
+const examplePages = import.meta.glob('../../examples/summernote-next/insertion-api/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -8,7 +8,7 @@ const examplePages = import.meta.glob('../../examples/insertion-api/*.html', {
 
 describe('examples insertion API examples', () => {
   it('keeps the local index focused on the insertion topic pages', () => {
-    const indexPage = examplePages['../../examples/insertion-api/index.html'];
+    const indexPage = examplePages['../../examples/summernote-next/insertion-api/index.html'];
 
     expect(indexPage).to.contain('Insertion API');
     expect(indexPage).to.contain('./links.html');

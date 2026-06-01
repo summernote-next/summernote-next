@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/initialization-options/*.html', {
+const examplePages = import.meta.glob('../../examples/summernote-next/initialization-options/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -8,7 +8,7 @@ const examplePages = import.meta.glob('../../examples/initialization-options/*.h
 
 describe('public initialization option examples', () => {
   it('keeps the local index focused on the initialization option topic pages', () => {
-    const indexPage = examplePages['../../examples/initialization-options/index.html'];
+    const indexPage = examplePages['../../examples/summernote-next/initialization-options/index.html'];
 
     expect(indexPage).to.contain('Initialization options');
     expect(indexPage).to.contain('./toolbar-popover.html');
@@ -36,7 +36,7 @@ describe('public initialization option examples', () => {
   });
 
   it('documents words, emoji, mentions, and multiple hints on the hint example page', () => {
-    const hintsPage = examplePages['../../examples/initialization-options/hints.html'];
+    const hintsPage = examplePages['../../examples/summernote-next/initialization-options/hints.html'];
 
     expect(hintsPage).to.contain('Autocomplete hints with single and multiple sources');
     expect(hintsPage).to.contain('GitHub emoji');
