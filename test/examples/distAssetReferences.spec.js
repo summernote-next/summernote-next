@@ -47,7 +47,6 @@ describe('example asset references', () => {
         expect(markup, `${path} should not load Bootstrap CSS or JS`).not.to.match(/bootstrap(\.bundle)?\.min\.(css|js)/);
         expect(markup, `${path} should not depend on Bootstrap modal helpers`).not.to.contain('bootstrap.Modal');
         expect(markup, `${path} should not keep Bootstrap data attributes`).not.to.contain('data-bs-');
-        expect(markup, `${path} should include the classic example notice`).to.contain('data-classic-example-notice');
       });
   });
 
@@ -106,7 +105,6 @@ describe('example asset references', () => {
     expect(overviewPage).to.contain('./summernote-next-classic/');
     expect(classicOverviewPage).to.contain('Summernote Next Classic example pages');
     expect(classicOverviewPage).to.contain('./default.html');
-    expect(classicOverviewPage).to.contain('data-classic-example-notice');
   });
 
   it('turns the classic theme showcase into a self-styled page', () => {

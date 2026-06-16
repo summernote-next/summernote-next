@@ -2927,8 +2927,8 @@ html .note-modal .btn-sm {
   margin: 0;
 }
 
-.note-editor .note-para .note-dropdown-menu,
-.note-popover .note-para .note-dropdown-menu {
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height),
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height) {
   display: none;
   align-items: center;
   gap: 0.3125rem;
@@ -2939,15 +2939,15 @@ html .note-modal .btn-sm {
   white-space: nowrap;
 }
 
-.note-editor .note-para .note-dropdown-menu.show,
-.note-popover .note-para .note-dropdown-menu.show {
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height).show,
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height).show {
   display: inline-flex;
 }
 
-.note-editor .note-para .note-dropdown-menu > div + div,
-.note-popover .note-para .note-dropdown-menu > div + div,
-.note-editor .note-para .note-dropdown-menu > .note-btn-group + .note-btn-group,
-.note-popover .note-para .note-dropdown-menu > .note-btn-group + .note-btn-group {
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height) > div + div,
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height) > div + div,
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height) > .note-btn-group + .note-btn-group,
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height) > .note-btn-group + .note-btn-group {
   margin-left: 0;
 }
 
