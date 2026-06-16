@@ -88,9 +88,16 @@
   margin: 0;
 }
 
+.note-editor .note-toolbar .note-btn-group > .note-btn-group,
+.note-popover .popover-body .note-btn-group > .note-btn-group,
+.note-popover .note-popover-content .note-btn-group > .note-btn-group,
+.note-modal .modal-body .note-btn-group > .note-btn-group {
+  margin-left: 0;
+}
+
 .note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height),
 .note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height) {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 0.3125rem;
   width: fit-content !important;
@@ -98,6 +105,11 @@
   max-width: none;
   padding: 0.35rem !important;
   white-space: nowrap;
+}
+
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height).show,
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height).show {
+  display: inline-flex;
 }
 
 .note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height) > .note-btn-group + .note-btn-group,

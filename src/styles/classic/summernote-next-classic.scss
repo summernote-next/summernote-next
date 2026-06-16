@@ -467,6 +467,21 @@ html .note-modal .btn-sm {
   margin: 0;
 }
 
+.note-editor .note-toolbar .note-btn-group > .note-btn-group,
+.note-popover .popover-body .note-btn-group > .note-btn-group,
+.note-popover .note-popover-content .note-btn-group > .note-btn-group,
+.note-modal .modal-body .note-btn-group > .note-btn-group {
+  margin-left: 0;
+}
+
+.note-editor .note-toolbar .note-btn-group > .note-btn-group:not(:last-child) > .dropdown-toggle,
+.note-popover .popover-body .note-btn-group > .note-btn-group:not(:last-child) > .dropdown-toggle,
+.note-popover .note-popover-content .note-btn-group > .note-btn-group:not(:last-child) > .dropdown-toggle,
+.note-modal .modal-body .note-btn-group > .note-btn-group:not(:last-child) > .dropdown-toggle {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .note-editor .note-toolbar .note-btn-group,
 .note-popover .note-btn-group,
 .note-popover .note-popover-content,
