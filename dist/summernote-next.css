@@ -1141,6 +1141,24 @@ html .note-fullscreen-body, body .note-fullscreen-body {
   margin: 0;
 }
 
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height),
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  min-width: unset !important;
+  max-width: none;
+  padding: 0.35rem !important;
+  white-space: nowrap;
+}
+
+.note-editor .note-para .note-dropdown-menu:not(.dropdown-line-height) > .note-btn-group + .note-btn-group,
+.note-popover .note-para .note-dropdown-menu:not(.dropdown-line-height) > .note-btn-group + .note-btn-group {
+  margin-left: 0;
+}
+
 .note-air-popover.popover,
 .note-image-popover.popover,
 .note-video-popover.popover,

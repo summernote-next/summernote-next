@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-16T12:10Z
+Date: 2026-06-16T16:15Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -8572,6 +8572,7 @@ var summernote = (function() {
 			editableClassName: "",
 			codableClassName: "",
 			statusbarClassName: "",
+			modalClassName: "",
 			codeviewKeepButton: false,
 			toolbarClassName: "",
 			toolbarButtonClassName: "",
