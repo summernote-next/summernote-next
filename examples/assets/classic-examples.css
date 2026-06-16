@@ -84,8 +84,8 @@ html[data-example-variant="classic"] a {
   color: var(--example-theme-accent);
 }
 
-html[data-example-variant="classic"] a:hover,
-html[data-example-variant="classic"] a:focus-visible {
+html[data-example-variant="classic"] a:not(.btn):hover,
+html[data-example-variant="classic"] a:not(.btn):focus-visible {
   color: color-mix(in srgb, var(--example-theme-accent) 72%, var(--bs-body-color));
 }
 
@@ -236,6 +236,10 @@ html[data-example-variant="classic"] .card-body,
 html[data-example-variant="classic"] .card-header,
 html[data-example-variant="classic"] .card-footer {
   padding: 1rem 1.25rem;
+}
+
+html[data-example-variant="classic"] .card-body {
+  flex: 1 1 auto;
 }
 
 html[data-example-variant="classic"] .card-header,
