@@ -191,4 +191,75 @@ describe('summernote classic bundle', () => {
 
     ui.hideDialog($dialog);
   });
+
+  it('rounds standalone dropdown-toggle buttons on all sides', () => {
+    const $note = $$('<div><p>hello</p></div>').appendTo('body');
+    const context = new Context($note, $$.extend({}, $$.summernote.options));
+    const $style = context.layoutInfo.toolbar.find('.note-btn[aria-label="Style"]').first();
+    const $font = context.layoutInfo.toolbar.find('.note-btn[aria-label="Font Family"]').first();
+    const $table = context.layoutInfo.toolbar.find('.note-btn[aria-label="Table"]').first();
+
+    expect(getComputedStyle($style[0]).borderTopLeftRadius).to.equal('4px');
+    expect(getComputedStyle($style[0]).borderTopRightRadius).to.equal('4px');
+    expect(getComputedStyle($style[0]).borderBottomLeftRadius).to.equal('4px');
+    expect(getComputedStyle($style[0]).borderBottomRightRadius).to.equal('4px');
+
+    expect(getComputedStyle($font[0]).borderTopLeftRadius).to.equal('4px');
+    expect(getComputedStyle($font[0]).borderTopRightRadius).to.equal('4px');
+    expect(getComputedStyle($font[0]).borderBottomLeftRadius).to.equal('4px');
+    expect(getComputedStyle($font[0]).borderBottomRightRadius).to.equal('4px');
+
+    expect(getComputedStyle($table[0]).borderTopLeftRadius).to.equal('4px');
+    expect(getComputedStyle($table[0]).borderTopRightRadius).to.equal('4px');
+    expect(getComputedStyle($table[0]).borderBottomLeftRadius).to.equal('4px');
+    expect(getComputedStyle($table[0]).borderBottomRightRadius).to.equal('4px');
+  });
+
+  it('rounds only the outer corners of grouped buttons', () => {
+    const $note = $$('<div><p>hello</p></div>').appendTo('body');
+    const context = new Context($note, $$.extend({}, $$.summernote.options));
+    const $bold = context.layoutInfo.toolbar.find('.note-btn[aria-label^="Bold"]').first();
+    const $underline = context.layoutInfo.toolbar.find('.note-btn[aria-label^="Underline"]').first();
+    const $removeFont = context.layoutInfo.toolbar.find('.note-btn[aria-label^="Remove Font Style"]').first();
+    const $recentColor = context.layoutInfo.toolbar.find('.note-btn[aria-label^="Recent Color"]').first();
+    const $moreColor = context.layoutInfo.toolbar.find('.note-btn[aria-label^="More Color"]').first();
+    const $paragraph = context.layoutInfo.toolbar.find('.note-btn[aria-label^="Paragraph"]').first();
+
+    expect($bold.length).to.equal(1);
+    expect($underline.length).to.equal(1);
+    expect($removeFont.length).to.equal(1);
+    expect($recentColor.length).to.equal(1);
+    expect($moreColor.length).to.equal(1);
+    expect($paragraph.length).to.equal(1);
+
+    expect(getComputedStyle($bold[0]).borderTopLeftRadius).to.equal('4px');
+    expect(getComputedStyle($bold[0]).borderTopRightRadius).to.equal('0px');
+    expect(getComputedStyle($bold[0]).borderBottomLeftRadius).to.equal('4px');
+    expect(getComputedStyle($bold[0]).borderBottomRightRadius).to.equal('0px');
+
+    expect(getComputedStyle($underline[0]).borderTopLeftRadius).to.equal('0px');
+    expect(getComputedStyle($underline[0]).borderTopRightRadius).to.equal('0px');
+    expect(getComputedStyle($underline[0]).borderBottomLeftRadius).to.equal('0px');
+    expect(getComputedStyle($underline[0]).borderBottomRightRadius).to.equal('0px');
+
+    expect(getComputedStyle($removeFont[0]).borderTopLeftRadius).to.equal('0px');
+    expect(getComputedStyle($removeFont[0]).borderTopRightRadius).to.equal('4px');
+    expect(getComputedStyle($removeFont[0]).borderBottomLeftRadius).to.equal('0px');
+    expect(getComputedStyle($removeFont[0]).borderBottomRightRadius).to.equal('4px');
+
+    expect(getComputedStyle($recentColor[0]).borderTopLeftRadius).to.equal('4px');
+    expect(getComputedStyle($recentColor[0]).borderTopRightRadius).to.equal('0px');
+    expect(getComputedStyle($recentColor[0]).borderBottomLeftRadius).to.equal('4px');
+    expect(getComputedStyle($recentColor[0]).borderBottomRightRadius).to.equal('0px');
+
+    expect(getComputedStyle($moreColor[0]).borderTopLeftRadius).to.equal('0px');
+    expect(getComputedStyle($moreColor[0]).borderTopRightRadius).to.equal('4px');
+    expect(getComputedStyle($moreColor[0]).borderBottomLeftRadius).to.equal('0px');
+    expect(getComputedStyle($moreColor[0]).borderBottomRightRadius).to.equal('4px');
+
+    expect(getComputedStyle($paragraph[0]).borderTopLeftRadius).to.equal('0px');
+    expect(getComputedStyle($paragraph[0]).borderTopRightRadius).to.equal('4px');
+    expect(getComputedStyle($paragraph[0]).borderBottomLeftRadius).to.equal('0px');
+    expect(getComputedStyle($paragraph[0]).borderBottomRightRadius).to.equal('4px');
+  });
 });
