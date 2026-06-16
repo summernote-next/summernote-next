@@ -313,6 +313,27 @@ html[data-example-variant="classic"] .btn-primary {
   color: var(--example-theme-accent-contrast);
 }
 
+html[data-example-variant="classic"] .btn-primary:hover,
+html[data-example-variant="classic"] .btn-primary:focus-visible {
+  background: color-mix(in srgb, var(--example-theme-accent) 88%, #000);
+  border-color: color-mix(in srgb, var(--example-theme-accent) 88%, #000);
+  color: var(--example-theme-accent-contrast);
+}
+
+html[data-example-variant="classic"] .btn-secondary:hover,
+html[data-example-variant="classic"] .btn-secondary:focus-visible {
+  background: color-mix(in srgb, #6c757d 88%, #000);
+  border-color: color-mix(in srgb, #6c757d 88%, #000);
+  color: #ffffff;
+}
+
+html[data-example-variant="classic"] .btn-outline-primary:hover,
+html[data-example-variant="classic"] .btn-outline-primary:focus-visible {
+  background: color-mix(in srgb, var(--example-theme-accent) 88%, #000);
+  border-color: color-mix(in srgb, var(--example-theme-accent) 88%, #000);
+  color: var(--example-theme-accent-contrast);
+}
+
 html[data-example-variant="classic"] .btn-secondary {
   background: #6c757d;
   border-color: #6c757d;
@@ -433,6 +454,15 @@ html[data-example-variant="classic"] .form-switch .form-check-input:checked {
 
 html[data-example-variant="classic"] .form-switch .form-check-input:checked::after {
   transform: translateX(1.16rem);
+}
+
+html[data-example-variant="classic"] .examples-theme-toggle {
+  background-color: var(--example-theme-surface);
+  box-shadow: none;
+}
+
+html[data-example-variant="classic"] .form-switch .form-check-input::after {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
 }
 
 html[data-example-variant="classic"] .alert {
