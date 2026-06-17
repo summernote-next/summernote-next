@@ -31,13 +31,13 @@ describe('Toolbar', () => {
     $$('body').empty();
   });
 
-  it('skips initialization in air mode', () => {
+  it('initializes in air mode to wire dropdown handlers for the air popover', () => {
     const instance = new Toolbar({
       layoutInfo: context.layoutInfo,
       options: { ...context.options, airMode: true },
     });
 
-    expect(instance.shouldInitialize()).to.equal(false);
+    expect(instance.shouldInitialize()).to.equal(true);
   });
 
   it('hides the toolbar when no groups are configured', () => {
@@ -71,7 +71,7 @@ describe('Toolbar', () => {
     toolbar.handleDocumentKeydown(new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(toolbar.isDropdownOpen(group)).to.equal(false);
 
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     expect(toolbar.isDropdownOpen(group)).to.equal(true);
 
@@ -120,7 +120,7 @@ describe('Toolbar', () => {
 
     toolbar.handleToolbarClick({ target: null, preventDefault: vi.fn() });
 
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     expect(toolbar.isDropdownOpen(group)).to.equal(true);
 
@@ -136,7 +136,7 @@ describe('Toolbar', () => {
     });
     expect(toolbar.isDropdownOpen(group)).to.equal(false);
 
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     toolbar.handleToolbarClick({
       target: $fullscreenButton[0],
@@ -202,7 +202,7 @@ describe('Toolbar', () => {
 
     const $styleButton = $toolbar.find('.dropdown-style').siblings('.dropdown-toggle');
     const group = toolbar.getDropdownGroup($styleButton[0]);
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     expect(toolbar.isDropdownOpen(group)).to.equal(true);
 

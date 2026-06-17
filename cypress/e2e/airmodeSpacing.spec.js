@@ -31,4 +31,10 @@ describe('summernote classic air popover spacing', () => {
     cy.get('.note-air-popover .note-btn-bold')
       .should('have.css', 'border-top-color', 'rgb(222, 226, 230)');
   });
+
+  it('opens the color dropdown when its toggle is clicked', () => {
+    cy.get('.note-air-popover [data-note-toggle="dropdown"]').first().click({ force: true });
+    cy.get('.note-air-popover .note-color .note-dropdown-menu').first()
+      .should('have.class', 'show');
+  });
 });

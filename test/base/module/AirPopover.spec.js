@@ -227,4 +227,83 @@ describe('AirPopover', () => {
     expect(updateSpy).not.toHaveBeenCalled();
     expect(airPopover.onContextmenu).to.equal(false);
   });
+
+  it('opens a popover dropdown when its toggle is clicked', async() => {
+    context.destroy();
+    $$('body').empty();
+    const $note = $$('<div><p>functional programming</p></div>').appendTo('body');
+    context = new Context($note, $$.extend(true, {}, $$.summernote.options, {
+      airMode: true,
+      popover: {
+        air: [
+          ['color', ['color']],
+        ],
+      },
+    }));
+    $editable = context.layoutInfo.editable;
+
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + 40;
+    const pointY = editorRect.top + 20;
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await nextTick();
+
+    const $popover = $$('.note-air-popover');
+    const $toggle = $popover.find('[data-note-toggle="dropdown"]').first();
+    const $menu = $toggle.parent().find('.note-dropdown-menu');
+
+    expect($menu.hasClass('show')).to.be.false;
+
+    $toggle[0].click();
+    await nextTick();
+
+    expect($menu.hasClass('show')).to.be.true;
+  });
+
+  it('closes an open popover dropdown when clicking outside the editor', async() => {
+    context.destroy();
+    $$('body').empty();
+    const $note = $$('<div><p>functional programming</p></div>').appendTo('body');
+    context = new Context($note, $$.extend(true, {}, $$.summernote.options, {
+      airMode: true,
+      popover: {
+        air: [
+          ['color', ['color']],
+        ],
+      },
+    }));
+    $editable = context.layoutInfo.editable;
+
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + 40;
+    const pointY = editorRect.top + 20;
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await nextTick();
+
+    const $popover = $$('.note-air-popover');
+    const $toggle = $popover.find('[data-note-toggle="dropdown"]').first();
+    const $menu = $toggle.parent().find('.note-dropdown-menu');
+
+    $toggle[0].click();
+    await nextTick();
+    expect($menu.hasClass('show')).to.be.true;
+
+    document.body.click();
+    await nextTick();
+    expect($menu.hasClass('show')).to.be.false;
+  });
 });
