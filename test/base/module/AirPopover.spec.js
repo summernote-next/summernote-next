@@ -68,6 +68,30 @@ describe('AirPopover', () => {
     expect(parseFloat($popover.css('left'))).to.be.greaterThanOrEqual(0);
   });
 
+  it('spaces the air popover button groups consistently with the toolbar', async() => {
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + 40;
+    const pointY = editorRect.top + 20;
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await nextTick();
+
+    const $popover = $$('.note-air-popover');
+    const $content = $popover.find('.note-popover-content');
+    const contentStyle = getComputedStyle($content[0]);
+
+    expect(contentStyle.display).to.equal('flex');
+    expect(contentStyle.flexWrap).to.equal('nowrap');
+    expect(contentStyle.gap).to.equal('8px');
+    expect(contentStyle.padding).to.equal('6px');
+  });
+
   it('updates coordinates from events and hides only when allowed', () => {
     const airPopover = context.modules.airPopover;
     const originalInvoke = context.invoke.bind(context);
