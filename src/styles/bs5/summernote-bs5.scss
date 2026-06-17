@@ -1,6 +1,10 @@
 @use '../summernote/font';
 @use '../summernote/common';
 
+body:has(.note-air-popover) {
+  overflow-x: hidden;
+}
+
 .note-editor.note-frame,
 .note-editor.note-airframe,
 .note-popover.popover,
@@ -127,6 +131,10 @@
   background-clip: padding-box;
 }
 
+.note-air-popover.popover {
+  width: max-content;
+}
+
 .note-popover.popover.note-air-popover .popover-body,
 .note-popover.popover.note-air-popover .note-popover-content,
 .note-popover.popover.note-image-popover .popover-body,
@@ -141,11 +149,17 @@
   gap: 0.5rem;
   width: -moz-max-content;
   width: max-content;
-  max-width: none;
+  max-width: calc(100vw - 20px);
   padding: 0.375rem;
   margin: 0;
   white-space: nowrap;
   border-radius: inherit;
+}
+
+.note-popover.popover.note-air-popover .popover-body,
+.note-popover.popover.note-air-popover .note-popover-content {
+  flex-wrap: wrap;
+  white-space: normal;
 }
 
 .note-air-popover .popover-body > .note-btn-group,

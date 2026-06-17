@@ -1,6 +1,10 @@
 @use "../summernote/font";
 @use "../summernote/common";
 
+body:has(.note-air-popover) {
+  overflow-x: hidden;
+}
+
 $_sn-surfaces: '.note-editor.note-frame', '.note-editor.note-airframe', '.note-popover.popover', '.note-modal';
 $_sn-dark-attribute-selectors: ();
 @each $attr in ('data-bs-theme', 'data-theme', 'data-mode', 'data-color-scheme', 'data-bs-color-scheme') {
@@ -271,6 +275,14 @@ $_sn-light-ancestor-triggers: ();
   color: var(--bs-body-color);
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
+  position: relative;
+  z-index: 1080;
+}
+
+.note-popover.popover {
+  position: absolute;
+  width: max-content;
+  max-width: calc(100vw - 20px);
 }
 
 .note-editor.note-frame.card,

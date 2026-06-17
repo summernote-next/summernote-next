@@ -1054,6 +1054,10 @@ html .note-fullscreen-body, body .note-fullscreen-body {
   list-style-position: inside;
 }
 
+body:has(.note-air-popover) {
+  overflow-x: hidden;
+}
+
 .note-editor.note-frame,
 .note-editor.note-airframe,
 .note-popover.popover,
@@ -1181,6 +1185,11 @@ html .note-fullscreen-body, body .note-fullscreen-body {
   background-clip: padding-box;
 }
 
+.note-air-popover.popover {
+  width: -moz-max-content;
+  width: max-content;
+}
+
 .note-popover.popover.note-air-popover .popover-body,
 .note-popover.popover.note-air-popover .note-popover-content,
 .note-popover.popover.note-image-popover .popover-body,
@@ -1195,11 +1204,17 @@ html .note-fullscreen-body, body .note-fullscreen-body {
   gap: 0.5rem;
   width: -moz-max-content;
   width: max-content;
-  max-width: none;
+  max-width: calc(100vw - 20px);
   padding: 0.375rem;
   margin: 0;
   white-space: nowrap;
   border-radius: inherit;
+}
+
+.note-popover.popover.note-air-popover .popover-body,
+.note-popover.popover.note-air-popover .note-popover-content {
+  flex-wrap: wrap;
+  white-space: normal;
 }
 
 .note-air-popover .popover-body > .note-btn-group,
@@ -2623,6 +2638,10 @@ html .note-fullscreen-body, body .note-fullscreen-body {
   list-style-position: inside;
 }
 
+body:has(.note-air-popover) {
+  overflow-x: hidden;
+}
+
 :where(.note-editor.note-frame, .note-editor.note-airframe, .note-popover.popover, .note-modal) {
   --bs-border-width: 1px;
   --bs-border-color: #dee2e6;
@@ -2850,6 +2869,15 @@ html .note-fullscreen-body, body .note-fullscreen-body {
   color: var(--bs-body-color);
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
+  position: relative;
+  z-index: 1080;
+}
+
+.note-popover.popover {
+  position: absolute;
+  width: -moz-max-content;
+  width: max-content;
+  max-width: calc(100vw - 20px);
 }
 
 .note-editor.note-frame.card,

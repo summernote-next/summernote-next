@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-17T09:57Z
+Date: 2026-06-17T14:00Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -8472,6 +8472,7 @@ var summernote = (function() {
 	//#region src/js/module/AirPopover.js
 	var AIRMODE_POPOVER_X_OFFSET = -5;
 	var AIRMODE_POPOVER_Y_OFFSET = 5;
+	var AIRMODE_POPOVER_EDGE_PADDING = 10;
 	var AirPopover = class {
 		constructor(context) {
 			this.context = context;
@@ -8537,20 +8538,37 @@ var summernote = (function() {
 		update(forcelyOpen) {
 			const styleInfo = this.context.invoke("editor.currentStyle");
 			if (styleInfo.range && (!styleInfo.range.isCollapsed() || forcelyOpen)) {
-				let rect = {
-					left: this.pageX,
-					top: this.pageY
-				};
-				const containerOffset = $$(this.options.container).offset();
-				rect.top -= containerOffset.top;
-				rect.left -= containerOffset.left;
-				this.$popover.css({
-					display: "block",
-					left: Math.max(rect.left, 0) + AIRMODE_POPOVER_X_OFFSET,
-					top: rect.top + AIRMODE_POPOVER_Y_OFFSET
-				});
+				this.$popover.css("display", "block");
+				this.reposition();
 				this.context.invoke("buttons.updateCurrentStyle", this.$popover);
 			} else this.hide();
+		}
+		reposition() {
+			let lastWidth = -1;
+			let frames = 0;
+			const settle = () => {
+				if (!this.$popover || !this.$popover[0]) return;
+				const popoverWidth = this.$popover[0].offsetWidth;
+				if (popoverWidth === lastWidth || frames >= 10) {
+					const containerOffset = $$(this.options.container).offset();
+					this.applyPosition(containerOffset, popoverWidth);
+					return;
+				}
+				lastWidth = popoverWidth;
+				frames++;
+				setTimeout(settle, 16);
+			};
+			setTimeout(settle, 16);
+		}
+		applyPosition(containerOffset, popoverWidth) {
+			let left = this.pageX - containerOffset.left + AIRMODE_POPOVER_X_OFFSET;
+			let top = this.pageY - containerOffset.top + AIRMODE_POPOVER_Y_OFFSET;
+			const maxLeft = window.innerWidth - popoverWidth - AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left;
+			if (left > maxLeft) left = Math.max(AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left, maxLeft);
+			this.$popover.css({
+				left: Math.max(left, AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left),
+				top
+			});
 		}
 		updateCodeview(isCodeview) {
 			this.ui.toggleBtnActive(this.$popover.find(".btn-codeview"), isCodeview);
