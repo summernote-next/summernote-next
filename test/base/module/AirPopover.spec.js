@@ -88,7 +88,7 @@ describe('AirPopover', () => {
     const buttonStyle = getComputedStyle($popover.find('.note-btn-bold')[0]);
 
     expect(contentStyle.display).to.equal('flex');
-    expect(contentStyle.flexWrap).to.equal('nowrap');
+    expect(contentStyle.flexWrap).to.equal('wrap');
     expect(contentStyle.gap).to.equal('8px');
     expect(contentStyle.padding).to.equal('6px');
     expect(buttonStyle.borderTopColor).to.equal('rgb(222, 226, 230)');
