@@ -50,6 +50,7 @@ describe('Popover BS5', () => {
     expect(contentStyle.flexWrap).to.equal('nowrap');
     expect(contentStyle.gap).to.equal('8px');
     expect(contentStyle.padding).to.equal('6px');
+    expect(getComputedStyle($popover.find('button')[0]).borderTopColor).to.equal('rgb(222, 226, 230)');
     expect(buttonLabels).to.deep.equal([
       'Resize full',
       'Resize half',

@@ -85,11 +85,13 @@ describe('AirPopover', () => {
     const $popover = $$('.note-air-popover');
     const $content = $popover.find('.note-popover-content');
     const contentStyle = getComputedStyle($content[0]);
+    const buttonStyle = getComputedStyle($popover.find('.note-btn-bold')[0]);
 
     expect(contentStyle.display).to.equal('flex');
     expect(contentStyle.flexWrap).to.equal('nowrap');
     expect(contentStyle.gap).to.equal('8px');
     expect(contentStyle.padding).to.equal('6px');
+    expect(buttonStyle.borderTopColor).to.equal('rgb(222, 226, 230)');
   });
 
   it('updates coordinates from events and hides only when allowed', () => {

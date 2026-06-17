@@ -26,4 +26,9 @@ describe('summernote classic air popover spacing', () => {
       expect(styles.flexWrap).to.equal('nowrap');
     });
   });
+
+  it('paints the air popover button borders like the toolbar', () => {
+    cy.get('.note-air-popover .note-btn-bold')
+      .should('have.css', 'border-top-color', 'rgb(222, 226, 230)');
+  });
 });

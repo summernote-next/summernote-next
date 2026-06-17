@@ -163,8 +163,10 @@
   border-radius: var(--bs-border-radius-sm);
 }
 
-.note-editor .note-toolbar .note-btn-group .note-btn {
-  border-color: var(--note-border-color);
+.note-editor .note-toolbar .note-btn-group .note-btn,
+.note-popover .note-btn-group .note-btn,
+.note-popover .note-btn-group .dropdown-toggle {
+  border-color: var(--note-border-color, var(--bs-border-color, #dee2e6));
 }
 
 .note-editor .note-dropdown-menu,
