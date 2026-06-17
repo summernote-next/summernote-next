@@ -1177,7 +1177,6 @@ html .note-fullscreen-body, body .note-fullscreen-body {
 .note-table-popover.popover {
   max-width: none;
   box-shadow: var(--bs-box-shadow);
-  overflow: hidden;
   border-radius: var(--bs-border-radius);
   background-clip: padding-box;
 }
@@ -1213,7 +1212,6 @@ html .note-fullscreen-body, body .note-fullscreen-body {
 .note-table-popover .note-popover-content > .note-btn-group {
   flex: 0 0 auto;
   margin: 0;
-  overflow: hidden;
   border-radius: var(--bs-border-radius-sm);
 }
 

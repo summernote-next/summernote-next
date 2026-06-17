@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-17T08:58Z
+Date: 2026-06-17T09:57Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -7093,38 +7093,43 @@ var summernote = (function() {
 			this.followScroll = this.followScroll.bind(this);
 			this.handleToolbarMouseDown = this.handleToolbarMouseDown.bind(this);
 			this.handleToolbarClick = this.handleToolbarClick.bind(this);
+			this.handleDropdownClick = this.handleDropdownClick.bind(this);
 			this.handleDocumentClick = this.handleDocumentClick.bind(this);
 			this.handleDocumentKeydown = this.handleDocumentKeydown.bind(this);
 			this.handleEditorInteraction = this.handleEditorInteraction.bind(this);
 		}
 		shouldInitialize() {
-			return !this.options.airMode;
+			return true;
 		}
 		initialize() {
 			this.options.toolbar = this.options.toolbar || [];
-			if (!this.options.toolbar.length) this.$toolbar.hide();
-			else this.context.invoke("buttons.build", this.$toolbar, this.options.toolbar, { classPrefix: "toolbar" });
-			if (this.options.toolbarContainer) this.$toolbar.appendTo(this.options.toolbarContainer);
-			this.changeContainer(false);
+			if (!this.options.airMode) {
+				if (!this.options.toolbar.length) this.$toolbar.hide();
+				else this.context.invoke("buttons.build", this.$toolbar, this.options.toolbar, { classPrefix: "toolbar" });
+				if (this.options.toolbarContainer) this.$toolbar.appendTo(this.options.toolbarContainer);
+				this.changeContainer(false);
+			}
 			this.$note.on("summernote.keyup summernote.mouseup summernote.change", () => {
 				this.context.invoke("buttons.updateCurrentStyle");
 			});
 			this.context.invoke("buttons.updateCurrentStyle");
-			if (this.options.followingToolbar) this.$window.on("scroll resize", this.followScroll);
-			this.$toolbar.on("mousedown", this.handleToolbarMouseDown);
-			this.$toolbar.on("click", this.handleToolbarClick);
+			if (!this.options.airMode && this.options.followingToolbar) this.$window.on("scroll resize", this.followScroll);
+			if (!this.options.airMode) this.$toolbar.on("mousedown", this.handleToolbarMouseDown);
 			this.$editingArea.on("mousedown click", this.handleEditorInteraction);
 			this.$statusbar.on("mousedown click", this.handleEditorInteraction);
+			this.$document.on("click", this.handleDropdownClick);
 			this.$document.on("click", this.handleDocumentClick);
 			this.$document.on("keydown", this.handleDocumentKeydown);
 		}
 		destroy() {
-			this.$toolbar.children().remove();
-			if (this.options.followingToolbar) this.$window.off("scroll resize", this.followScroll);
-			this.$toolbar.off("mousedown", this.handleToolbarMouseDown);
-			this.$toolbar.off("click", this.handleToolbarClick);
+			if (!this.options.airMode) {
+				this.$toolbar.children().remove();
+				if (this.options.followingToolbar) this.$window.off("scroll resize", this.followScroll);
+				this.$toolbar.off("mousedown", this.handleToolbarMouseDown);
+			}
 			this.$editingArea.off("mousedown click", this.handleEditorInteraction);
 			this.$statusbar.off("mousedown click", this.handleEditorInteraction);
+			this.$document.off("click", this.handleDropdownClick);
 			this.$document.off("click", this.handleDocumentClick);
 			this.$document.off("keydown", this.handleDocumentKeydown);
 		}
@@ -7164,8 +7169,10 @@ var summernote = (function() {
 			menu.classList.remove("show");
 		}
 		closeDropdowns(exceptGroup) {
-			this.$toolbar.find(".note-btn-group").each((_, group) => {
-				if (group !== exceptGroup) this.closeDropdown(group);
+			$$([this.$editor, this.$toolbar]).each((_, $container) => {
+				$container.find(".note-btn-group").each((__, group) => {
+					if (group !== exceptGroup) this.closeDropdown(group);
+				});
 			});
 		}
 		handleToolbarMouseDown(event) {
@@ -7178,8 +7185,12 @@ var summernote = (function() {
 		}
 		handleToolbarClick(event) {
 			if (!(event.target instanceof Element)) return;
+			this.handleDropdownClick(event);
+		}
+		handleDropdownClick(event) {
+			if (!(event.target instanceof Element)) return;
 			const toggle = event.target.closest("[data-note-toggle=\"dropdown\"]");
-			if (toggle && this.$toolbar[0].contains(toggle)) {
+			if (toggle && (this.$editor[0].contains(toggle) || this.$toolbar[0].contains(toggle))) {
 				event.preventDefault();
 				const group = this.getDropdownGroup(toggle);
 				const shouldOpen = group && !this.isDropdownOpen(group);
@@ -7194,7 +7205,8 @@ var summernote = (function() {
 				this.closeDropdowns();
 				return;
 			}
-			if (this.$toolbar[0].contains(event.target)) return;
+			if (this.$editor[0].contains(event.target)) return;
+			if (event.target.closest("[data-note-toggle=\"dropdown\"]") || event.target.closest(".note-dropdown-menu")) return;
 			this.closeDropdowns();
 		}
 		handleDocumentKeydown(event) {
