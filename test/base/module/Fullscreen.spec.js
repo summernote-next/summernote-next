@@ -159,4 +159,20 @@ describe('Fullscreen', () => {
     expect(Math.abs(rect.width - window.innerWidth)).to.be.lessThan(1);
     expect(context.layoutInfo.editor.parent().is('body')).to.be.true;
   });
+
+  it('uses position: fixed in the classic (card) build so the editor fills the viewport', async() => {
+    await import('@/styles/classic/summernote-next-classic.scss');
+
+    fullscreen.toggle();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    const editor = context.layoutInfo.editor[0];
+    const styles = window.getComputedStyle(editor);
+
+    expect(styles.position).to.equal('fixed');
+    expect(parseFloat(styles.height)).to.equal(window.innerHeight);
+    expect(parseFloat(styles.width)).to.equal(window.innerWidth);
+
+    fullscreen.toggle();
+  });
 });

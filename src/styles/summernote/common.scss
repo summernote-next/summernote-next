@@ -144,7 +144,7 @@ $img-margin-right: 10px;
     flex-direction: column;
     width: 100% !important;
     height: 100vh;
-    z-index: 1050; // bs3 modal-backdrop: 1030, bs2: 1040
+    z-index: 1090; // above the .card surface (1080) and bs3 modal-backdrop (1030)
     .note-editing-area {
       flex: 1 1 auto;
     }
