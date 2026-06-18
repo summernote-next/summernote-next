@@ -156,8 +156,12 @@ html[data-example-variant="classic"] .my-3 {
   margin-bottom: 1rem;
 }
 
-html[data-example-variant="classic"] .p-3 {
-  padding: 1rem;
+.p-3 {
+  padding: 1rem !important;
+}
+
+.rounded-3 {
+  border-radius: var(--bs-border-radius-lg, 0.5rem) !important;
 }
 
 html[data-example-variant="classic"] .ms-auto {
