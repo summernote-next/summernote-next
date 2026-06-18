@@ -1,3 +1,4 @@
+import $$ from '../core/dom-query.js';
 import dom from '../core/dom';
 import key from '../core/key';
 
@@ -10,11 +11,58 @@ export default class CodeView {
     this.$editor = context.layoutInfo.editor;
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
+    this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
+    this.lang = context.options.langInfo;
     this.CodeMirrorConstructor = window.CodeMirror;
 
     if (this.options.codemirror.CodeMirrorConstructor) {
       this.CodeMirrorConstructor = this.options.codemirror.CodeMirrorConstructor;
+    }
+
+    this.handleCloseClick = this.handleCloseClick.bind(this);
+  }
+
+  isAirMode() {
+    return Boolean(this.options.airMode);
+  }
+
+  ensureAirModeCloseButton() {
+    if (!this.isAirMode() || !this.options.editing) {
+      return null;
+    }
+
+    if (!this.$airCodeviewClose || !this.$airCodeviewClose.length) {
+      this.removeAirModeCloseButton({ keepCache: true });
+      const tooltip = this.lang?.options?.codeview || 'Code View';
+      this.$airCodeviewClose = $$('<button type="button" class="note-air-codeview-close btn btn-outline-secondary btn-sm" tabindex="-1"></button>')
+        .html(this.context.ui.icon(this.options.icons.close))
+        .attr({
+          title: tooltip,
+          'aria-label': tooltip,
+        });
+      this.$airCodeviewClose.on('click', this.handleCloseClick);
+      this.$editingArea.append(this.$airCodeviewClose);
+    }
+
+    return this.$airCodeviewClose;
+  }
+
+  removeAirModeCloseButton(options = {}) {
+    const $button = options.keepCache ? this.$editingArea.find('.note-air-codeview-close') : this.$airCodeviewClose;
+    if ($button && $button.length) {
+      $button.off('click', this.handleCloseClick);
+      $button.remove();
+    }
+    if (!options.keepCache) {
+      this.$airCodeviewClose = null;
+    }
+  }
+
+  handleCloseClick(event) {
+    event.preventDefault();
+    if (this.isActivated()) {
+      this.toggle();
     }
   }
 
@@ -106,6 +154,9 @@ export default class CodeView {
     this.context.invoke('airPopover.updateCodeview', true);
 
     this.$editor.addClass('codeview');
+    if (this.isAirMode()) {
+      this.ensureAirModeCloseButton();
+    }
     this.$codable.trigger('focus');
 
     // activate CodeMirror as codable
@@ -159,6 +210,7 @@ export default class CodeView {
     this.$editable.html(value);
     this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
     this.$editor.removeClass('codeview');
+    this.removeAirModeCloseButton();
 
     if (isChange) {
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
@@ -171,6 +223,7 @@ export default class CodeView {
   }
 
   destroy() {
+    this.removeAirModeCloseButton();
     if (this.isActivated()) {
       this.deactivate();
     }
