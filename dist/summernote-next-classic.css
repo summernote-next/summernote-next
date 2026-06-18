@@ -2863,7 +2863,6 @@ body:has(.note-air-popover) {
   }
 }
 .note-editor.note-frame.card,
-.note-editor.note-airframe,
 .note-popover.popover,
 .note-modal .modal-content {
   background-color: var(--bs-body-bg);
