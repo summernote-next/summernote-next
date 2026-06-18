@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-17T14:00Z
+Date: 2026-06-17T19:13Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -8292,6 +8292,7 @@ var summernote = (function() {
 		}
 		initialize() {
 			this.$popover = this.ui.popover({ className: "note-air-popover" }).render().appendTo(this.options.container);
+			this.$editable = this.context.layoutInfo.editable;
 			const $content = this.$popover.find(".popover-content,.note-popover-content");
 			this.context.invoke("buttons.build", $content, this.options.popover.air, { classPrefix: "popover" });
 			this.$popover.on("mousedown", () => {
@@ -8332,7 +8333,13 @@ var summernote = (function() {
 		applyPosition(containerOffset, popoverWidth) {
 			let left = this.pageX - containerOffset.left + AIRMODE_POPOVER_X_OFFSET;
 			let top = this.pageY - containerOffset.top + AIRMODE_POPOVER_Y_OFFSET;
-			const maxLeft = window.innerWidth - popoverWidth - AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left;
+			let maxRight = window.innerWidth - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+			const editable = this.$editable && this.$editable[0];
+			if (editable) {
+				const editableRight = editable.getBoundingClientRect().right - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+				if (editableRight < maxRight) maxRight = editableRight;
+			}
+			const maxLeft = maxRight - popoverWidth;
 			if (left > maxLeft) left = Math.max(AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left, maxLeft);
 			this.$popover.css({
 				left: Math.max(left, AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left),
