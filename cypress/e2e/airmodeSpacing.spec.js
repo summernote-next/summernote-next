@@ -64,5 +64,24 @@ describe('summernote air popover viewport clamping', () => {
         expect(styles.maxWidth).to.equal('1725px');
       });
     });
+
+    it(`keeps the ${name} air popover right edge inside the editor at narrow viewports`, () => {
+      cy.viewport(1309, 900);
+      cy.visit(url);
+      cy.get('.note-editor', { timeout: 5000 }).should('exist');
+      cy.get('.note-air-popover', { timeout: 5000 }).should('exist');
+      cy.get('.note-editable').first().then(($editable) => {
+        const editableRect = $editable[0].getBoundingClientRect();
+        const selectX = editableRect.left + 40;
+        const selectY = editableRect.top + 20;
+        $editable.trigger('mousedown', { clientX: selectX, clientY: selectY });
+        cy.wrap($editable).trigger('mouseup', { clientX: selectX, clientY: selectY });
+      });
+      cy.get('.note-air-popover').should(($popover) => {
+        const popoverRect = $popover[0].getBoundingClientRect();
+        const editableRect = $popover[0].querySelector('.note-editable').getBoundingClientRect();
+        expect(popoverRect.right).to.be.at.most(editableRect.right + 0.5);
+      });
+    });
   });
 });

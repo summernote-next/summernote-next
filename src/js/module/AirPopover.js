@@ -66,6 +66,7 @@ export default class AirPopover {
     this.$popover = this.ui.popover({
       className: 'note-air-popover',
     }).render().appendTo(this.options.container);
+    this.$editable = this.context.layoutInfo.editable;
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.air, {
@@ -121,7 +122,16 @@ export default class AirPopover {
     let left = this.pageX - containerOffset.left + AIRMODE_POPOVER_X_OFFSET;
     let top = this.pageY - containerOffset.top + AIRMODE_POPOVER_Y_OFFSET;
 
-    const maxLeft = window.innerWidth - popoverWidth - AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left;
+    let maxRight = window.innerWidth - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+    const editable = this.$editable && this.$editable[0];
+    if (editable) {
+      const editableRect = editable.getBoundingClientRect();
+      const editableRight = editableRect.right - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+      if (editableRight < maxRight) {
+        maxRight = editableRight;
+      }
+    }
+    const maxLeft = maxRight - popoverWidth;
     if (left > maxLeft) {
       left = Math.max(AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left, maxLeft);
     }

@@ -68,6 +68,47 @@ describe('AirPopover', () => {
     expect(parseFloat($popover.css('left'))).to.be.greaterThanOrEqual(0);
   });
 
+  it('keeps the air popover right edge inside the editor', async() => {
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + 40;
+    const pointY = editorRect.top + 20;
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const $popover = $$('.note-air-popover');
+    const popoverRect = $popover[0].getBoundingClientRect();
+
+    expect(popoverRect.right).to.be.lessThanOrEqual(editorRect.right + 0.5);
+  });
+
+  it('clamps the air popover to the editor when the selection sits past the right edge', async() => {
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + editorRect.width - 5;
+    const pointY = editorRect.top + 20;
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const $popover = $$('.note-air-popover');
+    const popoverRect = $popover[0].getBoundingClientRect();
+
+    expect(popoverRect.right).to.be.lessThanOrEqual(editorRect.right + 0.5);
+    expect(popoverRect.left).to.be.lessThan(pointX);
+  });
+
   it('spaces the air popover button groups consistently with the toolbar', async() => {
     const textNode = $editable.find('p')[0].firstChild;
     const editorRect = $editable[0].getBoundingClientRect();
