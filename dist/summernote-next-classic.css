@@ -334,6 +334,34 @@
 .note-editor.note-airframe.codeview .note-editing-area .note-codable {
   display: block;
 }
+.note-editor.note-frame .note-air-codeview-close,
+.note-editor.note-airframe .note-air-codeview-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-body-bg);
+  color: var(--note-color);
+  box-shadow: var(--bs-box-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+  cursor: pointer;
+}
+.note-editor.note-frame .note-air-codeview-close:hover, .note-editor.note-frame .note-air-codeview-close:focus-visible,
+.note-editor.note-airframe .note-air-codeview-close:hover,
+.note-editor.note-airframe .note-air-codeview-close:focus-visible {
+  color: var(--note-color);
+  background-color: var(--note-hover-bg);
+}
+.note-editor.note-frame .note-air-codeview-close > i,
+.note-editor.note-airframe .note-air-codeview-close > i {
+  color: inherit;
+}
 .note-editor.note-frame .note-editing-area,
 .note-editor.note-airframe .note-editing-area {
   overflow: hidden;
@@ -1918,6 +1946,34 @@ body:has(.note-air-popover) {
 .note-editor.note-frame.codeview .note-editing-area .note-codable,
 .note-editor.note-airframe.codeview .note-editing-area .note-codable {
   display: block;
+}
+.note-editor.note-frame .note-air-codeview-close,
+.note-editor.note-airframe .note-air-codeview-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-body-bg);
+  color: var(--note-color);
+  box-shadow: var(--bs-box-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+  cursor: pointer;
+}
+.note-editor.note-frame .note-air-codeview-close:hover, .note-editor.note-frame .note-air-codeview-close:focus-visible,
+.note-editor.note-airframe .note-air-codeview-close:hover,
+.note-editor.note-airframe .note-air-codeview-close:focus-visible {
+  color: var(--note-color);
+  background-color: var(--note-hover-bg);
+}
+.note-editor.note-frame .note-air-codeview-close > i,
+.note-editor.note-airframe .note-air-codeview-close > i {
+  color: inherit;
 }
 .note-editor.note-frame .note-editing-area,
 .note-editor.note-airframe .note-editing-area {

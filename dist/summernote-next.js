@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-18T11:57Z
+Date: 2026-06-18T12:51Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -5573,9 +5573,41 @@ var summernote = (function() {
 			this.$editor = context.layoutInfo.editor;
 			this.$editable = context.layoutInfo.editable;
 			this.$codable = context.layoutInfo.codable;
+			this.$editingArea = context.layoutInfo.editingArea;
 			this.options = context.options;
+			this.lang = context.options.langInfo;
 			this.CodeMirrorConstructor = window.CodeMirror;
 			if (this.options.codemirror.CodeMirrorConstructor) this.CodeMirrorConstructor = this.options.codemirror.CodeMirrorConstructor;
+			this.handleCloseClick = this.handleCloseClick.bind(this);
+		}
+		isAirMode() {
+			return Boolean(this.options.airMode);
+		}
+		ensureAirModeCloseButton() {
+			if (!this.isAirMode() || !this.options.editing) return null;
+			if (!this.$airCodeviewClose || !this.$airCodeviewClose.length) {
+				this.removeAirModeCloseButton({ keepCache: true });
+				const tooltip = this.lang?.options?.codeview || "Code View";
+				this.$airCodeviewClose = $$("<button type=\"button\" class=\"note-air-codeview-close btn btn-outline-secondary btn-sm\" tabindex=\"-1\"></button>").html(this.context.ui.icon(this.options.icons.close)).attr({
+					title: tooltip,
+					"aria-label": tooltip
+				});
+				this.$airCodeviewClose.on("click", this.handleCloseClick);
+				this.$editingArea.append(this.$airCodeviewClose);
+			}
+			return this.$airCodeviewClose;
+		}
+		removeAirModeCloseButton(options = {}) {
+			const $button = options.keepCache ? this.$editingArea.find(".note-air-codeview-close") : this.$airCodeviewClose;
+			if ($button && $button.length) {
+				$button.off("click", this.handleCloseClick);
+				$button.remove();
+			}
+			if (!options.keepCache) this.$airCodeviewClose = null;
+		}
+		handleCloseClick(event) {
+			event.preventDefault();
+			if (this.isActivated()) this.toggle();
 		}
 		sync(html) {
 			const isCodeview = this.isActivated();
@@ -5634,6 +5666,7 @@ var summernote = (function() {
 			this.context.invoke("toolbar.updateCodeview", true);
 			this.context.invoke("airPopover.updateCodeview", true);
 			this.$editor.addClass("codeview");
+			if (this.isAirMode()) this.ensureAirModeCloseButton();
 			this.$codable.trigger("focus");
 			if (CodeMirror) {
 				const cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror);
@@ -5675,12 +5708,14 @@ var summernote = (function() {
 			this.$editable.html(value);
 			this.$editable.height(this.options.height ? this.$codable.height() : "auto");
 			this.$editor.removeClass("codeview");
+			this.removeAirModeCloseButton();
 			if (isChange) this.context.triggerEvent("change", this.$editable.html(), this.$editable);
 			this.$editable.trigger("focus");
 			this.context.invoke("toolbar.updateCodeview", false);
 			this.context.invoke("airPopover.updateCodeview", false);
 		}
 		destroy() {
+			this.removeAirModeCloseButton();
 			if (this.isActivated()) this.deactivate();
 		}
 	};
