@@ -109,6 +109,82 @@ describe('AirPopover', () => {
     expect(popoverRect.left).to.be.lessThan(pointX);
   });
 
+  it('keeps a wide air popover inside the editor by wrapping its content', async() => {
+    context.destroy();
+    $$('body').empty();
+    const $note = $$('<div style="width: 320px"><p>functional programming</p></div>').appendTo('body');
+
+    context = new Context($note, $$.extend(true, {}, $$.summernote.options, {
+      airMode: true,
+      popover: {
+        air: [
+          ['font', ['bold', 'italic', 'underline', 'strikethrough']],
+          ['fontname', ['fontname']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['insert', ['link', 'picture']],
+          ['history', ['undo', 'redo']],
+        ],
+      },
+    }));
+    $editable = context.layoutInfo.editable;
+
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + 20;
+    const pointY = editorRect.top + 20;
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const $popover = $$('.note-air-popover');
+    const popoverRect = $popover[0].getBoundingClientRect();
+
+    expect(popoverRect.right).to.be.lessThanOrEqual(editorRect.right + 0.5);
+    expect(popoverRect.width).to.be.lessThanOrEqual(editorRect.width);
+  });
+
+  it('constrains the air popover to its parent editor via CSS', async() => {
+    const $popover = $$('.note-air-popover');
+    const style = getComputedStyle($popover[0]);
+
+    expect(style.maxWidth).to.not.equal('none');
+  });
+
+  it('clamps the popover to the editable right edge when the editor is narrower than the viewport', async() => {
+    const textNode = $editable.find('p')[0].firstChild;
+    const editorRect = $editable[0].getBoundingClientRect();
+    const pointX = editorRect.left + 40;
+    const pointY = editorRect.top + 20;
+    const narrowWidth = 160;
+
+    const originalGetRect = $editable[0].getBoundingClientRect;
+    vi.spyOn($editable[0], 'getBoundingClientRect').mockImplementation(() => ({
+      ...originalGetRect.call($editable[0]),
+      width: narrowWidth,
+      right: editorRect.left + narrowWidth,
+    }));
+
+    dispatchSelectionEvent($editable[0], 'mousedown', pointX, pointY);
+    context.modules.editor.setLastRange(
+      range.create(textNode, 0, textNode, 10).select(),
+    );
+    dispatchSelectionEvent($editable[0], 'mouseup', pointX, pointY);
+    context.modules.airPopover.update(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const $popover = $$('.note-air-popover');
+    const popoverRect = $popover[0].getBoundingClientRect();
+
+    expect(popoverRect.right).to.be.lessThanOrEqual(editorRect.left + narrowWidth + 0.5);
+  });
+
   it('spaces the air popover button groups consistently with the toolbar', async() => {
     const textNode = $editable.find('p')[0].firstChild;
     const editorRect = $editable[0].getBoundingClientRect();
