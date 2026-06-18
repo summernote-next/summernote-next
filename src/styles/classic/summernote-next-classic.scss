@@ -267,7 +267,7 @@ $_sn-light-ancestor-triggers: ();
   }
 }
 
-.note-editor.note-frame.card,
+.note-editor.note-frame.card:not(.fullscreen),
 .note-popover.popover,
 .note-modal .modal-content {
   background-color: var(--bs-body-bg);

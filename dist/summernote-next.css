@@ -389,7 +389,7 @@
   flex-direction: column;
   width: 100% !important;
   height: 100vh;
-  z-index: 1050;
+  z-index: 1090;
 }
 .note-editor.note-frame.fullscreen .note-editing-area,
 .note-editor.note-airframe.fullscreen .note-editing-area {

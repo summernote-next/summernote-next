@@ -389,7 +389,7 @@
   flex-direction: column;
   width: 100% !important;
   height: 100vh;
-  z-index: 1050;
+  z-index: 1090;
 }
 .note-editor.note-frame.fullscreen .note-editing-area,
 .note-editor.note-airframe.fullscreen .note-editing-area {
@@ -1974,7 +1974,7 @@ body:has(.note-air-popover) {
   flex-direction: column;
   width: 100% !important;
   height: 100vh;
-  z-index: 1050;
+  z-index: 1090;
 }
 .note-editor.note-frame.fullscreen .note-editing-area,
 .note-editor.note-airframe.fullscreen .note-editing-area {
@@ -2862,7 +2862,7 @@ body:has(.note-air-popover) {
     color-scheme: dark;
   }
 }
-.note-editor.note-frame.card,
+.note-editor.note-frame.card:not(.fullscreen),
 .note-popover.popover,
 .note-modal .modal-content {
   background-color: var(--bs-body-bg);
