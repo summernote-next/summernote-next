@@ -1188,6 +1188,7 @@ body:has(.note-air-popover) {
 .note-air-popover.popover {
   width: -moz-max-content;
   width: max-content;
+  max-width: calc(100% - 20px);
 }
 
 .note-popover.popover.note-air-popover .popover-body,

@@ -1188,6 +1188,7 @@ body:has(.note-air-popover) {
 .note-air-popover.popover {
   width: -moz-max-content;
   width: max-content;
+  max-width: calc(100% - 20px);
 }
 
 .note-popover.popover.note-air-popover .popover-body,
@@ -2878,6 +2879,10 @@ body:has(.note-air-popover) {
   width: -moz-max-content;
   width: max-content;
   max-width: calc(100vw - 20px);
+}
+
+.note-popover.popover.note-air-popover {
+  max-width: min(100vw - 20px, 100% - 20px);
 }
 
 .note-editor.note-frame.card,
