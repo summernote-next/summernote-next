@@ -1,7 +1,7 @@
 {
   "name": "summernote-next",
   "description": "Super simple WYSIWYG editor on Bootstrap 5",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "keywords": [
     "bootstrap",

@@ -1,14 +1,14 @@
 /*! 
 Summernote Next
 Super simple WYSIWYG editor
-Version 1.0.0
+Version 1.0.1
 https://juergen-schwind.com/summernote-next
 
 Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-19T16:11Z
+Date: 2026-06-19T16:29Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -8832,7 +8832,7 @@ var summernote = (function() {
 	//#endregion
 	//#region src/js/settings.js
 	$$.summernote = $$.extend($$.summernote, {
-		version: "1.0.0",
+		version: "1.0.1",
 		plugins: {},
 		dom: dom_default,
 		range: range_default,
