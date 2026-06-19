@@ -35,43 +35,53 @@ const BOOTSWATCH_SCRIPT = `    <script>
 const CLASSIC_THEME_SCRIPT = `    <script>
       document.addEventListener('DOMContentLoaded', () => {
         const themePresets = {
-          brite: { accent: '#6d5efc', accentContrast: '#ffffff', border: 'rgba(109, 94, 252, 0.24)', surface: 'rgba(255, 255, 255, 0.94)', mutedSurface: 'rgba(238, 242, 255, 0.94)', shadow: 'rgba(76, 29, 149, 0.12)' },
-          cerulean: { accent: '#0ea5e9', accentContrast: '#ffffff', border: 'rgba(14, 165, 233, 0.24)', surface: 'rgba(248, 252, 255, 0.94)', mutedSurface: 'rgba(224, 242, 254, 0.94)', shadow: 'rgba(2, 132, 199, 0.12)' },
-          cosmo: { accent: '#2563eb', accentContrast: '#ffffff', border: 'rgba(37, 99, 235, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', mutedSurface: 'rgba(239, 246, 255, 0.94)', shadow: 'rgba(30, 64, 175, 0.12)' },
-          cyborg: { accent: '#22d3ee', accentContrast: '#06202a', border: 'rgba(34, 211, 238, 0.22)', surface: 'rgba(17, 24, 39, 0.96)', mutedSurface: 'rgba(30, 41, 59, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          darkly: { accent: '#7dd3fc', accentContrast: '#082f49', border: 'rgba(125, 211, 252, 0.22)', surface: 'rgba(15, 23, 42, 0.96)', mutedSurface: 'rgba(30, 41, 59, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          flatly: { accent: '#0f766e', accentContrast: '#ffffff', border: 'rgba(15, 118, 110, 0.22)', surface: 'rgba(250, 255, 253, 0.94)', mutedSurface: 'rgba(222, 247, 241, 0.94)', shadow: 'rgba(15, 118, 110, 0.12)' },
-          journal: { accent: '#b45309', accentContrast: '#ffffff', border: 'rgba(180, 83, 9, 0.24)', surface: 'rgba(255, 251, 245, 0.94)', mutedSurface: 'rgba(254, 243, 199, 0.94)', shadow: 'rgba(146, 64, 14, 0.12)' },
-          litera: { accent: '#6366f1', accentContrast: '#ffffff', border: 'rgba(99, 102, 241, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', mutedSurface: 'rgba(238, 242, 255, 0.94)', shadow: 'rgba(79, 70, 229, 0.12)' },
-          lumen: { accent: '#0891b2', accentContrast: '#ffffff', border: 'rgba(8, 145, 178, 0.22)', surface: 'rgba(251, 254, 255, 0.94)', mutedSurface: 'rgba(236, 254, 255, 0.94)', shadow: 'rgba(14, 116, 144, 0.12)' },
-          lux: { accent: '#111827', accentContrast: '#ffffff', border: 'rgba(17, 24, 39, 0.16)', surface: 'rgba(255, 255, 255, 0.94)', mutedSurface: 'rgba(243, 244, 246, 0.94)', shadow: 'rgba(17, 24, 39, 0.14)' },
-          materia: { accent: '#7c3aed', accentContrast: '#ffffff', border: 'rgba(124, 58, 237, 0.2)', surface: 'rgba(253, 250, 255, 0.94)', mutedSurface: 'rgba(245, 243, 255, 0.94)', shadow: 'rgba(91, 33, 182, 0.12)' },
-          minty: { accent: '#14b8a6', accentContrast: '#ffffff', border: 'rgba(20, 184, 166, 0.22)', surface: 'rgba(243, 255, 251, 0.94)', mutedSurface: 'rgba(220, 252, 231, 0.94)', shadow: 'rgba(13, 148, 136, 0.12)' },
-          morph: { accent: '#ec4899', accentContrast: '#ffffff', border: 'rgba(236, 72, 153, 0.2)', surface: 'rgba(255, 250, 252, 0.94)', mutedSurface: 'rgba(252, 231, 243, 0.94)', shadow: 'rgba(190, 24, 93, 0.12)' },
-          pulse: { accent: '#a855f7', accentContrast: '#ffffff', border: 'rgba(168, 85, 247, 0.2)', surface: 'rgba(254, 250, 255, 0.94)', mutedSurface: 'rgba(243, 232, 255, 0.94)', shadow: 'rgba(126, 34, 206, 0.12)' },
-          quartz: { accent: '#f472b6', accentContrast: '#500724', border: 'rgba(244, 114, 182, 0.24)', surface: 'rgba(24, 24, 27, 0.96)', mutedSurface: 'rgba(39, 39, 42, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          sandstone: { accent: '#c2410c', accentContrast: '#ffffff', border: 'rgba(194, 65, 12, 0.22)', surface: 'rgba(255, 251, 235, 0.94)', mutedSurface: 'rgba(254, 243, 199, 0.94)', shadow: 'rgba(154, 52, 18, 0.12)' },
-          simplex: { accent: '#2563eb', accentContrast: '#ffffff', border: 'rgba(37, 99, 235, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', mutedSurface: 'rgba(239, 246, 255, 0.94)', shadow: 'rgba(30, 64, 175, 0.12)' },
-          sketchy: { accent: '#dc2626', accentContrast: '#ffffff', border: 'rgba(220, 38, 38, 0.18)', surface: 'rgba(255, 251, 235, 0.94)', mutedSurface: 'rgba(254, 242, 242, 0.94)', shadow: 'rgba(127, 29, 29, 0.12)' },
-          slate: { accent: '#38bdf8', accentContrast: '#082f49', border: 'rgba(56, 189, 248, 0.22)', surface: 'rgba(15, 23, 42, 0.96)', mutedSurface: 'rgba(30, 41, 59, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          solar: { accent: '#f59e0b', accentContrast: '#422006', border: 'rgba(245, 158, 11, 0.24)', surface: 'rgba(17, 24, 39, 0.96)', mutedSurface: 'rgba(31, 41, 55, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          spacelab: { accent: '#0ea5e9', accentContrast: '#ffffff', border: 'rgba(14, 165, 233, 0.22)', surface: 'rgba(248, 252, 255, 0.94)', mutedSurface: 'rgba(224, 242, 254, 0.94)', shadow: 'rgba(2, 132, 199, 0.12)' },
-          superhero: { accent: '#a78bfa', accentContrast: '#1e1b4b', border: 'rgba(167, 139, 250, 0.22)', surface: 'rgba(17, 24, 39, 0.96)', mutedSurface: 'rgba(30, 41, 59, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          united: { accent: '#ea580c', accentContrast: '#ffffff', border: 'rgba(234, 88, 12, 0.22)', surface: 'rgba(255, 251, 245, 0.94)', mutedSurface: 'rgba(255, 237, 213, 0.94)', shadow: 'rgba(194, 65, 12, 0.12)' },
-          vapor: { accent: '#e879f9', accentContrast: '#4a044e', border: 'rgba(232, 121, 249, 0.22)', surface: 'rgba(23, 23, 23, 0.96)', mutedSurface: 'rgba(39, 39, 42, 0.96)', shadow: 'rgba(0, 0, 0, 0.28)' },
-          versa: { accent: '#059669', accentContrast: '#ffffff', border: 'rgba(5, 150, 105, 0.22)', surface: 'rgba(247, 255, 252, 0.94)', mutedSurface: 'rgba(209, 250, 229, 0.94)', shadow: 'rgba(5, 150, 105, 0.12)' },
-          yeti: { accent: '#0369a1', accentContrast: '#ffffff', border: 'rgba(3, 105, 161, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', mutedSurface: 'rgba(240, 249, 255, 0.94)', shadow: 'rgba(3, 105, 161, 0.12)' },
-          zephyr: { accent: '#8b5cf6', accentContrast: '#ffffff', border: 'rgba(139, 92, 246, 0.22)', surface: 'rgba(253, 250, 255, 0.94)', mutedSurface: 'rgba(245, 243, 255, 0.94)', shadow: 'rgba(91, 33, 182, 0.12)' },
+          brite: { accent: '#6d5efc', accentContrast: '#ffffff', border: 'rgba(109, 94, 252, 0.24)', surface: 'rgba(255, 255, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(238, 242, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(76, 29, 149, 0.12)', mode: 'light' },
+          cerulean: { accent: '#0ea5e9', accentContrast: '#ffffff', border: 'rgba(14, 165, 233, 0.24)', surface: 'rgba(248, 252, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(224, 242, 254, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(2, 132, 199, 0.12)', mode: 'light' },
+          cosmo: { accent: '#2563eb', accentContrast: '#ffffff', border: 'rgba(37, 99, 235, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(239, 246, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(30, 64, 175, 0.12)', mode: 'light', radius: '0' },
+          cyborg: { accent: '#22d3ee', accentContrast: '#06202a', border: 'rgba(34, 211, 238, 0.22)', surface: 'rgba(17, 24, 39, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(30, 41, 59, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark' },
+          darkly: { accent: '#7dd3fc', accentContrast: '#082f49', border: 'rgba(125, 211, 252, 0.22)', surface: 'rgba(15, 23, 42, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(30, 41, 59, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark' },
+          flatly: { accent: '#0f766e', accentContrast: '#ffffff', border: 'rgba(15, 118, 110, 0.22)', surface: 'rgba(250, 255, 253, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(222, 247, 241, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(15, 118, 110, 0.12)', mode: 'light' },
+          journal: { accent: '#b45309', accentContrast: '#ffffff', border: 'rgba(180, 83, 9, 0.24)', surface: 'rgba(255, 251, 245, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(254, 243, 199, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(146, 64, 14, 0.12)', mode: 'light', radius: '0' },
+          litera: { accent: '#6366f1', accentContrast: '#ffffff', border: 'rgba(99, 102, 241, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(238, 242, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(79, 70, 229, 0.12)', mode: 'light' },
+          lumen: { accent: '#0891b2', accentContrast: '#ffffff', border: 'rgba(8, 145, 178, 0.22)', surface: 'rgba(251, 254, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(236, 254, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(14, 116, 144, 0.12)', mode: 'light' },
+          lux: { accent: '#111827', accentContrast: '#ffffff', border: 'rgba(17, 24, 39, 0.16)', surface: 'rgba(255, 255, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(243, 244, 246, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(17, 24, 39, 0.14)', mode: 'light' },
+          materia: { accent: '#7c3aed', accentContrast: '#ffffff', border: 'rgba(124, 58, 237, 0.2)', surface: 'rgba(253, 250, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(245, 243, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(91, 33, 182, 0.12)', mode: 'light' },
+          minty: { accent: '#14b8a6', accentContrast: '#ffffff', border: 'rgba(20, 184, 166, 0.22)', surface: 'rgba(243, 255, 251, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(220, 252, 231, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(13, 148, 136, 0.12)', mode: 'light' },
+          morph: { accent: '#ec4899', accentContrast: '#ffffff', border: 'rgba(236, 72, 153, 0.2)', surface: 'rgba(255, 250, 252, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(252, 231, 243, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(190, 24, 93, 0.12)', mode: 'light', radius: '0.75rem' },
+          pulse: { accent: '#a855f7', accentContrast: '#ffffff', border: 'rgba(168, 85, 247, 0.2)', surface: 'rgba(254, 250, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(243, 232, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(126, 34, 206, 0.12)', mode: 'light' },
+          quartz: { accent: '#f472b6', accentContrast: '#500724', border: 'rgba(244, 114, 182, 0.24)', surface: 'rgba(24, 24, 27, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(39, 39, 42, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark', radius: '0.75rem' },
+          sandstone: { accent: '#c2410c', accentContrast: '#ffffff', border: 'rgba(194, 65, 12, 0.22)', surface: 'rgba(255, 251, 235, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(254, 243, 199, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(154, 52, 18, 0.12)', mode: 'light' },
+          simplex: { accent: '#2563eb', accentContrast: '#ffffff', border: 'rgba(37, 99, 235, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(239, 246, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(30, 64, 175, 0.12)', mode: 'light', radius: '0' },
+          sketchy: { accent: '#dc2626', accentContrast: '#ffffff', border: 'rgba(220, 38, 38, 0.18)', surface: 'rgba(255, 251, 235, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(254, 242, 242, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(127, 29, 29, 0.12)', mode: 'light', radius: '0' },
+          slate: { accent: '#38bdf8', accentContrast: '#082f49', border: 'rgba(56, 189, 248, 0.22)', surface: 'rgba(15, 23, 42, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(30, 41, 59, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark' },
+          solar: { accent: '#f59e0b', accentContrast: '#422006', border: 'rgba(245, 158, 11, 0.24)', surface: 'rgba(17, 24, 39, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(31, 41, 55, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark' },
+          spacelab: { accent: '#0ea5e9', accentContrast: '#ffffff', border: 'rgba(14, 165, 233, 0.22)', surface: 'rgba(248, 252, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(224, 242, 254, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(2, 132, 199, 0.12)', mode: 'light' },
+          superhero: { accent: '#a78bfa', accentContrast: '#1e1b4b', border: 'rgba(167, 139, 250, 0.22)', surface: 'rgba(17, 24, 39, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(30, 41, 59, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark' },
+          united: { accent: '#ea580c', accentContrast: '#ffffff', border: 'rgba(234, 88, 12, 0.22)', surface: 'rgba(255, 251, 245, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(255, 237, 213, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(194, 65, 12, 0.12)', mode: 'light' },
+          vapor: { accent: '#e879f9', accentContrast: '#4a044e', border: 'rgba(232, 121, 249, 0.22)', surface: 'rgba(23, 23, 23, 0.96)', surfaceColor: '#f8f9fa', mutedSurface: 'rgba(39, 39, 42, 0.96)', mutedColor: '#adb5bd', shadow: 'rgba(0, 0, 0, 0.28)', mode: 'dark', radius: '0.75rem' },
+          versa: { accent: '#059669', accentContrast: '#ffffff', border: 'rgba(5, 150, 105, 0.22)', surface: 'rgba(247, 255, 252, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(209, 250, 229, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(5, 150, 105, 0.12)', mode: 'light' },
+          yeti: { accent: '#0369a1', accentContrast: '#ffffff', border: 'rgba(3, 105, 161, 0.22)', surface: 'rgba(255, 255, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(240, 249, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(3, 105, 161, 0.12)', mode: 'light' },
+          zephyr: { accent: '#8b5cf6', accentContrast: '#ffffff', border: 'rgba(139, 92, 246, 0.22)', surface: 'rgba(253, 250, 255, 0.94)', surfaceColor: '#212529', mutedSurface: 'rgba(245, 243, 255, 0.94)', mutedColor: '#6c757d', shadow: 'rgba(91, 33, 182, 0.12)', mode: 'light' },
         };
         const themeSelect = document.getElementById('bootswatch-theme-select');
         const activeTheme = 'brite';
 
         function applyThemePreset(themeName) {
           const preset = themePresets[themeName] || themePresets[activeTheme];
-          document.documentElement.dataset.exampleTheme = themeName;
+          const root = document.documentElement;
+          root.dataset.exampleTheme = themeName;
+          root.dataset.exampleThemeMode = preset.mode || 'light';
+
+          for (let i = root.style.length - 1; i >= 0; i--) {
+            const property = root.style.item(i);
+            if (property.startsWith('--example-theme-')) {
+              root.style.removeProperty(property);
+            }
+          }
 
           Object.entries(preset).forEach(([key, value]) => {
-            document.documentElement.style.setProperty(\`--example-theme-\${key}\`, value);
+            const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            root.style.setProperty(\`--example-theme-\${cssKey}\`, value);
           });
         }
 
@@ -187,10 +197,10 @@ function transformClassicThemeShowcase(markup) {
           </p>`)
     .replace('<label class="form-label fw-semibold" for="bootswatch-theme-select">Bootswatch theme</label>', '<label class="form-label fw-semibold" for="bootswatch-theme-select">Example theme</label>')
     .replace(`                Theme card radii, cap backgrounds, borders, shadows, and color tokens flow into the Summernote frame,
-                toolbar, and status bar. Try square themes like Yeti or Sketchy versus softer themes like Minty.`, `                Each preset updates the frame border, toolbar surface, button accent, and card styling. Compare bright,
-                muted, and dark palettes without loading any external framework.`)
+                 toolbar, and status bar. Try square themes like Yeti or Sketchy versus softer themes like Minty.`, `                Each preset updates the frame border, corner radius, toolbar surface, button accent, and card styling.
+                Compare sharp themes like Cosmo or Sketchy against softer themes like Morph, plus bright, muted, and dark palettes.`)
     .replace(`                The page swaps only the Bootswatch CDN stylesheet. Summernote continues to use the same compiled
-                <code>summernote-next-classic.css</code> and <code>summernote-next-classic.js</code> assets.`, `                The page updates local CSS variables only. Summernote continues to use the same compiled
+                <code>summernote-bs5.css</code> and <code>summernote-bs5.js</code> assets.`, `                The page updates local CSS variables only. Summernote continues to use the same compiled
                 <code>summernote-next-classic.css</code> and <code>summernote-next-classic.js</code> assets.`)
     .replace('<h2>Bootswatch theme demo</h2>', '<h2>Theme preset demo</h2>')
     .replace('Use the selector above to compare toolbar chrome, borders, radius, buttons, and shadows across themes.', 'Use the selector above to compare toolbar chrome, borders, buttons, and shadows across the built-in presets.')
@@ -210,25 +220,47 @@ themeSelect.addEventListener('change', (event) => {
 });</code></pre>`, `          <pre class="mb-0"><code>const themePresets = {
   brite: {
     accent: '#6d5efc',
-    surface: '#ffffff',
-    mutedSurface: '#eef2ff'
+    accentContrast: '#ffffff',
+    surface: 'rgba(255, 255, 255, 0.94)',
+    surfaceColor: '#212529',
+    mutedSurface: 'rgba(238, 242, 255, 0.94)',
+    mutedColor: '#6c757d',
+    border: 'rgba(109, 94, 252, 0.24)',
+    shadow: 'rgba(76, 29, 149, 0.12)',
+    radius: '0.375rem',
+    mode: 'light'
   },
   darkly: {
     accent: '#7dd3fc',
-    surface: '#0f172a',
-    mutedSurface: '#1e293b'
+    accentContrast: '#082f49',
+    surface: 'rgba(15, 23, 42, 0.96)',
+    surfaceColor: '#f8f9fa',
+    mutedSurface: 'rgba(30, 41, 59, 0.96)',
+    mutedColor: '#adb5bd',
+    border: 'rgba(125, 211, 252, 0.22)',
+    shadow: 'rgba(0, 0, 0, 0.28)',
+    radius: '0.375rem',
+    mode: 'dark'
   },
-  minty: {
-    accent: '#14b8a6',
-    surface: '#f3fffb',
-    mutedSurface: '#dffaf1'
+  sketchy: {
+    accent: '#dc2626',
+    accentContrast: '#ffffff',
+    surface: 'rgba(255, 251, 235, 0.94)',
+    surfaceColor: '#212529',
+    mutedSurface: 'rgba(254, 242, 242, 0.94)',
+    mutedColor: '#6c757d',
+    border: 'rgba(220, 38, 38, 0.18)',
+    shadow: 'rgba(127, 29, 29, 0.12)',
+    radius: '0',
+    mode: 'light'
   }
 };
 
 function applyThemePreset(themeName) {
   const preset = themePresets[themeName];
   Object.entries(preset).forEach(([key, value]) => {
-    document.documentElement.style.setProperty(\`--example-theme-\${key}\`, value);
+    const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+    document.documentElement.style.setProperty(\`--example-theme-\${cssKey}\`, value);
   });
 }
 
