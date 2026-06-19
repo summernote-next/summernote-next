@@ -28,8 +28,12 @@
   --example-theme-accent-contrast: #ffffff;
   --example-theme-border: var(--bs-border-color);
   --example-theme-surface: var(--example-surface-bg);
+  --example-theme-surface-color: var(--bs-body-color);
   --example-theme-muted-surface: var(--example-surface-muted);
+  --example-theme-muted-color: var(--bs-secondary-color);
   --example-theme-shadow: rgba(0, 0, 0, 0.075);
+  --example-theme-radius: 0.375rem;
+  --example-theme-mode: light;
 }
 
 html[data-example-variant="classic"] *,
@@ -64,8 +68,12 @@ html[data-bs-theme="dark"] {
   --example-theme-accent-contrast: #000000;
   --example-theme-border: var(--bs-border-color);
   --example-theme-surface: var(--example-surface-bg);
+  --example-theme-surface-color: var(--bs-body-color);
   --example-theme-muted-surface: var(--example-surface-muted);
+  --example-theme-muted-color: var(--bs-secondary-color);
   --example-theme-shadow: rgba(0, 0, 0, 0.25);
+  --example-theme-radius: 0.375rem;
+  --example-theme-mode: dark;
 }
 
 html[data-example-variant="classic"] body {
@@ -74,6 +82,37 @@ html[data-example-variant="classic"] body {
   font-family: inherit;
   background: var(--bs-body-bg);
   color: var(--bs-body-color);
+}
+
+html[data-example-variant="classic"][data-example-theme] .note-editor.note-frame,
+html[data-example-variant="classic"][data-example-theme] .note-editor.note-airframe,
+html[data-example-variant="classic"][data-example-theme] .note-popover.popover,
+html[data-example-variant="classic"][data-example-theme] .note-modal {
+  --bs-primary: var(--example-theme-accent);
+  --bs-primary-text-emphasis: color-mix(in srgb, var(--example-theme-accent) 78%, var(--example-theme-surface-color));
+  --bs-primary-bg-subtle: color-mix(in srgb, var(--example-theme-accent) 16%, var(--example-theme-surface));
+  --bs-body-bg: var(--example-theme-surface);
+  --bs-body-color: var(--example-theme-surface-color);
+  --bs-secondary-color: var(--example-theme-muted-color);
+  --bs-secondary-bg: var(--example-theme-muted-surface);
+  --bs-tertiary-bg: var(--example-theme-muted-surface);
+  --bs-emphasis-color: var(--example-theme-surface-color);
+  --bs-border-color: var(--example-theme-border);
+  --bs-border-color-translucent: var(--example-theme-border);
+  --bs-border-radius: var(--example-theme-radius);
+  --bs-card-inner-border-radius: calc(var(--example-theme-radius) - 1px);
+  --bs-modal-border-radius: var(--example-theme-radius);
+  --bs-box-shadow-sm: 0 0.125rem 0.25rem var(--example-theme-shadow);
+  --bs-box-shadow: 0 0.5rem 1rem var(--example-theme-shadow);
+  --bs-box-shadow-lg: 0 1rem 3rem var(--example-theme-shadow);
+  color-scheme: light;
+}
+
+html[data-example-variant="classic"][data-example-theme-mode="dark"] .note-editor.note-frame,
+html[data-example-variant="classic"][data-example-theme-mode="dark"] .note-editor.note-airframe,
+html[data-example-variant="classic"][data-example-theme-mode="dark"] .note-popover.popover,
+html[data-example-variant="classic"][data-example-theme-mode="dark"] .note-modal {
+  color-scheme: dark;
 }
 
 html[data-example-variant="classic"][data-bs-theme="dark"] body {
@@ -227,7 +266,7 @@ html[data-example-variant="classic"] .card {
   flex-direction: column;
   min-height: 100%;
   border: 1px solid var(--example-theme-border);
-  border-radius: 0.375rem;
+  border-radius: var(--example-theme-radius);
   background: var(--example-theme-surface);
   box-shadow: none;
 }
@@ -405,7 +444,7 @@ html[data-example-variant="classic"] .form-select {
   min-height: auto;
   padding: 0.375rem 0.75rem;
   border: 1px solid var(--example-theme-border);
-  border-radius: 0.375rem;
+  border-radius: var(--example-theme-radius);
   background: var(--example-surface-strong);
   color: var(--bs-body-color);
   box-shadow: none;
