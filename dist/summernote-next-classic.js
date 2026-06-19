@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-19T16:29Z
+Date: 2026-06-19T17:08Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -1506,7 +1506,6 @@ var summernote = (function() {
 	}
 	function createIsFontInstalledFunc() {
 		const testText = "mw";
-		const fontSize = "20px";
 		const canvasWidth = 40;
 		const canvasHeight = 20;
 		var canvas = document.createElement("canvas");
@@ -1518,7 +1517,7 @@ var summernote = (function() {
 		context.textBaseline = "middle";
 		function getPxInfo(font, testFontName) {
 			context.clearRect(0, 0, canvasWidth, canvasHeight);
-			context.font = fontSize + " " + validFontName(font) + ", \"" + testFontName + "\"";
+			context.font = "20px " + validFontName(font) + ", \"" + testFontName + "\"";
 			context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
 			return context.getImageData(0, 0, canvasWidth, canvasHeight).data.join("");
 		}
