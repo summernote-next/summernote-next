@@ -316,4 +316,23 @@ describe('LinkDialog', () => {
     expect(clickSpy).toHaveBeenCalledTimes(1);
     expect(clickSpy).toHaveBeenCalledWith('click');
   });
+
+  it('passes through URLs that already have a scheme unchanged', async() => {
+    await showDialog({
+      range: null,
+      text: '',
+      url: '',
+      isNewWindow: false,
+    });
+
+    const $input = dialog.$dialog.find('.note-link-url');
+
+    $input.val('https://example.com');
+    dispatchBlur($input);
+    expect($input.val()).to.equal('https://example.com');
+
+    $input.val('ftp://files.example.com');
+    dispatchBlur($input);
+    expect($input.val()).to.equal('ftp://files.example.com');
+  });
 });

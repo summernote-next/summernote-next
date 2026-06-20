@@ -10,6 +10,7 @@
  */
 const elementDataStore = new WeakMap();
 const defaultDisplayCache = new Map();
+const fallbackModalStore = new WeakMap();
 
 function isHtmlString(value) {
   return typeof value === 'string' && value.trim().startsWith('<') && value.trim().endsWith('>');
@@ -99,6 +100,130 @@ function sanitizeBootstrapOptions(options) {
   });
 
   return hasEntries ? sanitized : undefined;
+}
+
+function getFallbackModalState(element) {
+  let state = fallbackModalStore.get(element);
+  if (!state) {
+    state = {
+      backdrop: null,
+      visible: false,
+      closeHandler: null,
+      backdropHandler: null,
+      keydownHandler: null,
+      activeElement: null,
+    };
+    fallbackModalStore.set(element, state);
+  }
+
+  return state;
+}
+
+function isFallbackModalVisible(state) {
+  return Boolean(state && state.visible);
+}
+
+function hasVisibleFallbackModal() {
+  return Array.from(document.querySelectorAll('.note-modal')).some((modal) => {
+    const state = fallbackModalStore.get(modal);
+    return isFallbackModalVisible(state);
+  });
+}
+
+function syncFallbackModalBodyState() {
+  if (hasVisibleFallbackModal()) {
+    document.body.classList.add('note-modal-open');
+  } else {
+    document.body.classList.remove('note-modal-open');
+  }
+}
+
+function showFallbackModal(element) {
+  const state = getFallbackModalState(element);
+  if (state.visible) {
+    return;
+  }
+
+  state.visible = true;
+  state.activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'note-modal-backdrop';
+  document.body.appendChild(backdrop);
+  state.backdrop = backdrop;
+
+  state.closeHandler = (event) => {
+    const dismissTarget = event.target instanceof Element
+      ? event.target.closest('[data-bs-dismiss="modal"]')
+      : null;
+
+    if (dismissTarget && element.contains(dismissTarget)) {
+      event.preventDefault();
+      hideFallbackModal(element);
+    }
+  };
+
+  state.backdropHandler = () => {
+    hideFallbackModal(element);
+  };
+
+  state.keydownHandler = (event) => {
+    if (event.key === 'Escape') {
+      hideFallbackModal(element);
+    }
+  };
+
+  element.addEventListener('click', state.closeHandler);
+  backdrop.addEventListener('click', state.backdropHandler);
+  document.addEventListener('keydown', state.keydownHandler);
+
+  element.style.display = 'block';
+  element.classList.add('show');
+  element.removeAttribute('aria-hidden');
+  element.setAttribute('aria-modal', 'true');
+  backdrop.classList.add('show');
+  syncFallbackModalBodyState();
+
+  $$(element).trigger('shown.bs.modal');
+}
+
+function hideFallbackModal(element) {
+  const state = fallbackModalStore.get(element);
+  if (!state || !state.visible) {
+    return;
+  }
+
+  state.visible = false;
+  element.classList.remove('show');
+  element.style.display = 'none';
+  element.setAttribute('aria-hidden', 'true');
+  element.removeAttribute('aria-modal');
+
+  if (state.closeHandler) {
+    element.removeEventListener('click', state.closeHandler);
+  }
+  if (state.backdrop && state.backdropHandler) {
+    state.backdrop.removeEventListener('click', state.backdropHandler);
+  }
+  if (state.keydownHandler) {
+    document.removeEventListener('keydown', state.keydownHandler);
+  }
+  if (state.backdrop) {
+    state.backdrop.remove();
+  }
+
+  state.backdrop = null;
+  state.closeHandler = null;
+  state.backdropHandler = null;
+  state.keydownHandler = null;
+
+  if (state.activeElement && typeof state.activeElement.focus === 'function') {
+    state.activeElement.focus();
+  }
+  state.activeElement = null;
+
+  syncFallbackModalBodyState();
+  $$(element).trigger('hidden.bs.modal');
 }
 
 function normalizeClassNames(classes) {
@@ -655,6 +780,15 @@ export class DomQuery {
   modal(option) {
     const bootstrap = getBootstrap();
     if (!bootstrap || !bootstrap.Modal) {
+      this.elements.forEach((element) => {
+        if (typeof option === 'string') {
+          if (option === 'show') {
+            showFallbackModal(element);
+          } else if (option === 'hide') {
+            hideFallbackModal(element);
+          }
+        }
+      });
       return this;
     }
 

@@ -16,6 +16,7 @@ export default class Fullscreen {
     this.$window = $$(window);
     this.$scrollbar = $$('html, body');
     this.scrollbarClassName = 'note-fullscreen-body';
+    this.fullscreenPlaceholder = null;
 
     this.onResize = () => {
       this.resizeTo({
@@ -112,6 +113,7 @@ export default class Fullscreen {
     this.$scrollbar.toggleClass(this.scrollbarClassName, isFullscreen);
     this.context.invoke('airPopover.hide');
     if (isFullscreen) {
+      this.reparentToBody();
       this.$editable.data('orgHeight', this.$editable.css('height'));
       this.$codable.data('orgHeight', this.$codable.css('height'));
       this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
@@ -125,9 +127,33 @@ export default class Fullscreen {
       this.$codable.css('height', this.$codable.data('orgHeight'));
       this.$editable.css('maxHeight', this.$editable.data('orgMaxHeight'));
       this.$codable.css('maxHeight', this.$codable.data('orgMaxHeight'));
+      this.restoreParent();
     }
 
     this.context.invoke('toolbar.updateFullscreen', isFullscreen);
+  }
+
+  reparentToBody() {
+    if (this.fullscreenPlaceholder || this.$editor.parent().is('body')) {
+      return;
+    }
+
+    this.fullscreenPlaceholder = document.createElement('div');
+    this.fullscreenPlaceholder.style.display = 'none';
+    this.fullscreenPlaceholder.setAttribute('data-note-fullscreen-placeholder', 'true');
+    this.$editor.before(this.fullscreenPlaceholder);
+    document.body.appendChild(this.$editor[0]);
+  }
+
+  restoreParent() {
+    if (!this.fullscreenPlaceholder || !this.fullscreenPlaceholder.parentNode) {
+      this.fullscreenPlaceholder = null;
+      return;
+    }
+
+    this.fullscreenPlaceholder.parentNode.insertBefore(this.$editor[0], this.fullscreenPlaceholder);
+    this.fullscreenPlaceholder.parentNode.removeChild(this.fullscreenPlaceholder);
+    this.fullscreenPlaceholder = null;
   }
 
   isFullscreen() {
@@ -135,6 +161,7 @@ export default class Fullscreen {
   }
 
   destroy() {
+    this.restoreParent();
     this.$scrollbar.removeClass(this.scrollbarClassName);
   }
 }

@@ -79,6 +79,7 @@ $$.summernote = $$.extend($$.summernote, {
     editableClassName: '',
     codableClassName: '',
     statusbarClassName: '',
+    modalClassName: '',
 
     // toolbar
     codeviewKeepButton: false,

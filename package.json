@@ -1,7 +1,7 @@
 {
   "name": "summernote-next",
   "description": "Super simple WYSIWYG editor on Bootstrap 5",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "keywords": [
     "bootstrap",
@@ -49,13 +49,17 @@
   "scripts": {
     "dev": "vite --config vite.config.dev.js",
     "prebuild": "node ./scripts/build-fonts.js",
-    "build": "vite build",
-    "postbuild": "node ./scripts/build-language-assets.js",
+    "build": "node ./scripts/build-dist.js",
+    "postbuild": "node ./scripts/build-language-assets.js && node ./scripts/build-classic-examples.js",
     "buildall": "npm run prebuild && node ./scripts/build-all.js",
+    "package:examples": "node ./scripts/build-examples-package.js",
     "lint": "eslint src test scripts",
     "test": "vitest run",
+    "test:scripts": "vitest run --config vitest.config.scripts.js",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "cypress": "cypress run",
+    "cypress:open": "cypress open"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -66,6 +70,7 @@
     "adm-zip": "^0.5.17",
     "autoprefixer": "^10.5.0",
     "bootstrap": "^5.3.8",
+    "cypress": "^15.17.0",
     "eslint": "^10.3.0",
     "eslint-plugin-chai-friendly": "^1.2.0",
     "globals": "^17.6.0",

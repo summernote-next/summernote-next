@@ -88,6 +88,35 @@ $img-margin-right: 10px;
     }
   }
 
+  // floating close button shown in codeview when the toolbar is hidden
+  .note-air-codeview-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border-radius: var(--bs-border-radius);
+    background-color: var(--bs-body-bg);
+    color: var(--note-color);
+    box-shadow: var(--bs-box-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--note-color);
+      background-color: var(--note-hover-bg);
+    }
+
+    > i {
+      color: inherit;
+    }
+  }
+
   .note-editing-area {
     overflow: hidden;
 
@@ -144,7 +173,7 @@ $img-margin-right: 10px;
     flex-direction: column;
     width: 100% !important;
     height: 100vh;
-    z-index: 1050; // bs3 modal-backdrop: 1030, bs2: 1040
+    z-index: 1090; // above the .card surface (1080) and bs3 modal-backdrop (1030)
     .note-editing-area {
       flex: 1 1 auto;
     }

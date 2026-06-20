@@ -61,6 +61,47 @@ describe('Editor', () => {
     expect($editable.find('img').attr('src')).toEqual(source);
   });
 
+  it('keeps the saved editor range for async image insertion even if browser selection changes', async() => {
+    const source =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+    const textNode = $editable.find('p').first()[0].firstChild;
+    const savedRange = range.create(textNode, 0, textNode, 0).select();
+
+    editor.setLastRange(savedRange);
+    const insertion = editor.insertImage(source, 'image');
+
+    const bodyRange = document.createRange();
+    bodyRange.setStart(document.body, 0);
+    bodyRange.collapse(true);
+    const selection = document.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(bodyRange);
+
+    await insertion;
+
+    expect($editable.find('img').length).to.equal(1);
+    expect($$('body').children('img').length).to.equal(0);
+  });
+
+  it('normalizes root editable selections before inserting inline images', async() => {
+    const source =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+    const nativeRange = document.createRange();
+    nativeRange.setStart($editable[0], $editable[0].childNodes.length);
+    nativeRange.collapse(true);
+
+    const selection = document.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(nativeRange);
+    editor.saveRange();
+
+    await editor.insertImage(source, 'image');
+
+    expect($editable.find('img').length).to.equal(1);
+    expect($editable.children().last().find('img').length).to.equal(1);
+    expect($$('body').children('img').length).to.equal(0);
+  });
+
   it('toggles ordered and unordered lists', async() => {
     editor.insertOrderedList();
     await expectContents('<ol><li>hello</li></ol>');

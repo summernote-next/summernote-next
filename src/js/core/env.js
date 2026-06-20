@@ -1,5 +1,9 @@
 // Environment and browser capability helpers.
 
+export function hasDocument() {
+  return typeof document !== 'undefined';
+}
+
 /**
  * returns whether font is installed or not.
  *
@@ -92,4 +96,5 @@ export default {
   inputEventName,
   genericFontFamilies,
   validFontName,
+  hasDocument,
 };

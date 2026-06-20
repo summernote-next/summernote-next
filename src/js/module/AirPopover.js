@@ -4,10 +4,12 @@ import func from '../core/func';
 
 const AIRMODE_POPOVER_X_OFFSET = -5;
 const AIRMODE_POPOVER_Y_OFFSET = 5;
+const AIRMODE_POPOVER_EDGE_PADDING = 10;
 
 export default class AirPopover {
   constructor(context) {
     this.context = context;
+
     this.ui = $$.summernote.ui;
     this.options = context.options;
 
@@ -64,6 +66,7 @@ export default class AirPopover {
     this.$popover = this.ui.popover({
       className: 'note-air-popover',
     }).render().appendTo(this.options.container);
+    this.$editable = this.context.layoutInfo.editable;
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.air, {
@@ -83,24 +86,60 @@ export default class AirPopover {
   update(forcelyOpen) {
     const styleInfo = this.context.invoke('editor.currentStyle');
     if (styleInfo.range && (!styleInfo.range.isCollapsed() || forcelyOpen)) {
-      let rect = {
-        left: this.pageX,
-        top: this.pageY,
-      };
-
-      const containerOffset = $$(this.options.container).offset();
-      rect.top -= containerOffset.top;
-      rect.left -= containerOffset.left;
-
-      this.$popover.css({
-        display: 'block',
-        left: Math.max(rect.left, 0) + AIRMODE_POPOVER_X_OFFSET,
-        top: rect.top + AIRMODE_POPOVER_Y_OFFSET,
-      });
+      this.$popover.css('display', 'block');
+      this.reposition();
       this.context.invoke('buttons.updateCurrentStyle', this.$popover);
     } else {
       this.hide();
     }
+  }
+
+  reposition() {
+    // The popover body uses `display: flex` with `gap`, so the popover width
+    // only stabilises after the browser finishes laying out the flex children
+    // and computing the inter-group gaps. Wait a few frames, then re-measure
+    // and re-apply. Repeat until the width is stable.
+    let lastWidth = -1;
+    let frames = 0;
+    const settle = () => {
+      if (!this.$popover || !this.$popover[0]) {
+        return;
+      }
+      const popoverWidth = this.$popover[0].offsetWidth;
+      if (popoverWidth === lastWidth || frames >= 10) {
+        const containerOffset = $$(this.options.container).offset();
+        this.applyPosition(containerOffset, popoverWidth);
+        return;
+      }
+      lastWidth = popoverWidth;
+      frames++;
+      setTimeout(settle, 16);
+    };
+    setTimeout(settle, 16);
+  }
+
+  applyPosition(containerOffset, popoverWidth) {
+    let left = this.pageX - containerOffset.left + AIRMODE_POPOVER_X_OFFSET;
+    let top = this.pageY - containerOffset.top + AIRMODE_POPOVER_Y_OFFSET;
+
+    let maxRight = window.innerWidth - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+    const editable = this.$editable && this.$editable[0];
+    if (editable) {
+      const editableRect = editable.getBoundingClientRect();
+      const editableRight = editableRect.right - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+      if (editableRight < maxRight) {
+        maxRight = editableRight;
+      }
+    }
+    const maxLeft = maxRight - popoverWidth;
+    if (left > maxLeft) {
+      left = Math.max(AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left, maxLeft);
+    }
+
+    this.$popover.css({
+      left: Math.max(left, AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left),
+      top: top,
+    });
   }
 
   updateCodeview(isCodeview) {

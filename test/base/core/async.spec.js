@@ -31,8 +31,17 @@ describe('core/async', () => {
 
   it('creates images with native promises', async() => {
     const dataUrl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    let img;
+    const createElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tagName, options) => {
+      const element = createElement(tagName, options);
+      if (tagName === 'img') {
+        img = element;
+      }
+      return element;
+    });
+
     const promise = createImage(dataUrl);
-    const img = document.body.lastChild;
 
     img.dispatchEvent(new Event('load'));
     const $image = await promise;
@@ -40,11 +49,21 @@ describe('core/async', () => {
     expect($image.length).to.equal(1);
     expect($image[0].tagName).to.equal('IMG');
     expect($image.attr('src')).to.equal(dataUrl);
+    expect(document.body.contains(img)).to.be.false;
   });
 
-  it('rejects image creation and removes appended nodes on error', async() => {
+  it('rejects image creation without appending nodes to body', async() => {
+    let img;
+    const createElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tagName, options) => {
+      const element = createElement(tagName, options);
+      if (tagName === 'img') {
+        img = element;
+      }
+      return element;
+    });
+
     const promise = createImage('broken-image');
-    const img = document.body.lastChild;
 
     img.dispatchEvent(new Event('error'));
 
@@ -54,14 +73,47 @@ describe('core/async', () => {
   });
 
   it('rejects image creation without attempting removal when the image is already detached', async() => {
+    let img;
+    const createElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tagName, options) => {
+      const element = createElement(tagName, options);
+      if (tagName === 'img') {
+        img = element;
+      }
+      return element;
+    });
+
     const promise = createImage('detached-image');
-    const img = document.body.lastChild;
-    document.body.removeChild(img);
 
     img.dispatchEvent(new Event('abort'));
 
     const $image = await promise.catch((value) => value);
     expect($image[0]).to.equal(img);
     expect(document.body.contains(img)).to.be.false;
+  });
+
+  it('removes the image from its parent node on error', async() => {
+    let img;
+    const createElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tagName, options) => {
+      const element = createElement(tagName, options);
+      if (tagName === 'img') {
+        img = element;
+      }
+      return element;
+    });
+
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+
+    const promise = createImage('broken-image');
+
+    container.appendChild(img);
+    img.dispatchEvent(new Event('error'));
+
+    const $image = await promise.catch((value) => value);
+    expect($image[0]).to.equal(img);
+    expect(container.contains(img)).to.be.false;
+    container.remove();
   });
 });

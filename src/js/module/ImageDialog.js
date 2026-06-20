@@ -67,10 +67,12 @@ export default class ImageDialog {
   }
 
   show() {
-    this.context.invoke('editor.saveRange');
+    const preservedRange = this.context.modules.editor.lastRange || this.context.invoke('editor.getLastRange');
+
     this.showImageDialog().then((data) => {
       // [workaround] hide dialog before restore range for IE range focus
       this.ui.hideDialog(this.$dialog);
+      this.context.invoke('editor.setLastRange', preservedRange);
       this.context.invoke('editor.restoreRange');
 
       if (typeof data === 'string') { // image url
@@ -84,6 +86,7 @@ export default class ImageDialog {
         this.context.invoke('editor.insertImagesOrCallback', data);
       }
     }).catch(() => {
+      this.context.invoke('editor.setLastRange', preservedRange);
       this.context.invoke('editor.restoreRange');
     });
   }

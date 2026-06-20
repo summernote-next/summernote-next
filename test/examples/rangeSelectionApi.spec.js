@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/range-selection-api/*.html', {
+const examplePages = import.meta.glob('../../examples/summernote-next/range-selection-api/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -8,7 +8,7 @@ const examplePages = import.meta.glob('../../examples/range-selection-api/*.html
 
 describe('examples range and selection API examples', () => {
   it('keeps the local index focused on the range topic pages', () => {
-    const indexPage = examplePages['../../examples/range-selection-api/index.html'];
+    const indexPage = examplePages['../../examples/summernote-next/range-selection-api/index.html'];
 
     expect(indexPage).to.contain('Range and Selection API');
     expect(indexPage).to.contain('./editor-range-state.html');

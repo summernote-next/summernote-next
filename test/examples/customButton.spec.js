@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/custom-button/*.html', {
+const examplePages = import.meta.glob('../../examples/summernote-next/custom-button/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -8,7 +8,7 @@ const examplePages = import.meta.glob('../../examples/custom-button/*.html', {
 
 describe('examples custom button examples', () => {
   it('keeps the local index focused on the custom button topic pages', () => {
-    const indexPage = examplePages['../../examples/custom-button/index.html'];
+    const indexPage = examplePages['../../examples/summernote-next/custom-button/index.html'];
 
     expect(indexPage).to.contain('Custom Buttons');
     expect(indexPage).to.contain('./toolbar-buttons.html');

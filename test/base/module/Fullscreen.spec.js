@@ -23,14 +23,21 @@ describe('Fullscreen', () => {
   });
 
   it('toggles fullscreen mode', () => {
+    const originalParent = context.layoutInfo.editor.parent()[0];
+    const expectsPlaceholder = originalParent !== document.body;
+
     expect(fullscreen.isFullscreen()).to.be.false;
     fullscreen.toggle();
     expect(fullscreen.isFullscreen()).to.be.true;
     expect(context.layoutInfo.editor.hasClass('fullscreen')).to.be.true;
     expect($$('html').hasClass('note-fullscreen-body')).to.be.true;
+    expect(context.layoutInfo.editor.parent().is('body')).to.be.true;
+    expect(document.querySelector('[data-note-fullscreen-placeholder="true"]') !== null).to.equal(expectsPlaceholder);
     fullscreen.toggle();
     expect(fullscreen.isFullscreen()).to.be.false;
     expect($$('html').hasClass('note-fullscreen-body')).to.be.false;
+    expect(context.layoutInfo.editor.parent()[0]).to.equal(originalParent);
+    expect(document.querySelector('[data-note-fullscreen-placeholder="true"]')).to.equal(null);
   });
 
   it('hides the air popover when toggling fullscreen in air mode', () => {
@@ -132,5 +139,40 @@ describe('Fullscreen', () => {
       return originalInvoke(command, ...args);
     });
     expect(fullscreen.captureAirModeState().bookmark).to.equal(null);
+  });
+
+  it('covers the viewport even inside a filtered wrapper', () => {
+    context?.destroy();
+    $$('body').empty();
+
+    const $wrapper = $$('<div style="backdrop-filter: blur(12px); position: relative;"></div>').appendTo('body');
+    const $note = $$('<div><p>hello</p></div>').appendTo($wrapper);
+    context = new Context($note, $$.extend({}, $$.summernote.options));
+    fullscreen = new Fullscreen(context);
+
+    fullscreen.toggle();
+
+    const rect = context.layoutInfo.editor[0].getBoundingClientRect();
+
+    expect(Math.abs(rect.top)).to.be.lessThan(1);
+    expect(Math.abs(rect.left)).to.be.lessThan(1);
+    expect(Math.abs(rect.width - window.innerWidth)).to.be.lessThan(1);
+    expect(context.layoutInfo.editor.parent().is('body')).to.be.true;
+  });
+
+  it('uses position: fixed in the classic (card) build so the editor fills the viewport', async() => {
+    await import('@/styles/classic/summernote-next-classic.scss');
+
+    fullscreen.toggle();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    const editor = context.layoutInfo.editor[0];
+    const styles = window.getComputedStyle(editor);
+
+    expect(styles.position).to.equal('fixed');
+    expect(parseFloat(styles.height)).to.equal(window.innerHeight);
+    expect(parseFloat(styles.width)).to.equal(window.innerWidth);
+
+    fullscreen.toggle();
   });
 });

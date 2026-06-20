@@ -1,14 +1,14 @@
 /*! 
 Summernote Next
 Super simple WYSIWYG editor
-Version 1.0.0
+Version 1.0.1
 https://juergen-schwind.com/summernote-next
 
 Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-12T13:25Z
+Date: 2026-06-20T13:44Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -23,6 +23,7 @@ var summernote = (function() {
 	*/
 	var elementDataStore = /* @__PURE__ */ new WeakMap();
 	var defaultDisplayCache = /* @__PURE__ */ new Map();
+	var fallbackModalStore = /* @__PURE__ */ new WeakMap();
 	function isHtmlString(value) {
 		return typeof value === "string" && value.trim().startsWith("<") && value.trim().endsWith(">");
 	}
@@ -77,6 +78,87 @@ var summernote = (function() {
 			hasEntries = true;
 		});
 		return hasEntries ? sanitized : void 0;
+	}
+	function getFallbackModalState(element) {
+		let state = fallbackModalStore.get(element);
+		if (!state) {
+			state = {
+				backdrop: null,
+				visible: false,
+				closeHandler: null,
+				backdropHandler: null,
+				keydownHandler: null,
+				activeElement: null
+			};
+			fallbackModalStore.set(element, state);
+		}
+		return state;
+	}
+	function isFallbackModalVisible(state) {
+		return Boolean(state && state.visible);
+	}
+	function hasVisibleFallbackModal() {
+		return Array.from(document.querySelectorAll(".note-modal")).some((modal) => {
+			return isFallbackModalVisible(fallbackModalStore.get(modal));
+		});
+	}
+	function syncFallbackModalBodyState() {
+		if (hasVisibleFallbackModal()) document.body.classList.add("note-modal-open");
+		else document.body.classList.remove("note-modal-open");
+	}
+	function showFallbackModal(element) {
+		const state = getFallbackModalState(element);
+		if (state.visible) return;
+		state.visible = true;
+		state.activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		const backdrop = document.createElement("div");
+		backdrop.className = "note-modal-backdrop";
+		document.body.appendChild(backdrop);
+		state.backdrop = backdrop;
+		state.closeHandler = (event) => {
+			const dismissTarget = event.target instanceof Element ? event.target.closest("[data-bs-dismiss=\"modal\"]") : null;
+			if (dismissTarget && element.contains(dismissTarget)) {
+				event.preventDefault();
+				hideFallbackModal(element);
+			}
+		};
+		state.backdropHandler = () => {
+			hideFallbackModal(element);
+		};
+		state.keydownHandler = (event) => {
+			if (event.key === "Escape") hideFallbackModal(element);
+		};
+		element.addEventListener("click", state.closeHandler);
+		backdrop.addEventListener("click", state.backdropHandler);
+		document.addEventListener("keydown", state.keydownHandler);
+		element.style.display = "block";
+		element.classList.add("show");
+		element.removeAttribute("aria-hidden");
+		element.setAttribute("aria-modal", "true");
+		backdrop.classList.add("show");
+		syncFallbackModalBodyState();
+		$$(element).trigger("shown.bs.modal");
+	}
+	function hideFallbackModal(element) {
+		const state = fallbackModalStore.get(element);
+		if (!state || !state.visible) return;
+		state.visible = false;
+		element.classList.remove("show");
+		element.style.display = "none";
+		element.setAttribute("aria-hidden", "true");
+		element.removeAttribute("aria-modal");
+		if (state.closeHandler) element.removeEventListener("click", state.closeHandler);
+		if (state.backdrop && state.backdropHandler) state.backdrop.removeEventListener("click", state.backdropHandler);
+		if (state.keydownHandler) document.removeEventListener("keydown", state.keydownHandler);
+		if (state.backdrop) state.backdrop.remove();
+		state.backdrop = null;
+		state.closeHandler = null;
+		state.backdropHandler = null;
+		state.keydownHandler = null;
+		if (state.activeElement && typeof state.activeElement.focus === "function") state.activeElement.focus();
+		state.activeElement = null;
+		syncFallbackModalBodyState();
+		$$(element).trigger("hidden.bs.modal");
 	}
 	function normalizeClassNames(classes) {
 		return classes.flatMap((className) => typeof className === "string" ? className.split(/\s+/) : className).filter(Boolean);
@@ -479,7 +561,15 @@ var summernote = (function() {
 		}
 		modal(option) {
 			const bootstrap = getBootstrap();
-			if (!bootstrap || !bootstrap.Modal) return this;
+			if (!bootstrap || !bootstrap.Modal) {
+				this.elements.forEach((element) => {
+					if (typeof option === "string") {
+						if (option === "show") showFallbackModal(element);
+						else if (option === "hide") hideFallbackModal(element);
+					}
+				});
+				return this;
+			}
 			this.elements.forEach((element) => {
 				const instance = bootstrap.Modal.getOrCreateInstance(element, sanitizeBootstrapOptions(option));
 				if (typeof option === "string" && typeof instance[option] === "function") instance[option]();
@@ -1167,6 +1257,9 @@ var summernote = (function() {
 	} });
 	//#endregion
 	//#region src/js/core/env.js
+	function hasDocument() {
+		return typeof document !== "undefined";
+	}
 	/**
 	* returns whether font is installed or not.
 	*
@@ -1185,7 +1278,6 @@ var summernote = (function() {
 	}
 	function createIsFontInstalledFunc() {
 		const testText = "mw";
-		const fontSize = "20px";
 		const canvasWidth = 40;
 		const canvasHeight = 20;
 		var canvas = document.createElement("canvas");
@@ -1197,7 +1289,7 @@ var summernote = (function() {
 		context.textBaseline = "middle";
 		function getPxInfo(font, testFontName) {
 			context.clearRect(0, 0, canvasWidth, canvasHeight);
-			context.font = fontSize + " " + validFontName(font) + ", \"" + testFontName + "\"";
+			context.font = "20px " + validFontName(font) + ", \"" + testFontName + "\"";
 			context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
 			return context.getImageData(0, 0, canvasWidth, canvasHeight).data.join("");
 		}
@@ -1241,7 +1333,8 @@ var summernote = (function() {
 		isW3CRangeSupport: !!document.createRange,
 		inputEventName,
 		genericFontFamilies,
-		validFontName
+		validFontName,
+		hasDocument
 	};
 	//#endregion
 	//#region src/js/core/func.js
@@ -3596,7 +3689,6 @@ var summernote = (function() {
 			img.addEventListener("error", onError);
 			img.addEventListener("abort", onError);
 			img.style.display = "none";
-			document.body.appendChild(img);
 			img.src = url;
 		});
 	}
@@ -4968,7 +5060,8 @@ var summernote = (function() {
 		* @param {Boolean} [thenCollapse=false]
 		*/
 		saveRange(thenCollapse) {
-			if (thenCollapse) this.getLastRange().collapse().select();
+			const currentRange = this.getLastRange();
+			if (thenCollapse) currentRange.collapse().select();
 		}
 		/**
 		* restoreRange
@@ -5111,6 +5204,8 @@ var summernote = (function() {
 		* @return {Promise}
 		*/
 		insertImage(src, param) {
+			const insertRange = this.getLastRange();
+			const normalizedInsertRange = dom_default.isEditable(insertRange.sc) && dom_default.isEditable(insertRange.ec) ? range_default.createFromBodyElement(this.editable, insertRange.isCollapsed() && insertRange.so === 0) : insertRange;
 			return createImage(src, param).then(($image) => {
 				this.beforeCommand();
 				if (typeof param === "function") param($image);
@@ -5123,7 +5218,7 @@ var summernote = (function() {
 					else $image.css("width", "");
 				}
 				$image.show();
-				this.getLastRange().insertNode($image[0]);
+				normalizedInsertRange.insertNode($image[0]);
 				this.setLastRange(range_default.createFromNodeAfter($image[0]).select());
 				this.afterCommand();
 			}).catch((e) => {
@@ -5481,9 +5576,41 @@ var summernote = (function() {
 			this.$editor = context.layoutInfo.editor;
 			this.$editable = context.layoutInfo.editable;
 			this.$codable = context.layoutInfo.codable;
+			this.$editingArea = context.layoutInfo.editingArea;
 			this.options = context.options;
+			this.lang = context.options.langInfo;
 			this.CodeMirrorConstructor = window.CodeMirror;
 			if (this.options.codemirror.CodeMirrorConstructor) this.CodeMirrorConstructor = this.options.codemirror.CodeMirrorConstructor;
+			this.handleCloseClick = this.handleCloseClick.bind(this);
+		}
+		isAirMode() {
+			return Boolean(this.options.airMode);
+		}
+		ensureAirModeCloseButton() {
+			if (!this.isAirMode() || !this.options.editing) return null;
+			if (!this.$airCodeviewClose || !this.$airCodeviewClose.length) {
+				this.removeAirModeCloseButton({ keepCache: true });
+				const tooltip = this.lang?.options?.codeview || "Code View";
+				this.$airCodeviewClose = $$("<button type=\"button\" class=\"note-air-codeview-close btn btn-outline-secondary btn-sm\" tabindex=\"-1\"></button>").html(this.context.ui.icon(this.options.icons.close)).attr({
+					title: tooltip,
+					"aria-label": tooltip
+				});
+				this.$airCodeviewClose.on("click", this.handleCloseClick);
+				this.$editingArea.append(this.$airCodeviewClose);
+			}
+			return this.$airCodeviewClose;
+		}
+		removeAirModeCloseButton(options = {}) {
+			const $button = options.keepCache ? this.$editingArea.find(".note-air-codeview-close") : this.$airCodeviewClose;
+			if ($button && $button.length) {
+				$button.off("click", this.handleCloseClick);
+				$button.remove();
+			}
+			if (!options.keepCache) this.$airCodeviewClose = null;
+		}
+		handleCloseClick(event) {
+			event.preventDefault();
+			if (this.isActivated()) this.toggle();
 		}
 		sync(html) {
 			const isCodeview = this.isActivated();
@@ -5542,6 +5669,7 @@ var summernote = (function() {
 			this.context.invoke("toolbar.updateCodeview", true);
 			this.context.invoke("airPopover.updateCodeview", true);
 			this.$editor.addClass("codeview");
+			if (this.isAirMode()) this.ensureAirModeCloseButton();
 			this.$codable.trigger("focus");
 			if (CodeMirror) {
 				const cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror);
@@ -5583,12 +5711,14 @@ var summernote = (function() {
 			this.$editable.html(value);
 			this.$editable.height(this.options.height ? this.$codable.height() : "auto");
 			this.$editor.removeClass("codeview");
+			this.removeAirModeCloseButton();
 			if (isChange) this.context.triggerEvent("change", this.$editable.html(), this.$editable);
 			this.$editable.trigger("focus");
 			this.context.invoke("toolbar.updateCodeview", false);
 			this.context.invoke("airPopover.updateCodeview", false);
 		}
 		destroy() {
+			this.removeAirModeCloseButton();
 			if (this.isActivated()) this.deactivate();
 		}
 	};
@@ -5649,6 +5779,7 @@ var summernote = (function() {
 			this.$window = $$(window);
 			this.$scrollbar = $$("html, body");
 			this.scrollbarClassName = "note-fullscreen-body";
+			this.fullscreenPlaceholder = null;
 			this.onResize = () => {
 				this.resizeTo({ h: this.$window.height() - this.$toolbar.outerHeight() - this.$statusbar.outerHeight() - this.$statusOutput.outerHeight() });
 			};
@@ -5712,6 +5843,7 @@ var summernote = (function() {
 			this.$scrollbar.toggleClass(this.scrollbarClassName, isFullscreen);
 			this.context.invoke("airPopover.hide");
 			if (isFullscreen) {
+				this.reparentToBody();
 				this.$editable.data("orgHeight", this.$editable.css("height"));
 				this.$codable.data("orgHeight", this.$codable.css("height"));
 				this.$editable.data("orgMaxHeight", this.$editable.css("maxHeight"));
@@ -5725,13 +5857,32 @@ var summernote = (function() {
 				this.$codable.css("height", this.$codable.data("orgHeight"));
 				this.$editable.css("maxHeight", this.$editable.data("orgMaxHeight"));
 				this.$codable.css("maxHeight", this.$codable.data("orgMaxHeight"));
+				this.restoreParent();
 			}
 			this.context.invoke("toolbar.updateFullscreen", isFullscreen);
+		}
+		reparentToBody() {
+			if (this.fullscreenPlaceholder || this.$editor.parent().is("body")) return;
+			this.fullscreenPlaceholder = document.createElement("div");
+			this.fullscreenPlaceholder.style.display = "none";
+			this.fullscreenPlaceholder.setAttribute("data-note-fullscreen-placeholder", "true");
+			this.$editor.before(this.fullscreenPlaceholder);
+			document.body.appendChild(this.$editor[0]);
+		}
+		restoreParent() {
+			if (!this.fullscreenPlaceholder || !this.fullscreenPlaceholder.parentNode) {
+				this.fullscreenPlaceholder = null;
+				return;
+			}
+			this.fullscreenPlaceholder.parentNode.insertBefore(this.$editor[0], this.fullscreenPlaceholder);
+			this.fullscreenPlaceholder.parentNode.removeChild(this.fullscreenPlaceholder);
+			this.fullscreenPlaceholder = null;
 		}
 		isFullscreen() {
 			return this.$editor.hasClass("fullscreen");
 		}
 		destroy() {
+			this.restoreParent();
 			this.$scrollbar.removeClass(this.scrollbarClassName);
 		}
 	};
@@ -6980,38 +7131,43 @@ var summernote = (function() {
 			this.followScroll = this.followScroll.bind(this);
 			this.handleToolbarMouseDown = this.handleToolbarMouseDown.bind(this);
 			this.handleToolbarClick = this.handleToolbarClick.bind(this);
+			this.handleDropdownClick = this.handleDropdownClick.bind(this);
 			this.handleDocumentClick = this.handleDocumentClick.bind(this);
 			this.handleDocumentKeydown = this.handleDocumentKeydown.bind(this);
 			this.handleEditorInteraction = this.handleEditorInteraction.bind(this);
 		}
 		shouldInitialize() {
-			return !this.options.airMode;
+			return true;
 		}
 		initialize() {
 			this.options.toolbar = this.options.toolbar || [];
-			if (!this.options.toolbar.length) this.$toolbar.hide();
-			else this.context.invoke("buttons.build", this.$toolbar, this.options.toolbar, { classPrefix: "toolbar" });
-			if (this.options.toolbarContainer) this.$toolbar.appendTo(this.options.toolbarContainer);
-			this.changeContainer(false);
+			if (!this.options.airMode) {
+				if (!this.options.toolbar.length) this.$toolbar.hide();
+				else this.context.invoke("buttons.build", this.$toolbar, this.options.toolbar, { classPrefix: "toolbar" });
+				if (this.options.toolbarContainer) this.$toolbar.appendTo(this.options.toolbarContainer);
+				this.changeContainer(false);
+			}
 			this.$note.on("summernote.keyup summernote.mouseup summernote.change", () => {
 				this.context.invoke("buttons.updateCurrentStyle");
 			});
 			this.context.invoke("buttons.updateCurrentStyle");
-			if (this.options.followingToolbar) this.$window.on("scroll resize", this.followScroll);
-			this.$toolbar.on("mousedown", this.handleToolbarMouseDown);
-			this.$toolbar.on("click", this.handleToolbarClick);
+			if (!this.options.airMode && this.options.followingToolbar) this.$window.on("scroll resize", this.followScroll);
+			if (!this.options.airMode) this.$toolbar.on("mousedown", this.handleToolbarMouseDown);
 			this.$editingArea.on("mousedown click", this.handleEditorInteraction);
 			this.$statusbar.on("mousedown click", this.handleEditorInteraction);
+			this.$document.on("click", this.handleDropdownClick);
 			this.$document.on("click", this.handleDocumentClick);
 			this.$document.on("keydown", this.handleDocumentKeydown);
 		}
 		destroy() {
-			this.$toolbar.children().remove();
-			if (this.options.followingToolbar) this.$window.off("scroll resize", this.followScroll);
-			this.$toolbar.off("mousedown", this.handleToolbarMouseDown);
-			this.$toolbar.off("click", this.handleToolbarClick);
+			if (!this.options.airMode) {
+				this.$toolbar.children().remove();
+				if (this.options.followingToolbar) this.$window.off("scroll resize", this.followScroll);
+				this.$toolbar.off("mousedown", this.handleToolbarMouseDown);
+			}
 			this.$editingArea.off("mousedown click", this.handleEditorInteraction);
 			this.$statusbar.off("mousedown click", this.handleEditorInteraction);
+			this.$document.off("click", this.handleDropdownClick);
 			this.$document.off("click", this.handleDocumentClick);
 			this.$document.off("keydown", this.handleDocumentKeydown);
 		}
@@ -7051,19 +7207,28 @@ var summernote = (function() {
 			menu.classList.remove("show");
 		}
 		closeDropdowns(exceptGroup) {
-			this.$toolbar.find(".note-btn-group").each((_, group) => {
-				if (group !== exceptGroup) this.closeDropdown(group);
+			$$([this.$editor, this.$toolbar]).each((_, $container) => {
+				$container.find(".note-btn-group").each((__, group) => {
+					if (group !== exceptGroup) this.closeDropdown(group);
+				});
 			});
 		}
 		handleToolbarMouseDown(event) {
 			if (!(event.target instanceof Element)) return;
 			if (event.target.closest("input, textarea, select, option, label")) return;
-			if (event.target.closest(".note-btn, .dropdown-item, .note-dropdown-menu")) event.preventDefault();
+			if (event.target.closest(".note-btn, .dropdown-item, .note-dropdown-menu")) {
+				if (event.target.closest(".note-btn, .dropdown-item")) this.context.invoke("editor.saveRange");
+				event.preventDefault();
+			}
 		}
 		handleToolbarClick(event) {
 			if (!(event.target instanceof Element)) return;
+			this.handleDropdownClick(event);
+		}
+		handleDropdownClick(event) {
+			if (!(event.target instanceof Element)) return;
 			const toggle = event.target.closest("[data-note-toggle=\"dropdown\"]");
-			if (toggle && this.$toolbar[0].contains(toggle)) {
+			if (toggle && (this.$editor[0].contains(toggle) || this.$toolbar[0].contains(toggle))) {
 				event.preventDefault();
 				const group = this.getDropdownGroup(toggle);
 				const shouldOpen = group && !this.isDropdownOpen(group);
@@ -7078,7 +7243,8 @@ var summernote = (function() {
 				this.closeDropdowns();
 				return;
 			}
-			if (this.$toolbar[0].contains(event.target)) return;
+			if (this.$editor[0].contains(event.target)) return;
+			if (event.target.closest("[data-note-toggle=\"dropdown\"]") || event.target.closest(".note-dropdown-menu")) return;
 			this.closeDropdowns();
 		}
 		handleDocumentKeydown(event) {
@@ -7422,14 +7588,16 @@ var summernote = (function() {
 			});
 		}
 		show() {
-			this.context.invoke("editor.saveRange");
+			const preservedRange = this.context.modules.editor.lastRange || this.context.invoke("editor.getLastRange");
 			this.showImageDialog().then((data) => {
 				this.ui.hideDialog(this.$dialog);
+				this.context.invoke("editor.setLastRange", preservedRange);
 				this.context.invoke("editor.restoreRange");
 				if (typeof data === "string") if (this.options.callbacks.onImageLinkInsert) this.context.triggerEvent("image.link.insert", data);
 				else this.context.invoke("editor.insertImage", data);
 				else this.context.invoke("editor.insertImagesOrCallback", data);
 			}).catch(() => {
+				this.context.invoke("editor.setLastRange", preservedRange);
 				this.context.invoke("editor.restoreRange");
 			});
 		}
@@ -8111,6 +8279,7 @@ var summernote = (function() {
 	//#region src/js/module/AirPopover.js
 	var AIRMODE_POPOVER_X_OFFSET = -5;
 	var AIRMODE_POPOVER_Y_OFFSET = 5;
+	var AIRMODE_POPOVER_EDGE_PADDING = 10;
 	var AirPopover = class {
 		constructor(context) {
 			this.context = context;
@@ -8161,6 +8330,7 @@ var summernote = (function() {
 		}
 		initialize() {
 			this.$popover = this.ui.popover({ className: "note-air-popover" }).render().appendTo(this.options.container);
+			this.$editable = this.context.layoutInfo.editable;
 			const $content = this.$popover.find(".popover-content,.note-popover-content");
 			this.context.invoke("buttons.build", $content, this.options.popover.air, { classPrefix: "popover" });
 			this.$popover.on("mousedown", () => {
@@ -8176,20 +8346,43 @@ var summernote = (function() {
 		update(forcelyOpen) {
 			const styleInfo = this.context.invoke("editor.currentStyle");
 			if (styleInfo.range && (!styleInfo.range.isCollapsed() || forcelyOpen)) {
-				let rect = {
-					left: this.pageX,
-					top: this.pageY
-				};
-				const containerOffset = $$(this.options.container).offset();
-				rect.top -= containerOffset.top;
-				rect.left -= containerOffset.left;
-				this.$popover.css({
-					display: "block",
-					left: Math.max(rect.left, 0) + AIRMODE_POPOVER_X_OFFSET,
-					top: rect.top + AIRMODE_POPOVER_Y_OFFSET
-				});
+				this.$popover.css("display", "block");
+				this.reposition();
 				this.context.invoke("buttons.updateCurrentStyle", this.$popover);
 			} else this.hide();
+		}
+		reposition() {
+			let lastWidth = -1;
+			let frames = 0;
+			const settle = () => {
+				if (!this.$popover || !this.$popover[0]) return;
+				const popoverWidth = this.$popover[0].offsetWidth;
+				if (popoverWidth === lastWidth || frames >= 10) {
+					const containerOffset = $$(this.options.container).offset();
+					this.applyPosition(containerOffset, popoverWidth);
+					return;
+				}
+				lastWidth = popoverWidth;
+				frames++;
+				setTimeout(settle, 16);
+			};
+			setTimeout(settle, 16);
+		}
+		applyPosition(containerOffset, popoverWidth) {
+			let left = this.pageX - containerOffset.left + AIRMODE_POPOVER_X_OFFSET;
+			let top = this.pageY - containerOffset.top + AIRMODE_POPOVER_Y_OFFSET;
+			let maxRight = window.innerWidth - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+			const editable = this.$editable && this.$editable[0];
+			if (editable) {
+				const editableRight = editable.getBoundingClientRect().right - containerOffset.left - AIRMODE_POPOVER_EDGE_PADDING;
+				if (editableRight < maxRight) maxRight = editableRight;
+			}
+			const maxLeft = maxRight - popoverWidth;
+			if (left > maxLeft) left = Math.max(AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left, maxLeft);
+			this.$popover.css({
+				left: Math.max(left, AIRMODE_POPOVER_EDGE_PADDING - containerOffset.left),
+				top
+			});
 		}
 		updateCodeview(isCodeview) {
 			this.ui.toggleBtnActive(this.$popover.find(".btn-codeview"), isCodeview);
@@ -8411,7 +8604,7 @@ var summernote = (function() {
 	//#endregion
 	//#region src/js/settings.js
 	$$.summernote = $$.extend($$.summernote, {
-		version: "1.0.0",
+		version: "1.0.1",
 		plugins: {},
 		dom: dom_default,
 		range: range_default,
@@ -8454,6 +8647,7 @@ var summernote = (function() {
 			editableClassName: "",
 			codableClassName: "",
 			statusbarClassName: "",
+			modalClassName: "",
 			codeviewKeepButton: false,
 			toolbarClassName: "",
 			toolbarButtonClassName: "",

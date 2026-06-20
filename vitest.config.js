@@ -27,6 +27,8 @@ export default defineConfig({
     setupFiles: [
       './test/vitest.setup.js'
     ],
+    include: ['test/**/*.spec.js'],
+    exclude: ['node_modules/**', 'cypress/**', 'e2e/**', 'test/scripts/**'],
     coverage: {
       enabled: false,
       provider: 'istanbul',

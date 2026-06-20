@@ -31,13 +31,13 @@ describe('Toolbar', () => {
     $$('body').empty();
   });
 
-  it('skips initialization in air mode', () => {
+  it('initializes in air mode to wire dropdown handlers for the air popover', () => {
     const instance = new Toolbar({
       layoutInfo: context.layoutInfo,
       options: { ...context.options, airMode: true },
     });
 
-    expect(instance.shouldInitialize()).to.equal(false);
+    expect(instance.shouldInitialize()).to.equal(true);
   });
 
   it('hides the toolbar when no groups are configured', () => {
@@ -71,7 +71,7 @@ describe('Toolbar', () => {
     toolbar.handleDocumentKeydown(new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(toolbar.isDropdownOpen(group)).to.equal(false);
 
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     expect(toolbar.isDropdownOpen(group)).to.equal(true);
 
@@ -87,6 +87,7 @@ describe('Toolbar', () => {
 
   it('prevents toolbar mousedown only for actionable elements', () => {
     const preventDefault = vi.fn();
+    const invoke = vi.spyOn(context, 'invoke');
     const textInput = document.createElement('input');
     const plainDiv = document.createElement('div');
     const button = $toolbar.find('button')[0];
@@ -98,6 +99,17 @@ describe('Toolbar', () => {
 
     toolbar.handleToolbarMouseDown({ target: button, preventDefault });
     expect(preventDefault).toHaveBeenCalledOnce();
+    expect(invoke).toHaveBeenCalledWith('editor.saveRange');
+  });
+
+  it('prevents default on dropdown menu clicks without saving range', () => {
+    const preventDefault = vi.fn();
+    const invoke = vi.spyOn(context, 'invoke');
+    const $dropdownMenu = $toolbar.find('.note-dropdown-menu').first();
+
+    toolbar.handleToolbarMouseDown({ target: $dropdownMenu[0], preventDefault });
+    expect(preventDefault).toHaveBeenCalledOnce();
+    expect(invoke).not.toHaveBeenCalledWith('editor.saveRange');
   });
 
   it('ignores non-element toolbar clicks and closes dropdowns for buttons and menus', async() => {
@@ -108,7 +120,7 @@ describe('Toolbar', () => {
 
     toolbar.handleToolbarClick({ target: null, preventDefault: vi.fn() });
 
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     expect(toolbar.isDropdownOpen(group)).to.equal(true);
 
@@ -124,7 +136,7 @@ describe('Toolbar', () => {
     });
     expect(toolbar.isDropdownOpen(group)).to.equal(false);
 
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     toolbar.handleToolbarClick({
       target: $fullscreenButton[0],
@@ -190,7 +202,7 @@ describe('Toolbar', () => {
 
     const $styleButton = $toolbar.find('.dropdown-style').siblings('.dropdown-toggle');
     const group = toolbar.getDropdownGroup($styleButton[0]);
-    $styleButton.trigger('click');
+    $styleButton[0].click();
     await nextTick();
     expect(toolbar.isDropdownOpen(group)).to.equal(true);
 
@@ -242,5 +254,11 @@ describe('Toolbar', () => {
 
     toolbar.deactivate(true);
     expect($toolbar.find('button:disabled').length).to.be.greaterThan(0);
+  });
+
+  it('ignores dropdown clicks whose target is not an Element', () => {
+    const event = { target: document.createTextNode('text'), preventDefault: vi.fn() };
+    toolbar.handleDropdownClick(event);
+    expect(event.preventDefault).not.toHaveBeenCalled();
   });
 });

@@ -48,6 +48,9 @@ describe('Popover BS5', () => {
     expect(clickX).to.be.at.most(popoverRect.right);
     expect(contentStyle.display).to.equal('flex');
     expect(contentStyle.flexWrap).to.equal('nowrap');
+    expect(contentStyle.gap).to.equal('8px');
+    expect(contentStyle.padding).to.equal('6px');
+    expect(getComputedStyle($popover.find('button')[0]).borderTopColor).to.equal('rgb(222, 226, 230)');
     expect(buttonLabels).to.deep.equal([
       'Resize full',
       'Resize half',
@@ -92,6 +95,8 @@ describe('Popover BS5', () => {
     expect(popoverRect.top).to.be.at.least(cellRect.bottom);
     expect(contentStyle.display).to.equal('flex');
     expect(contentStyle.flexWrap).to.equal('nowrap');
+    expect(contentStyle.gap).to.equal('8px');
+    expect(contentStyle.padding).to.equal('6px');
     expect($popover.find('.popover-arrow').length).to.equal(0);
     expect(groupStyles).to.deep.equal([
       { marginTop: '0px', marginRight: '0px' },

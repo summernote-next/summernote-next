@@ -1,30 +1,9 @@
-import { build } from 'vite';
-import { configs, version } from '../vite.config.js';
+import { version } from '../vite.config.js';
 import AdmZip from 'adm-zip';
+import { buildDist } from './build-dist.js';
 import { buildLanguageAssets } from './build-language-assets.js';
 
-// build every files by iterating all styles
-await Promise.all(Object.values(configs).map(async(config, index) => {
-  // clean dist directory only on first
-  if (index > 0) {
-    config.build.emptyOutDir = false;
-  }
-
-  // minified build
-  config.build.lib.fileName = () => 'summernote-next.min.js';
-  config.build.rollupOptions.output.assetFileNames = 'summernote-next.min.[ext]';
-  config.build.rollupOptions.output.entryFileNames = 'summernote-next.min.js';
-  await build(config);
-
-  // non-minified build
-  config.build.emptyOutDir = false;
-  config.build.minify = false;
-  config.build.terserOptions = { compress: false, mangle: false };
-  config.build.lib.fileName = () => 'summernote-next.js';
-  config.build.rollupOptions.output.assetFileNames = 'summernote-next.[ext]';
-  config.build.rollupOptions.output.entryFileNames = 'summernote-next.js';
-  await build(config);
-}));
+await buildDist();
 
 await buildLanguageAssets();
 

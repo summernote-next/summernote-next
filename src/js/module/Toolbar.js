@@ -19,60 +19,67 @@ export default class Toolbar {
     this.followScroll = this.followScroll.bind(this);
     this.handleToolbarMouseDown = this.handleToolbarMouseDown.bind(this);
     this.handleToolbarClick = this.handleToolbarClick.bind(this);
+    this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleDocumentClick = this.handleDocumentClick.bind(this);
     this.handleDocumentKeydown = this.handleDocumentKeydown.bind(this);
     this.handleEditorInteraction = this.handleEditorInteraction.bind(this);
   }
 
   shouldInitialize() {
-    return !this.options.airMode;
+    return true;
   }
 
   initialize() {
     this.options.toolbar = this.options.toolbar || [];
 
-    if (!this.options.toolbar.length) {
-      this.$toolbar.hide();
-    } else {
-      this.context.invoke('buttons.build', this.$toolbar, this.options.toolbar, {
-        classPrefix: 'toolbar',
-      });
-    }
+    if (!this.options.airMode) {
+      if (!this.options.toolbar.length) {
+        this.$toolbar.hide();
+      } else {
+        this.context.invoke('buttons.build', this.$toolbar, this.options.toolbar, {
+          classPrefix: 'toolbar',
+        });
+      }
 
-    if (this.options.toolbarContainer) {
-      this.$toolbar.appendTo(this.options.toolbarContainer);
-    }
+      if (this.options.toolbarContainer) {
+        this.$toolbar.appendTo(this.options.toolbarContainer);
+      }
 
-    this.changeContainer(false);
+      this.changeContainer(false);
+    }
 
     this.$note.on('summernote.keyup summernote.mouseup summernote.change', () => {
       this.context.invoke('buttons.updateCurrentStyle');
     });
 
     this.context.invoke('buttons.updateCurrentStyle');
-    if (this.options.followingToolbar) {
+    if (!this.options.airMode && this.options.followingToolbar) {
       this.$window.on('scroll resize', this.followScroll);
     }
 
-    this.$toolbar.on('mousedown', this.handleToolbarMouseDown);
-    this.$toolbar.on('click', this.handleToolbarClick);
+    if (!this.options.airMode) {
+      this.$toolbar.on('mousedown', this.handleToolbarMouseDown);
+    }
     this.$editingArea.on('mousedown click', this.handleEditorInteraction);
     this.$statusbar.on('mousedown click', this.handleEditorInteraction);
+    this.$document.on('click', this.handleDropdownClick);
     this.$document.on('click', this.handleDocumentClick);
     this.$document.on('keydown', this.handleDocumentKeydown);
   }
 
   destroy() {
-    this.$toolbar.children().remove();
+    if (!this.options.airMode) {
+      this.$toolbar.children().remove();
 
-    if (this.options.followingToolbar) {
-      this.$window.off('scroll resize', this.followScroll);
+      if (this.options.followingToolbar) {
+        this.$window.off('scroll resize', this.followScroll);
+      }
+
+      this.$toolbar.off('mousedown', this.handleToolbarMouseDown);
     }
-
-    this.$toolbar.off('mousedown', this.handleToolbarMouseDown);
-    this.$toolbar.off('click', this.handleToolbarClick);
     this.$editingArea.off('mousedown click', this.handleEditorInteraction);
     this.$statusbar.off('mousedown click', this.handleEditorInteraction);
+    this.$document.off('click', this.handleDropdownClick);
     this.$document.off('click', this.handleDocumentClick);
     this.$document.off('keydown', this.handleDocumentKeydown);
   }
@@ -134,10 +141,13 @@ export default class Toolbar {
   }
 
   closeDropdowns(exceptGroup) {
-    this.$toolbar.find('.note-btn-group').each((_, group) => {
-      if (group !== exceptGroup) {
-        this.closeDropdown(group);
-      }
+    const $containers = $$([this.$editor, this.$toolbar]);
+    $containers.each((_, $container) => {
+      $container.find('.note-btn-group').each((__, group) => {
+        if (group !== exceptGroup) {
+          this.closeDropdown(group);
+        }
+      });
     });
   }
 
@@ -151,6 +161,9 @@ export default class Toolbar {
     }
 
     if (event.target.closest('.note-btn, .dropdown-item, .note-dropdown-menu')) {
+      if (event.target.closest('.note-btn, .dropdown-item')) {
+        this.context.invoke('editor.saveRange');
+      }
       event.preventDefault();
     }
   }
@@ -160,8 +173,16 @@ export default class Toolbar {
       return;
     }
 
+    this.handleDropdownClick(event);
+  }
+
+  handleDropdownClick(event) {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
     const toggle = event.target.closest('[data-note-toggle="dropdown"]');
-    if (toggle && this.$toolbar[0].contains(toggle)) {
+    if (toggle && (this.$editor[0].contains(toggle) || this.$toolbar[0].contains(toggle))) {
       event.preventDefault();
 
       const group = this.getDropdownGroup(toggle);
@@ -186,7 +207,11 @@ export default class Toolbar {
       return;
     }
 
-    if (this.$toolbar[0].contains(event.target)) {
+    if (this.$editor[0].contains(event.target)) {
+      return;
+    }
+
+    if (event.target.closest('[data-note-toggle="dropdown"]') || event.target.closest('.note-dropdown-menu')) {
       return;
     }
 

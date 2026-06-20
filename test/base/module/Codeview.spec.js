@@ -272,4 +272,144 @@ describe('Codeview', () => {
     expect(context.layoutInfo.editable.html()).to.equal(dom.emptyPara);
     expect(context.layoutInfo.editable[0].style.height).to.equal(`${expectedHeight}px`);
   });
+
+  describe('air mode codeview close button', () => {
+    let airContext;
+    let airCodeview;
+
+    beforeEach(() => {
+      codeview?.destroy();
+      context?.destroy();
+      $$('body').empty();
+
+      const airOptions = $$.extend(true, {}, $$.summernote.options, {
+        airMode: true,
+        codeviewFilter: true,
+      });
+      airContext = new Context($$('<div><p>air hello</p></div>').appendTo('body'), airOptions);
+      airCodeview = new Codeview(airContext);
+    });
+
+    afterEach(() => {
+      airCodeview?.destroy();
+      airContext?.destroy();
+      $$('body').empty();
+    });
+
+    it('does not render the floating close button in frame mode', () => {
+      codeview.activate();
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(0);
+    });
+
+    it('renders a floating close button when activating codeview in air mode', () => {
+      airCodeview.activate();
+
+      const $close = airContext.layoutInfo.editor.find('.note-air-codeview-close');
+      expect($close.length).to.equal(1);
+      expect(airCodeview.isAirMode()).to.be.true;
+      expect($close.attr('title')).to.equal($$.summernote.lang['en-US'].options.codeview);
+      expect($close.attr('aria-label')).to.equal($$.summernote.lang['en-US'].options.codeview);
+      expect($close.find('i').length + $close.children().length).to.be.greaterThan(0);
+    });
+
+    it('removes the floating close button when deactivating codeview in air mode', () => {
+      airCodeview.activate();
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(1);
+
+      airCodeview.deactivate();
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(0);
+      expect(airCodeview.$airCodeviewClose).to.equal(null);
+    });
+
+    it('toggles codeview when the floating close button is clicked', () => {
+      airCodeview.activate();
+      const $close = airContext.layoutInfo.editor.find('.note-air-codeview-close');
+
+      $close.trigger('click');
+
+      expect(airCodeview.isActivated()).to.be.false;
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(0);
+    });
+
+    it('does nothing when the close button is clicked outside of codeview', () => {
+      airCodeview.ensureAirModeCloseButton();
+      const $close = airContext.layoutInfo.editor.find('.note-air-codeview-close');
+
+      $close.trigger('click');
+
+      expect(airCodeview.isActivated()).to.be.false;
+      expect($close.length).to.equal(1);
+    });
+
+    it('removes the floating close button when the editor is destroyed', () => {
+      airCodeview.activate();
+      const $close = airContext.layoutInfo.editor.find('.note-air-codeview-close');
+      expect($close.length).to.equal(1);
+
+      airCodeview.destroy();
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(0);
+    });
+
+    it('reuses the same floating close button across consecutive codeview activations', () => {
+      airCodeview.activate();
+      const firstButton = airCodeview.$airCodeviewClose[0];
+
+      airCodeview.deactivate();
+      airCodeview.activate();
+      const secondButton = airCodeview.$airCodeviewClose[0];
+
+      expect(firstButton).to.not.equal(null);
+      expect(secondButton).to.not.equal(null);
+      expect(firstButton.isSameNode(secondButton)).to.be.false;
+    });
+
+    it('recreates the close button when the cached wrapper is empty', () => {
+      airCodeview.activate();
+      const firstButton = airCodeview.$airCodeviewClose[0];
+      airCodeview.$airCodeviewClose = $$();
+
+      const result = airCodeview.ensureAirModeCloseButton();
+      expect(result).to.not.equal(null);
+      expect(airCodeview.$airCodeviewClose[0]).to.not.equal(firstButton);
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(1);
+    });
+
+    it('reuses the cached close button when it already exists', () => {
+      airCodeview.activate();
+      const firstButton = airCodeview.$airCodeviewClose[0];
+
+      const result = airCodeview.ensureAirModeCloseButton();
+      expect(result[0]).to.equal(firstButton);
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(1);
+    });
+
+    it('falls back to a default tooltip when the language entry is missing', () => {
+      airCodeview.options.langInfo = {};
+      airCodeview.lang = {};
+      airCodeview.ensureAirModeCloseButton();
+
+      const $close = airContext.layoutInfo.editor.find('.note-air-codeview-close');
+      expect($close.attr('title')).to.equal('Code View');
+    });
+
+    it('does not render the close button when the editor is disabled', () => {
+      airCodeview.options.editing = false;
+      const result = airCodeview.ensureAirModeCloseButton();
+
+      expect(result).to.equal(null);
+      expect(airContext.layoutInfo.editor.find('.note-air-codeview-close').length).to.equal(0);
+    });
+
+    it('keeps the close button accessible after codeview is reactivated', () => {
+      airCodeview.activate();
+      const firstButton = airCodeview.$airCodeviewClose[0];
+
+      airCodeview.deactivate();
+      airCodeview.activate();
+
+      expect(airCodeview.$airCodeviewClose[0]).to.not.equal(firstButton);
+      expect(airCodeview.$airCodeviewClose[0].isConnected).to.be.true;
+      expect(airCodeview.isActivated()).to.be.true;
+    });
+  });
 });
