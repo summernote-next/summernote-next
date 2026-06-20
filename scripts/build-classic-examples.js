@@ -141,8 +141,7 @@ function swapClassicAssets(markup) {
     .replaceAll('/assets/examples.css', '/assets/classic-examples.css')
     .replaceAll('/assets/examples.js', '/assets/classic-examples.js')
     .replaceAll('/dist/summernote-next.css', '/dist/summernote-next-classic.css')
-    .replaceAll('/dist/summernote-next.js', '/dist/summernote-next-classic.js')
-    .replaceAll('./assets/symbols_mathematical-symbols_Greek-letters.json', '/assets/symbols_mathematical-symbols_Greek-letters.json');
+    .replaceAll('/dist/summernote-next.js', '/dist/summernote-next-classic.js');
 }
 
 function rewriteTitle(markup) {

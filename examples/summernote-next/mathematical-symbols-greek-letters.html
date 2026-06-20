@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summernote Next - Greek Letters and Mathematical Symbols</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="/assets/examples.css">
-    <link rel="stylesheet" href="/dist/summernote-next.css">
-    <script type="module" src="/assets/examples.js"></script>
+    <link rel="stylesheet" href="../assets/examples.css">
+    <link rel="stylesheet" href="../dist/summernote-next.css">
+    <script type="module" src="../assets/examples.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script defer src="/dist/summernote-next.js"></script>
+    <script defer src="../dist/summernote-next.js"></script>
   </head>
   <body>
     <main class="page">
@@ -23,7 +23,7 @@
       <h1>Insert Greek letters from a legacy-style special characters picker</h1>
 
       <p class="page-copy">
-        This example uses <code>./assets/symbols_mathematical-symbols_Greek-letters.json</code> and mirrors the old
+        This example uses <code>../assets/symbols_mathematical-symbols_Greek-letters.json</code> and mirrors the old
         Summernote special characters plugin pattern from the jQuery build: a toolbar button opens a symbol grid,
         the current selection is preserved with <code>editor.saveRange</code>, and the chosen character is inserted
         back into the editor.
@@ -63,7 +63,7 @@
       <div class="card mt-4" data-example-configuration>
         <div class="card-header">Example configuration - Greek letters &amp; math symbols</div>
         <div class="card-body">
-          <pre class="mb-0"><code>const response = await fetch('./assets/symbols_mathematical-symbols_Greek-letters.json');
+          <pre class="mb-0"><code>const response = await fetch('../assets/symbols_mathematical-symbols_Greek-letters.json');
 const symbols = await response.json();
 
 function GreekLettersButton(context) {
@@ -146,7 +146,7 @@ document.getElementById('greek-symbols-mode-switch').addEventListener('change', 
     <script>
       document.addEventListener('DOMContentLoaded', async() => {
         const target = '#greek-symbols-editor';
-        const assetPath = './assets/symbols_mathematical-symbols_Greek-letters.json';
+        const assetPath = '../assets/symbols_mathematical-symbols_Greek-letters.json';
         const initialMarkup = `
           <p>Type an equation and use the Ω toolbar button to insert characters such as Δ, π, Σ, θ, or ∞.</p>
           <p>Examples: area = πr<sup>2</sup>, Δx → 0, Ω = 2πf, ∑<sub>n=1</sub><sup>∞</sup>.</p>
