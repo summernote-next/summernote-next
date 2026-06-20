@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-20T11:44Z
+Date: 2026-06-20T13:44Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -1257,6 +1257,9 @@ var summernote = (function() {
 	} });
 	//#endregion
 	//#region src/js/core/env.js
+	function hasDocument() {
+		return typeof document !== "undefined";
+	}
 	/**
 	* returns whether font is installed or not.
 	*
@@ -1330,7 +1333,8 @@ var summernote = (function() {
 		isW3CRangeSupport: !!document.createRange,
 		inputEventName,
 		genericFontFamilies,
-		validFontName
+		validFontName,
+		hasDocument
 	};
 	//#endregion
 	//#region src/js/core/func.js

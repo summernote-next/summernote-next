@@ -1,14 +1,14 @@
 # Summernote Next
 
-[![npm version](https://jbs-newmedia.de/badge/npm/summernote-next/version.svg)](https://www.npmjs.com/package/summernote-next)
-[![npm downloads](https://jbs-newmedia.de/badge/npm/summernote-next/download.svg)](https://www.npmjs.com/package/summernote-next)
-[![Composer version](https://jbs-newmedia.de/badge/composer/summernote-next/summernote-next/version.svg)](https://packagist.org/packages/summernote-next/summernote-next)
-[![Composer downloads](https://jbs-newmedia.de/badge/composer/summernote-next/summernote-next/download.svg)](https://packagist.org/packages/summernote-next/summernote-next)
-[![jsDelivr](https://jbs-newmedia.de/badge/jsdelivr/summernote-next/hits.svg)](https://www.jsdelivr.com/package/npm/summernote-next)
-[![License](https://jbs-newmedia.de/badge/npm/summernote-next/license.svg)](LICENSE)
-[![Tests](https://jbs-newmedia.de/badge/github/summernote-next/summernote-next/tests.svg)](https://github.com/summernote-next/summernote-next/actions/workflows/tests.yml)
-[![codecov](https://jbs-newmedia.de/badge/codecov/summernote-next/summernote-next/coverage.svg)](https://codecov.io/gh/summernote-next/summernote-next)
-[![GitHub stars](https://jbs-newmedia.de/badge/github/summernote-next/summernote-next/stars.svg)](https://github.com/summernote-next/summernote-next)
+[![npm version](https://jbs-newmedia.de/badge/npm/summernote-next/version.svg?v=1.0.1)](https://www.npmjs.com/package/summernote-next)
+[![npm downloads](https://jbs-newmedia.de/badge/npm/summernote-next/download.svg?v=1.0.1)](https://www.npmjs.com/package/summernote-next)
+[![Composer version](https://jbs-newmedia.de/badge/composer/summernote-next/summernote-next/version.svg?v=1.0.1)](https://packagist.org/packages/summernote-next/summernote-next)
+[![Composer downloads](https://jbs-newmedia.de/badge/composer/summernote-next/summernote-next/download.svg?v=1.0.1)](https://packagist.org/packages/summernote-next/summernote-next)
+[![jsDelivr](https://jbs-newmedia.de/badge/jsdelivr/summernote-next/hits.svg?v=1.0.1)](https://www.jsdelivr.com/package/npm/summernote-next)
+[![License](https://jbs-newmedia.de/badge/npm/summernote-next/license.svg?v=1.0.1)](LICENSE)
+[![Tests](https://jbs-newmedia.de/badge/github/summernote-next/summernote-next/tests.svg?v=1.0.1)](https://github.com/summernote-next/summernote-next/actions/workflows/tests.yml)
+[![codecov](https://jbs-newmedia.de/badge/codecov/summernote-next/summernote-next/coverage.svg?v=1.0.1)](https://codecov.io/gh/summernote-next/summernote-next)
+[![GitHub stars](https://jbs-newmedia.de/badge/github/summernote-next/summernote-next/stars.svg?v=1.0.1)](https://github.com/summernote-next/summernote-next)
 
 Summernote Next is a maintained MIT-licensed fork of Summernote (https://github.com/summernote/summernote/), focused on the current Bootstrap 5 build, a Vanilla JS API, and a public example catalog that matches this repository.
 

@@ -667,4 +667,86 @@ describe('base:core.dom-query', () => {
       $host.remove();
     });
   });
+
+  describe('fallback modal edge cases', () => {
+    afterEach(() => {
+      $$('body').empty();
+      delete window.bootstrap;
+    });
+
+    it('stores null activeElement when document.activeElement is not an HTMLElement', () => {
+      const originalDescriptor = Object.getOwnPropertyDescriptor(document, 'activeElement');
+      const textNode = document.createTextNode('not-element');
+      Object.defineProperty(document, 'activeElement', {
+        configurable: true,
+        get: () => textNode,
+      });
+
+      const $dialog = $$('<div class="note-modal"></div>').appendTo('body');
+      $dialog.modal('show');
+      expect($dialog.hasClass('show')).to.be.true;
+
+      $dialog.modal('hide');
+      expect($dialog.hasClass('show')).to.be.false;
+
+      if (originalDescriptor) {
+        Object.defineProperty(document, 'activeElement', originalDescriptor);
+      }
+    });
+
+    it('ignores click events whose target is not an Element inside the modal', () => {
+      const $dialog = $$('<div class="note-modal"><p>text</p></div>').appendTo('body');
+      $dialog.modal('show');
+
+      const textNode = $dialog.find('p')[0].firstChild;
+      const clickEvent = new Event('click', { bubbles: true });
+      Object.defineProperty(clickEvent, 'target', { value: textNode });
+      $dialog[0].dispatchEvent(clickEvent);
+
+      expect($dialog.hasClass('show')).to.be.true;
+
+      $dialog.modal('hide');
+    });
+
+    it('ignores non-Escape keydown events while the modal is open', () => {
+      const $dialog = $$('<div class="note-modal"></div>').appendTo('body');
+      $dialog.modal('show');
+
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+      expect($dialog.hasClass('show')).to.be.true;
+
+      $dialog.modal('hide');
+    });
+
+    it('ignores unknown modal option strings without bootstrap', () => {
+      const $dialog = $$('<div class="note-modal"></div>').appendTo('body');
+      expect(() => $dialog.modal('toggle')).not.to.throw();
+      expect(() => $dialog.modal(42)).not.to.throw();
+    });
+
+    it('cleans up a partially initialised modal state without throwing', () => {
+      const $dialog = $$('<div class="note-modal"></div>').appendTo('body');
+
+      const originalAppend = document.body.appendChild.bind(document.body);
+      const appendSpy = vi.spyOn(document.body, 'appendChild');
+      appendSpy.mockImplementation((node) => {
+        if (node && node.className === 'note-modal-backdrop') {
+          throw new Error('blocked');
+        }
+        return originalAppend(node);
+      });
+
+      try {
+        expect(() => $dialog.modal('show')).to.throw('blocked');
+      } catch {
+        // expected
+      }
+
+      appendSpy.mockRestore();
+
+      expect(() => $dialog.modal('hide')).not.to.throw();
+      expect($dialog.hasClass('show')).to.be.false;
+    });
+  });
 });

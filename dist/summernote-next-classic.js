@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-20T11:44Z
+Date: 2026-06-20T13:44Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -995,6 +995,87 @@ var summernote = (function() {
 	};
 	$$.summernote = $$.summernote || { lang: {} };
 	//#endregion
+	//#region src/js/core/env.js
+	function hasDocument() {
+		return typeof document !== "undefined";
+	}
+	/**
+	* returns whether font is installed or not.
+	*
+	* @param {String} fontName
+	* @return {Boolean}
+	*/
+	var genericFontFamilies = [
+		"sans-serif",
+		"serif",
+		"monospace",
+		"cursive",
+		"fantasy"
+	];
+	function validFontName(fontName) {
+		return genericFontFamilies.indexOf(fontName.toLowerCase()) === -1 ? `'${fontName}'` : fontName;
+	}
+	function createIsFontInstalledFunc() {
+		const testText = "mw";
+		const canvasWidth = 40;
+		const canvasHeight = 20;
+		var canvas = document.createElement("canvas");
+		var context = canvas.getContext("2d", { willReadFrequently: true });
+		canvas.width = canvasWidth;
+		canvas.height = canvasHeight;
+		context.textAlign = "center";
+		context.fillStyle = "black";
+		context.textBaseline = "middle";
+		function getPxInfo(font, testFontName) {
+			context.clearRect(0, 0, canvasWidth, canvasHeight);
+			context.font = "20px " + validFontName(font) + ", \"" + testFontName + "\"";
+			context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
+			return context.getImageData(0, 0, canvasWidth, canvasHeight).data.join("");
+		}
+		return (fontName) => {
+			const testFontName = fontName === "Comic Sans MS" ? "Courier New" : "Comic Sans MS";
+			return getPxInfo(testFontName, testFontName) !== getPxInfo(fontName, testFontName);
+		};
+	}
+	var userAgent = navigator.userAgent;
+	var isMSIE = /MSIE|Trident/i.test(userAgent);
+	var browserVersion;
+	if (isMSIE) {
+		let matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
+		if (matches) browserVersion = parseFloat(matches[1]);
+		matches = /Trident\/.*rv:([0-9]{1,}[.0-9]{0,})/.exec(userAgent);
+		if (matches) browserVersion = parseFloat(matches[1]);
+	}
+	var isEdge = /Edge\/\d+/.test(userAgent);
+	var isSupportTouch = "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+	var inputEventName = isMSIE ? "DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted" : "input";
+	/**
+	* @class core.env
+	*
+	* Object which check platform and agent
+	*
+	* @singleton
+	* @alternateClassName env
+	*/
+	var env_default = {
+		isMac: navigator.appVersion.indexOf("Mac") > -1,
+		isMSIE,
+		isEdge,
+		isFF: !isEdge && /firefox/i.test(userAgent),
+		isPhantom: /PhantomJS/i.test(userAgent),
+		isWebkit: !isEdge && /webkit/i.test(userAgent),
+		isChrome: !isEdge && /chrome/i.test(userAgent),
+		isSafari: !isEdge && /safari/i.test(userAgent) && !/chrome/i.test(userAgent),
+		browserVersion,
+		isSupportTouch,
+		isFontInstalled: createIsFontInstalledFunc(),
+		isW3CRangeSupport: !!document.createRange,
+		inputEventName,
+		genericFontFamilies,
+		validFontName,
+		hasDocument
+	};
+	//#endregion
 	//#region src/js/module/Theme.js
 	var DARK_CLASS = "note-editor-dark";
 	var LIGHT_CLASS = "note-editor-light";
@@ -1061,7 +1142,7 @@ var summernote = (function() {
 		"theme-dark"
 	];
 	function hasExplicitPageTheme() {
-		if (typeof document === "undefined") return null;
+		if (!env_default.hasDocument()) return null;
 		const html = document.documentElement;
 		const body = document.body;
 		for (let i = 0; i < PAGE_DARK_ATTRIBUTES.length; i++) {
@@ -1100,13 +1181,13 @@ var summernote = (function() {
 		else if (mode === "off") $node.addClass(LIGHT_CLASS);
 	}
 	function applyModeToSurfaces(mode) {
-		if (typeof document === "undefined") return;
+		if (!env_default.hasDocument()) return;
 		document.querySelectorAll(SURFACE_SELECTORS).forEach((node) => {
 			applyModeToNode($$(node), mode);
 		});
 	}
 	function watchNewSurfaces(callback) {
-		if (typeof document === "undefined" || typeof MutationObserver !== "function") return null;
+		if (!env_default.hasDocument() || typeof MutationObserver !== "function") return null;
 		const observer = new MutationObserver((mutations) => {
 			for (let i = 0; i < mutations.length; i++) {
 				const added = mutations[i].addedNodes;
@@ -1212,7 +1293,7 @@ var summernote = (function() {
 			this._mediaListener = null;
 		}
 		_watchDocumentAttributes() {
-			if (typeof document === "undefined" || typeof MutationObserver !== "function") return;
+			if (!env_default.hasDocument() || typeof MutationObserver !== "function") return;
 			this._unwatchDocumentAttributes();
 			this._documentObserver = new MutationObserver(() => this.apply(this.resolved));
 			this._documentObserver.observe(document.documentElement, { attributes: true });
@@ -1486,83 +1567,6 @@ var summernote = (function() {
 			}
 		}
 	} });
-	//#endregion
-	//#region src/js/core/env.js
-	/**
-	* returns whether font is installed or not.
-	*
-	* @param {String} fontName
-	* @return {Boolean}
-	*/
-	var genericFontFamilies = [
-		"sans-serif",
-		"serif",
-		"monospace",
-		"cursive",
-		"fantasy"
-	];
-	function validFontName(fontName) {
-		return genericFontFamilies.indexOf(fontName.toLowerCase()) === -1 ? `'${fontName}'` : fontName;
-	}
-	function createIsFontInstalledFunc() {
-		const testText = "mw";
-		const canvasWidth = 40;
-		const canvasHeight = 20;
-		var canvas = document.createElement("canvas");
-		var context = canvas.getContext("2d", { willReadFrequently: true });
-		canvas.width = canvasWidth;
-		canvas.height = canvasHeight;
-		context.textAlign = "center";
-		context.fillStyle = "black";
-		context.textBaseline = "middle";
-		function getPxInfo(font, testFontName) {
-			context.clearRect(0, 0, canvasWidth, canvasHeight);
-			context.font = "20px " + validFontName(font) + ", \"" + testFontName + "\"";
-			context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
-			return context.getImageData(0, 0, canvasWidth, canvasHeight).data.join("");
-		}
-		return (fontName) => {
-			const testFontName = fontName === "Comic Sans MS" ? "Courier New" : "Comic Sans MS";
-			return getPxInfo(testFontName, testFontName) !== getPxInfo(fontName, testFontName);
-		};
-	}
-	var userAgent = navigator.userAgent;
-	var isMSIE = /MSIE|Trident/i.test(userAgent);
-	var browserVersion;
-	if (isMSIE) {
-		let matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
-		if (matches) browserVersion = parseFloat(matches[1]);
-		matches = /Trident\/.*rv:([0-9]{1,}[.0-9]{0,})/.exec(userAgent);
-		if (matches) browserVersion = parseFloat(matches[1]);
-	}
-	var isEdge = /Edge\/\d+/.test(userAgent);
-	var isSupportTouch = "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-	var inputEventName = isMSIE ? "DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted" : "input";
-	/**
-	* @class core.env
-	*
-	* Object which check platform and agent
-	*
-	* @singleton
-	* @alternateClassName env
-	*/
-	var env_default = {
-		isMac: navigator.appVersion.indexOf("Mac") > -1,
-		isMSIE,
-		isEdge,
-		isFF: !isEdge && /firefox/i.test(userAgent),
-		isPhantom: /PhantomJS/i.test(userAgent),
-		isWebkit: !isEdge && /webkit/i.test(userAgent),
-		isChrome: !isEdge && /chrome/i.test(userAgent),
-		isSafari: !isEdge && /safari/i.test(userAgent) && !/chrome/i.test(userAgent),
-		browserVersion,
-		isSupportTouch,
-		isFontInstalled: createIsFontInstalledFunc(),
-		isW3CRangeSupport: !!document.createRange,
-		inputEventName,
-		genericFontFamilies,
-		validFontName
-	};
 	//#endregion
 	//#region src/js/core/func.js
 	/**

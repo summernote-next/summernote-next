@@ -255,4 +255,10 @@ describe('Toolbar', () => {
     toolbar.deactivate(true);
     expect($toolbar.find('button:disabled').length).to.be.greaterThan(0);
   });
+
+  it('ignores dropdown clicks whose target is not an Element', () => {
+    const event = { target: document.createTextNode('text'), preventDefault: vi.fn() };
+    toolbar.handleDropdownClick(event);
+    expect(event.preventDefault).not.toHaveBeenCalled();
+  });
 });

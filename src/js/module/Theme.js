@@ -1,4 +1,5 @@
 import $$ from '../core/dom-query.js';
+import env from '../core/env.js';
 
 const DARK_CLASS = 'note-editor-dark';
 const LIGHT_CLASS = 'note-editor-light';
@@ -91,7 +92,7 @@ const PAGE_DARK_ATTRIBUTES = ['data-bs-theme', 'data-theme', 'data-mode', 'data-
 const PAGE_DARK_CLASSES = ['dark', 'dark-mode', 'theme-dark'];
 
 function hasExplicitPageTheme() {
-  if (typeof document === 'undefined') {
+  if (!env.hasDocument()) {
     return null;
   }
 
@@ -178,7 +179,7 @@ function applyModeToNode($node, mode) {
 }
 
 function applyModeToSurfaces(mode) {
-  if (typeof document === 'undefined') {
+  if (!env.hasDocument()) {
     return;
   }
 
@@ -189,7 +190,7 @@ function applyModeToSurfaces(mode) {
 }
 
 function watchNewSurfaces(callback) {
-  if (typeof document === 'undefined' || typeof MutationObserver !== 'function') {
+  if (!env.hasDocument() || typeof MutationObserver !== 'function') {
     return null;
   }
 
@@ -349,7 +350,7 @@ export default class Theme {
   }
 
   _watchDocumentAttributes() {
-    if (typeof document === 'undefined' || typeof MutationObserver !== 'function') {
+    if (!env.hasDocument() || typeof MutationObserver !== 'function') {
       return;
     }
 

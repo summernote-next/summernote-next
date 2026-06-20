@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
 import '@/styles/classic/summernote-next-classic';

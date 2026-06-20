@@ -1,3 +1,4 @@
+@use "sass:list";
 @use "../summernote/font";
 @use "../summernote/common";
 
@@ -8,41 +9,41 @@ body:has(.note-air-popover) {
 $_sn-surfaces: '.note-editor.note-frame', '.note-editor.note-airframe', '.note-popover.popover', '.note-modal';
 $_sn-dark-attribute-selectors: ();
 @each $attr in ('data-bs-theme', 'data-theme', 'data-mode', 'data-color-scheme', 'data-bs-color-scheme') {
-  $_sn-dark-attribute-selectors: append($_sn-dark-attribute-selectors, '[#{$attr}="dark"]', $separator: comma);
+  $_sn-dark-attribute-selectors: list.append($_sn-dark-attribute-selectors, '[#{$attr}="dark"]', $separator: comma);
 }
 $_sn-dark-class-selectors: '.dark', '.dark-mode', '.theme-dark', '[data-bs-theme="dark"]', '[data-theme="dark"]', '[data-mode="dark"]';
 $_sn-light-attribute-selectors: ();
 @each $attr in ('data-bs-theme', 'data-theme', 'data-mode', 'data-color-scheme', 'data-bs-color-scheme') {
-  $_sn-light-attribute-selectors: append($_sn-light-attribute-selectors, '[#{$attr}="light"]', $separator: comma);
+  $_sn-light-attribute-selectors: list.append($_sn-light-attribute-selectors, '[#{$attr}="light"]', $separator: comma);
 }
 $_sn-light-class-selectors: '.light', '.light-mode', '.theme-light';
 
 $_sn-dark-attribute-triggers: ();
 @each $selector in $_sn-dark-attribute-selectors {
-  $_sn-dark-attribute-triggers: append($_sn-dark-attribute-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
+  $_sn-dark-attribute-triggers: list.append($_sn-dark-attribute-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
 }
 $_sn-dark-class-triggers: ();
 @each $selector in $_sn-dark-class-selectors {
-  $_sn-dark-class-triggers: append($_sn-dark-class-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
+  $_sn-dark-class-triggers: list.append($_sn-dark-class-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
 }
 $_sn-light-attribute-triggers: ();
 @each $selector in $_sn-light-attribute-selectors {
-  $_sn-light-attribute-triggers: append($_sn-light-attribute-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
+  $_sn-light-attribute-triggers: list.append($_sn-light-attribute-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
 }
 $_sn-light-class-triggers: ();
 @each $selector in $_sn-light-class-selectors {
-  $_sn-light-class-triggers: append($_sn-light-class-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
+  $_sn-light-class-triggers: list.append($_sn-light-class-triggers, ':where(html, body, :root)#{$selector}', $separator: comma);
 }
 $_sn-dark-ancestor-triggers: ();
 @each $selector in $_sn-dark-class-selectors {
   @each $surface in $_sn-surfaces {
-    $_sn-dark-ancestor-triggers: append($_sn-dark-ancestor-triggers, '#{$selector} #{$surface}', $separator: comma);
+    $_sn-dark-ancestor-triggers: list.append($_sn-dark-ancestor-triggers, '#{$selector} #{$surface}', $separator: comma);
   }
 }
 $_sn-light-ancestor-triggers: ();
 @each $selector in $_sn-light-class-selectors {
   @each $surface in $_sn-surfaces {
-    $_sn-light-ancestor-triggers: append($_sn-light-ancestor-triggers, '#{$selector} #{$surface}', $separator: comma);
+    $_sn-light-ancestor-triggers: list.append($_sn-light-ancestor-triggers, '#{$selector} #{$surface}', $separator: comma);
   }
 }
 

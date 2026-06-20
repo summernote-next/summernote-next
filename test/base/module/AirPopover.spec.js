@@ -423,4 +423,16 @@ describe('AirPopover', () => {
     await nextTick();
     expect($menu.hasClass('show')).to.be.false;
   });
+
+  it('skips the editable right-edge clamp when $editable is not available', () => {
+    const airPopover = context.modules.airPopover;
+    airPopover.$editable = null;
+    airPopover.pageX = 50;
+    airPopover.pageY = 50;
+    const $popover = airPopover.$popover;
+
+    airPopover.applyPosition({ left: 0, top: 0 }, 100);
+
+    expect($popover.css('top')).to.equal('55px');
+  });
 });

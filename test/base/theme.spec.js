@@ -502,3 +502,175 @@ describe('Theme module: CSS dark mode triggers', () => {
   });
 });
 
+describe('Theme module: defensive branches', () => {
+  let originalMatchMedia;
+
+  beforeEach(() => {
+    originalMatchMedia = window.matchMedia;
+    resetDocumentTheme();
+  });
+
+  afterEach(() => {
+    window.matchMedia = originalMatchMedia;
+    vi.unstubAllGlobals();
+    $$('body').empty();
+    resetDocumentTheme();
+  });
+
+  it('resolves boolean false darkMode option to off', () => {
+    const context = makeContext({ darkMode: false });
+    const theme = new Theme(context);
+    theme.initialize();
+    expect(theme.resolved).to.equal('off');
+    context.destroy();
+  });
+
+  it('resolves non-string non-boolean darkMode option to auto', () => {
+    const context = makeContext({ darkMode: 42 });
+    const theme = new Theme(context);
+    theme.initialize();
+    expect(theme.resolved).to.equal('auto');
+    context.destroy();
+  });
+
+  it('returns false from isMediaDark when matchMedia is unavailable', () => {
+    window.matchMedia = undefined;
+    const context = makeContext({ darkMode: 'media' });
+    const theme = new Theme(context);
+    expect(() => theme.initialize()).not.to.throw();
+    context.destroy();
+  });
+
+  it('guards ancestorHasClass against null nodes', () => {
+    const theme = new Theme({
+      options: { darkMode: 'class:app-dark' },
+      layoutInfo: { editor: null },
+    });
+    theme.apply({ kind: 'class', className: 'app-dark' });
+    expect(theme.currentMode).to.equal('off');
+  });
+
+  it('uses the manual ancestor traversal when closest is unavailable', () => {
+    const parent = document.createElement('div');
+    parent.className = 'app-dark';
+    const child = document.createElement('div');
+    child.closest = undefined;
+    parent.appendChild(child);
+    document.body.appendChild(parent);
+
+    const theme = new Theme({
+      options: { darkMode: 'class:app-dark' },
+      layoutInfo: { editor: $$([child]) },
+    });
+    theme.apply({ kind: 'class', className: 'app-dark' });
+    expect(theme.currentMode).to.equal('on');
+
+    parent.remove();
+  });
+
+  it('returns false from manual ancestor traversal when no ancestor matches', () => {
+    const parent = document.createElement('div');
+    const child = document.createElement('div');
+    child.closest = undefined;
+    parent.appendChild(child);
+    document.body.appendChild(parent);
+
+    const theme = new Theme({
+      options: { darkMode: 'class:app-dark' },
+      layoutInfo: { editor: $$([child]) },
+    });
+    theme.apply({ kind: 'class', className: 'app-dark' });
+    expect(theme.currentMode).to.equal('off');
+
+    parent.remove();
+  });
+
+  it('guards ancestorMatchesSelector against null nodes', () => {
+    const theme = new Theme({
+      options: { darkMode: 'selector:html[data-x="y"]' },
+      layoutInfo: { editor: null },
+    });
+    theme.apply({ kind: 'selector', selector: 'html[data-x="y"]' });
+    expect(theme.currentMode).to.equal('off');
+  });
+
+  it('guards applyModeToNode against null nodes', () => {
+    const theme = new Theme({
+      options: { darkMode: 'on' },
+      layoutInfo: { editor: null },
+    });
+    theme.apply('on');
+    expect(theme.currentMode).to.equal('on');
+  });
+
+  it('handles missing document in hasExplicitPageTheme and applyModeToSurfaces', () => {
+    const theme = new Theme({
+      options: { darkMode: 'on' },
+      layoutInfo: { editor: $$('<div></div>').appendTo('body') },
+    });
+    expect(() => theme.apply('on')).not.to.throw();
+  });
+
+  it('handles missing document in auto mode detection', () => {
+    const theme = new Theme({
+      options: { darkMode: 'auto' },
+      layoutInfo: { editor: null },
+    });
+    theme.apply('auto');
+    expect(theme.currentMode).to.equal('auto');
+  });
+
+  it('applies the resolved mode when apply is called without arguments', () => {
+    const context = makeContext({ darkMode: 'on' });
+    const theme = new Theme(context);
+    theme.apply();
+    expect(context.layoutInfo.editor.hasClass('note-editor-dark')).to.equal(true);
+    context.destroy();
+  });
+
+  it('normalises non-string setMode argument to auto', () => {
+    const context = makeContext();
+    const theme = new Theme(context);
+    theme.initialize();
+    theme.setMode(undefined);
+    expect(theme.resolved).to.equal('auto');
+    context.destroy();
+  });
+
+  it('watches descendant surfaces added inside container elements', () => {
+    return new Promise((resolve) => {
+      makeContext({ darkMode: 'on' });
+      setTimeout(() => {
+        const wrapper = document.createElement('div');
+        const popover = document.createElement('div');
+        popover.className = 'note-popover popover';
+        wrapper.appendChild(popover);
+        document.body.appendChild(wrapper);
+
+        setTimeout(() => {
+          expect($$(popover).hasClass('note-editor-dark')).to.equal(true);
+          wrapper.remove();
+          resolve();
+        }, 60);
+      }, 60);
+    });
+  });
+
+  it('skips querySelectorAll branch for added nodes without it', () => {
+    return new Promise((resolve) => {
+      makeContext({ darkMode: 'on' });
+      setTimeout(() => {
+        const bare = document.createElement('div');
+        Object.defineProperty(bare, 'querySelectorAll', { value: undefined, configurable: true });
+        Object.defineProperty(bare, 'matches', { value: undefined, configurable: true });
+        document.body.appendChild(bare);
+
+        setTimeout(() => {
+          document.body.removeChild(bare);
+          resolve();
+        }, 60);
+      }, 60);
+    });
+  });
+});
+
