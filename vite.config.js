@@ -81,11 +81,6 @@ for (const [style, variant] of Object.entries(styles)) {
       },
 
       rollupOptions: {
-        external: (id) => {
-          if (id.startsWith('./font/')) return true; // do not bundle font files
-          return false;
-        },
-
         output: {
           assetFileNames: `${variant.fileBase}.[ext]`,
           entryFileNames: `${variant.fileBase}.js`,

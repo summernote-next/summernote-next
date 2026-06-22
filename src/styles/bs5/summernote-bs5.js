@@ -1,6 +1,7 @@
 import $$ from '@/js/core/dom-query.js';
 import '@/js/settings';
 import renderer from '@/js/renderer';
+import { ICONS, ICON_PREFIX, getIconSvg } from '@/js/icons-svg.js';
 
 import './summernote-bs5.scss';
 
@@ -119,11 +120,23 @@ const checkbox = renderer.create('<div class="form-check"></div>', function($nod
 });
 
 const icon = function(iconClassName, tagName) {
-  if (iconClassName.match(/^</)) {
+  if (!iconClassName) {
+    return '';
+  }
+  if (iconClassName.charAt(0) === '<') {
     return iconClassName;
   }
-  tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName+'>';
+  const tokens = iconClassName.split(/\s+/).filter(Boolean);
+  const iconToken = tokens.find((token) => token.startsWith(ICON_PREFIX));
+  if (!iconToken) {
+    tagName = tagName || 'i';
+    return '<' + tagName + ' class="' + iconClassName + '"></' + tagName + '>';
+  }
+  const name = iconToken.slice(ICON_PREFIX.length);
+  const extra = tokens.filter((token) => token !== iconToken).join(' ').trim();
+  const cls = 'note-icon ' + ICON_PREFIX + name + (extra ? ' ' + extra : '');
+  const svg = getIconSvg(name) || ICONS[name] || '';
+  return '<i class="' + cls + '" aria-hidden="true">' + svg + '</i>';
 };
 
 const initializeTooltip = function($node, options, editorOptions) {

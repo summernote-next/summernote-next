@@ -8,7 +8,6 @@ export function buildExamplesPackage({ outputDir, zipName } = {}) {
   const root = process.cwd();
   const examplesSource = join(root, 'examples');
   const distSource = join(root, 'dist');
-  const fontSource = join(root, 'font');
   const stagingDir = join(root, '.tmp', 'examples-package');
   const stagingExamples = join(stagingDir, 'examples');
 
@@ -20,7 +19,6 @@ export function buildExamplesPackage({ outputDir, zipName } = {}) {
 
   ensureArtifact(examplesSource, 'examples directory');
   ensureArtifact(distSource, 'dist directory');
-  ensureArtifact(fontSource, 'font directory');
 
   console.log('Assembling runnable examples package ...');
 
@@ -36,10 +34,6 @@ export function buildExamplesPackage({ outputDir, zipName } = {}) {
     recursive: true,
     filter: (src) => !src.endsWith('.zip'),
   });
-
-  console.log('Copying font into examples/font (was a mount point) ...');
-  rmSync(join(stagingExamples, 'font'), { recursive: true, force: true });
-  cpSync(fontSource, join(stagingExamples, 'font'), { recursive: true });
 
   const targetDir = outputDir || join(root, 'dist');
   const targetZipName = zipName || `summernote-next-${version}-examples.zip`;

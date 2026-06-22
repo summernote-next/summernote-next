@@ -1,0 +1,60 @@
+// Variables
+
+$sni-css-prefix: note-icon !default;
+
+// Icon sizing/colouring for inline SVG icons.
+// Icons are rendered as `<i class="note-icon note-icon-<name>"><svg>...</svg></i>`
+// by the icon() helper; the glyph inherits the parent's `currentColor` so the
+// icon picks up text colour and hover/active states for free.
+
+.#{$sni-css-prefix} {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  text-rendering: auto;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  speak: none;
+
+  > svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    pointer-events: none;
+  }
+}
+
+// Extras
+
+.#{$sni-css-prefix}-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.#{$sni-css-prefix}-border {
+  border: solid 0.08em #eee;
+  border-radius: 0.1em;
+  padding: 0.2em 0.25em 0.15em;
+}
+
+.#{$sni-css-prefix}-pull-left {
+  float: left;
+}
+
+.#{$sni-css-prefix}-pull-right {
+  float: right;
+}
+
+.#{$sni-css-prefix} {
+  &.#{$sni-css-prefix}-pull-left {
+    margin-right: 0.3em;
+  }
+  &.#{$sni-css-prefix}-pull-right {
+    margin-left: 0.3em;
+  }
+}

@@ -89,7 +89,7 @@ describe('summernote bs5 ui template', () => {
     expect($checkItems).to.have.length(3);
     expect($checkItems.eq(0).attr('data-value')).to.equal('alpha');
     expect($checkItems.eq(0).attr('aria-label')).to.equal('alpha');
-    expect($checkItems.eq(1).html()).to.contain('<i class="note-icon-check"></i>');
+    expect($checkItems.eq(1).html()).to.contain('<i class="note-icon note-icon-check" aria-hidden="true">');
     expect($checkItems.eq(1).html()).to.contain('<em>beta</em>');
     expect($checkItems.eq(2).attr('data-value')).to.equal('');
     expect($checkItems.eq(2).html()).to.contain('<em>none</em>');
@@ -144,6 +144,19 @@ describe('summernote bs5 ui template', () => {
 
     expect(ui.icon('<svg class="icon"></svg>')).to.equal('<svg class="icon"></svg>');
     expect(ui.icon('bi bi-type-bold', 'span')).to.equal('<span class="bi bi-type-bold"></span>');
+    expect(ui.icon('')).to.equal('');
+    expect(ui.icon(undefined)).to.equal('');
+
+    const noteIcon = ui.icon('note-icon-bold');
+    expect(noteIcon).to.contain('class="note-icon note-icon-bold"');
+    expect(noteIcon).to.contain('<svg');
+    expect(noteIcon).to.contain('aria-hidden="true"');
+
+    const noteIconWithExtra = ui.icon('note-icon-bold some-extra-class');
+    expect(noteIconWithExtra).to.contain('class="note-icon note-icon-bold some-extra-class"');
+
+    const noteIconUnknown = ui.icon('note-icon-does-not-exist');
+    expect(noteIconUnknown).to.contain('class="note-icon note-icon-does-not-exist"');
   });
 
   it('initializes tooltips for buttons and palettes with every container source', () => {
