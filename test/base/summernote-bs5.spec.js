@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
+import { loadAllIcons, resetIconCache } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote bs5 ui template', () => {
@@ -98,7 +99,7 @@ describe('summernote bs5 ui template', () => {
     expect($emptyDropdownCheck.find('.dropdown-item')).to.have.length(0);
   });
 
-  it('renders dialogs, popovers, checkboxes, and raw icon markup', () => {
+  it('renders dialogs, popovers, checkboxes, and raw icon markup', async() => {
     const ui = $$.summernote.ui_template({});
 
     const $dialog = ui.dialog({
@@ -147,6 +148,14 @@ describe('summernote bs5 ui template', () => {
     expect(ui.icon('')).to.equal('');
     expect(ui.icon(undefined)).to.equal('');
 
+    resetIconCache();
+    const placeholder = ui.icon('note-icon-bold');
+    expect(placeholder).to.contain('class="note-icon note-icon-bold"');
+    expect(placeholder).to.contain('aria-hidden="true"');
+    expect(placeholder).not.to.contain('<svg');
+
+    await loadAllIcons();
+
     const noteIcon = ui.icon('note-icon-bold');
     expect(noteIcon).to.contain('class="note-icon note-icon-bold"');
     expect(noteIcon).to.contain('<svg');
@@ -157,6 +166,23 @@ describe('summernote bs5 ui template', () => {
 
     const noteIconUnknown = ui.icon('note-icon-does-not-exist');
     expect(noteIconUnknown).to.contain('class="note-icon note-icon-does-not-exist"');
+  });
+
+  it('paints placeholder icons in the DOM once they have been lazily loaded', async() => {
+    resetIconCache();
+    const ui = $$.summernote.ui_template({});
+
+    const $host = $$('<div></div>').appendTo('body');
+    $host.html(ui.icon('note-icon-bold'));
+    expect($host.find('i.note-icon-bold').length).to.equal(1);
+    expect($host.find('i.note-icon-bold svg').length).to.equal(0);
+
+    await loadAllIcons();
+    await vi.waitFor(() => {
+      expect($host.find('i.note-icon-bold svg').length).to.equal(1);
+    });
+
+    $host.remove();
   });
 
   it('initializes tooltips for buttons and palettes with every container source', () => {

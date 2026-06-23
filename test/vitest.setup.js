@@ -1,6 +1,11 @@
 import $$ from '@/js/core/dom-query.js';
 import env from '@/js/core/env';
+import { setIconBaseUrl } from '@/js/icons-svg.js';
 import { expect } from 'vitest';
+
+// Icons are fetched as separate .svg files at runtime; in the vitest browser
+// environment point the loader at the project's source icons served by Vite.
+setIconBaseUrl('/src/font/icons/');
 
 expect.extend({
   equalsIgnoreCase: (str1, str2) => {

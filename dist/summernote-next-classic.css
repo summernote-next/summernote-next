@@ -1,5 +1,7 @@
 .note-icon {
   display: inline-block;
+  width: 1em;
+  height: 1em;
   line-height: 1;
   vertical-align: middle;
   font-style: normal;
@@ -1388,6 +1390,8 @@ body:has(.note-air-popover) {
   background-color: var(--note-accent-bg);
 }.note-icon {
   display: inline-block;
+  width: 1em;
+  height: 1em;
   line-height: 1;
   vertical-align: middle;
   font-style: normal;

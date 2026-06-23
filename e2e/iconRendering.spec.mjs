@@ -22,7 +22,7 @@ const tests = [
   {
     name: 'icons-render-as-inline-svg-without-font',
     async run(page) {
-      await page.waitForSelector('.note-toolbar .note-icon-bold', { timeout: 5000 });
+      await page.waitForSelector('.note-toolbar .note-icon-bold svg', { timeout: 5000 });
 
       const audit = await page.evaluate(() => {
         const toolbar = document.querySelector('.note-toolbar');
@@ -44,7 +44,7 @@ const tests = [
           }
         }
         return {
-          ok: inlineCount > 0,
+          ok: inlineCount > 0 && empty === 0,
           iconCount: icons.length,
           inlineCount,
           empty,
@@ -75,24 +75,27 @@ const tests = [
   {
     name: 'icon-glyphs-inherit-currentColor',
     async run(page) {
-      await page.waitForSelector('.note-icon-bold', { timeout: 5000 });
+      await page.waitForSelector('.note-icon-bold svg', { timeout: 5000 });
 
       const fills = await page.evaluate(() => {
         const i = document.querySelector('.note-icon-bold');
         const svg = i && i.querySelector(':scope > svg');
         const path = svg && svg.querySelector('path');
         return {
+          svgAttributeFill: svg ? svg.getAttribute('fill') : null,
           svgFill: svg ? window.getComputedStyle(svg).fill : null,
           pathFill: path ? window.getComputedStyle(path).fill : null,
-          pathAttributeFill: path ? path.getAttribute('fill') : null,
         };
       });
 
-      if (!fills.svgFill || fills.svgFill === 'none') {
-        throw new Error(`expected svg to have a non-none computed fill, got ${fills.svgFill}`);
+      if (fills.svgAttributeFill !== 'currentColor') {
+        throw new Error(`expected svg fill="currentColor", got ${fills.svgAttributeFill}`);
       }
-      if (fills.pathAttributeFill !== 'currentColor') {
-        throw new Error(`expected path fill="currentColor", got ${fills.pathAttributeFill}`);
+      if (!fills.pathFill || fills.pathFill === 'none') {
+        throw new Error(`expected path to have a non-none computed fill, got ${fills.pathFill}`);
+      }
+      if (fills.pathFill !== fills.svgFill) {
+        throw new Error(`expected path to inherit the svg fill (${fills.svgFill}), got ${fills.pathFill}`);
       }
 
       return fills;

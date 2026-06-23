@@ -1,7 +1,7 @@
 import $$ from '@/js/core/dom-query.js';
 import '@/js/settings';
 import renderer from '@/js/renderer';
-import { ICONS, ICON_PREFIX, getIconSvg } from '@/js/icons-svg.js';
+import { ICON_PREFIX, getIconSvg, loadAllIcons, iconNames } from '@/js/icons-svg.js';
 
 import './summernote-bs5.scss';
 
@@ -135,8 +135,37 @@ const icon = function(iconClassName, tagName) {
   const name = iconToken.slice(ICON_PREFIX.length);
   const extra = tokens.filter((token) => token !== iconToken).join(' ').trim();
   const cls = 'note-icon ' + ICON_PREFIX + name + (extra ? ' ' + extra : '');
-  const svg = getIconSvg(name) || ICONS[name] || '';
+  const svg = getIconSvg(name) || '';
   return '<i class="' + cls + '" aria-hidden="true">' + svg + '</i>';
+};
+
+const paintIcon = function(name) {
+  const svg = getIconSvg(name);
+  if (!svg) {
+    return;
+  }
+  const nodes = document.querySelectorAll('i.' + ICON_PREFIX + name);
+  nodes.forEach((el) => {
+    if (!el.querySelector(':scope > svg')) {
+      el.innerHTML = svg;
+    }
+  });
+};
+
+const paintAllIcons = function() {
+  iconNames().forEach((name) => paintIcon(name));
+};
+
+let paintedPromise = null;
+const ensureIconsLoaded = function() {
+  const promise = loadAllIcons();
+  if (promise === paintedPromise) {
+    return;
+  }
+  paintedPromise = promise;
+  promise.then(paintAllIcons).catch(() => {
+    paintedPromise = null;
+  });
 };
 
 const initializeTooltip = function($node, options, editorOptions) {
@@ -159,6 +188,8 @@ const initializeTooltip = function($node, options, editorOptions) {
 };
 
 const ui = function(editorOptions) {
+  ensureIconsLoaded();
+
   return {
     editor: editor,
     toolbar: toolbar,

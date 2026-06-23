@@ -9,6 +9,8 @@ $sni-css-prefix: note-icon !default;
 
 .#{$sni-css-prefix} {
   display: inline-block;
+  width: 1em;
+  height: 1em;
   line-height: 1;
   vertical-align: middle;
   font-style: normal;
