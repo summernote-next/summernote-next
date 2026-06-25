@@ -85,7 +85,7 @@ export default class LinkDialog {
     } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
       return 'http://' + linkUrl;
     }
-    return linkUrl;
+    return func.sanitizeUrl(linkUrl);
   }
 
   onCheckLinkUrl($input) {

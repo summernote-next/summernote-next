@@ -219,6 +219,11 @@ export default class Editor {
         linkUrl = this.checkLinkUrl(linkUrl);
       }
 
+      // Final guard: never allow a dangerous scheme (e.g. `javascript:`) to
+      // reach the anchor's href attribute, even if a custom onCreateLink
+      // callback produced one.
+      linkUrl = func.sanitizeUrl(linkUrl);
+
       let anchors = [];
       if (isTextChanged) {
         rng = rng.deleteContents();
@@ -548,7 +553,7 @@ export default class Editor {
     } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
       return 'http://' + linkUrl;
     }
-    return linkUrl;
+    return func.sanitizeUrl(linkUrl);
   }
 
   /**

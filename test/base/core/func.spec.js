@@ -164,6 +164,43 @@ describe('base:core.func', () => {
     });
   });
 
+  describe('sanitizeUrl', () => {
+    it('should keep safe URLs unchanged', () => {
+      expect(func.sanitizeUrl('https://www.summernote.org')).to.be.equal('https://www.summernote.org');
+      expect(func.sanitizeUrl('http://summernote.org/path?a=1#frag')).to.be.equal('http://summernote.org/path?a=1#frag');
+      expect(func.sanitizeUrl('mailto:test@example.com')).to.be.equal('mailto:test@example.com');
+      expect(func.sanitizeUrl('tel:+123456789')).to.be.equal('tel:+123456789');
+      expect(func.sanitizeUrl('/relative/path')).to.be.equal('/relative/path');
+      expect(func.sanitizeUrl('#anchor')).to.be.equal('#anchor');
+    });
+
+    it('should neutralize javascript: URLs', () => {
+      expect(func.sanitizeUrl('javascript:alert(1)')).to.be.equal('#');
+      expect(func.sanitizeUrl('JaVaScRiPt:alert(1)')).to.be.equal('#');
+      expect(func.sanitizeUrl('  javascript:alert(1)')).to.be.equal('#');
+    });
+
+    it('should neutralize obfuscated javascript: URLs with control characters', () => {
+      expect(func.sanitizeUrl('java\tscript:alert(1)')).to.be.equal('#');
+      expect(func.sanitizeUrl('java\nscript:alert(1)')).to.be.equal('#');
+      expect(func.sanitizeUrl('\u0000javascript:alert(1)')).to.be.equal('#');
+      expect(func.sanitizeUrl('java\u0000script:alert(1)')).to.be.equal('#');
+    });
+
+    it('should neutralize other dangerous schemes', () => {
+      expect(func.sanitizeUrl('vbscript:msgbox(1)')).to.be.equal('#');
+      expect(func.sanitizeUrl('data:text/html,<script>alert(1)</script>')).to.be.equal('#');
+      expect(func.sanitizeUrl('blob:https://evil/abc')).to.be.equal('#');
+      expect(func.sanitizeUrl('file:///etc/passwd')).to.be.equal('#');
+    });
+
+    it('should pass through empty or non-string values', () => {
+      expect(func.sanitizeUrl('')).to.be.equal('');
+      expect(func.sanitizeUrl(null)).to.be.equal(null);
+      expect(func.sanitizeUrl(undefined)).to.be.equal(undefined);
+    });
+  });
+
   describe('rect2bnd', () => {
     it('should return zero rect for null input', () => {
       expect(func.rect2bnd(null)).to.deep.equal({ top: 0, left: 0, width: 0, height: 0 });

@@ -172,6 +172,45 @@ function isValidUrl(url) {
   return expression.test(url);
 }
 
+// Schemes that can execute script or smuggle active content when used in
+// href/src attributes. These must never be allowed to reach the DOM.
+const DANGEROUS_URL_SCHEME_PATTERN = /^(?:javascript|vbscript|data|blob|file)\s*:/i;
+// Unicode whitespace characters (>= 0x80) that browsers ignore while parsing
+// the scheme part of a URL.
+const URL_IGNORED_UNICODE_WS = '\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff';
+
+/**
+ * Neutralizes URLs that use a dangerous scheme (e.g. `javascript:`,
+ * `vbscript:`, `data:`) to prevent DOM-based XSS when the value is later
+ * assigned to an `href`/`src` attribute. Control characters that browsers
+ * strip while parsing the scheme (tabs, newlines, NUL bytes) are removed
+ * before the check so that obfuscated payloads such as `java\tscript:` are
+ * detected as well.
+ *
+ * @param {String} url
+ * @return {String} the original url, or `'#'` when the scheme is unsafe
+ */
+function sanitizeUrl(url) {
+  if (typeof url !== 'string' || url === '') {
+    return url;
+  }
+  // Strip characters browsers ignore while resolving the scheme (control
+  // characters <= 0x20, DEL, and a set of unicode whitespace characters) so
+  // that payloads like `java\tscript:` or `java\nscript:` cannot bypass the
+  // check. Done via charCodeAt to avoid control characters in regex literals.
+  let normalized = '';
+  for (let i = 0; i < url.length; i++) {
+    const code = url.charCodeAt(i);
+    if (code > 0x20 && code !== 0x7f && URL_IGNORED_UNICODE_WS.indexOf(url[i]) === -1) {
+      normalized += url[i];
+    }
+  }
+  if (DANGEROUS_URL_SCHEME_PATTERN.test(normalized)) {
+    return '#';
+  }
+  return url;
+}
+
 export default {
   eq,
   eq2,
@@ -189,4 +228,5 @@ export default {
   namespaceToCamel,
   debounce,
   isValidUrl,
+  sanitizeUrl,
 };
