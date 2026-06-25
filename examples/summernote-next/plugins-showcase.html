@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Plugin Showcase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="../assets/examples.css">
+    <link rel="stylesheet" href="../dist/summernote-next.css">
+
+    <!--
+      Plugin stylesheets are loaded in the header via the plugin loader.
+      Each plugin registers itself and its CSS/JS through summernote.registerPlugin().
+    -->
+    <link rel="stylesheet" href="../plugins/word-counter/css/word-counter.css">
+    <link rel="stylesheet" href="../plugins/alignment-buttons/css/alignment-buttons.css">
+    <link rel="stylesheet" href="../plugins/special-characters/css/special-characters.css">
+    <link rel="stylesheet" href="../plugins/text-styles/css/text-styles.css">
+    <link rel="stylesheet" href="../plugins/link-extractor/css/link-extractor.css">
+    <link rel="stylesheet" href="../plugins/emoji-picker/css/emoji-picker.css">
+
+    <script type="module" src="../assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="../dist/summernote-next.js"></script>
+
+    <!-- Plugin scripts are loaded in the header so they self-register before summernote.create() runs. -->
+    <script defer src="../plugins/word-counter/js/word-counter.js"></script>
+    <script defer src="../plugins/alignment-buttons/js/alignment-buttons.js"></script>
+    <script defer src="../plugins/special-characters/js/special-characters.js"></script>
+    <script defer src="../plugins/text-styles/js/text-styles.js"></script>
+    <script defer src="../plugins/link-extractor/js/link-extractor.js"></script>
+    <script defer src="../plugins/emoji-picker/js/emoji-picker.js"></script>
+  </head>
+  <body>
+
+    <main class="page">
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="./index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Plugin showcase</li>
+        </ol>
+      </nav>
+
+      <h1 class="mt-3">Plugin showcase</h1>
+
+      <p class="page-copy">
+        Six self-contained plugins live in <code>examples/plugins/</code>. Each plugin ships its own
+        <code>css/</code> and <code>js/</code> files, registers itself through
+        <code>summernote.registerPlugin()</code>, and adds a button to the toolbar — without touching any
+        Summernote Next source code. The plugins rely on the existing
+        <code>summernote.summernote.plugins</code> registry and the new
+        <code>summernote.registerPlugin</code> helper that lives in <code>src/js/summernote.js</code>.
+      </p>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 mt-2 mb-3">
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h6">Word Counter</h2>
+              <p class="mb-0 text-secondary small">
+                Counts words and characters in the status bar and toggles a live badge. Toolbar button:
+                <code>wordCounterToggle</code>.
+              </p>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h6">Alignment Buttons</h2>
+              <p class="mb-0 text-secondary small">
+                Four toolbar buttons (<code>alignLeft</code>, <code>alignCenter</code>, <code>alignRight</code>,
+                <code>alignJustify</code>) wrapping the existing <code>editor.justify*</code> methods.
+              </p>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h6">Special Characters</h2>
+              <p class="mb-0 text-secondary small">
+                Dropdown picker for currency, math, arrows, Greek letters, and punctuation. Toolbar button:
+                <code>specialCharacters</code>.
+              </p>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h6">Text Styles</h2>
+              <p class="mb-0 text-secondary small">
+                Inline <code>&lt;mark&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;kbd&gt;</code>,
+                <code>&lt;var&gt;</code>, <code>&lt;samp&gt;</code> toolbar buttons.
+              </p>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h6">Link Extractor</h2>
+              <p class="mb-0 text-secondary small">
+                Scans the editor for anchors and renders a list of links below the editable area. Toolbar
+                button: <code>linkExtractorToggle</code>.
+              </p>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h6">Emoji Picker</h2>
+              <p class="mb-0 text-secondary small">
+                Dropdown picker for smileys, gestures, hearts, and symbols. Toolbar button:
+                <code>emojiPicker</code>.
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="row row-cols-1 row-cols-lg-2 g-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="plugin-showcase-stats" type="button">Read word stats</button>
+                <button class="btn btn-outline-secondary" id="plugin-showcase-links" type="button">Read links</button>
+                <button class="btn btn-outline-secondary" id="plugin-showcase-reset" type="button">Reset</button>
+              </div>
+              <div id="plugin-showcase-editor">
+                <p>Welcome to the <strong>Summernote Next plugin showcase</strong>.</p>
+                <p>The toolbar above mixes the built-in buttons with five plugin buttons. Try selecting some text
+                and clicking <kbd>MARK</kbd>, <kbd>CODE</kbd>, or any alignment button.</p>
+                <p>Read more at <a href="https://juergen-schwind.com/summernote-next">juergen-schwind.com</a> or
+                jump to <a href="https://github.com/summernote-next/summernote-next">the GitHub repository</a>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Plugin output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="plugin-showcase-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Plugin Showcase</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>&lt;link rel="stylesheet" href="../plugins/word-counter/css/word-counter.css"&gt;
+&lt;link rel="stylesheet" href="../plugins/alignment-buttons/css/alignment-buttons.css"&gt;
+&lt;link rel="stylesheet" href="../plugins/special-characters/css/special-characters.css"&gt;
+&lt;link rel="stylesheet" href="../plugins/text-styles/css/text-styles.css"&gt;
+&lt;link rel="stylesheet" href="../plugins/link-extractor/css/link-extractor.css"&gt;
+
+&lt;script defer src="../plugins/word-counter/js/word-counter.js"&gt;&lt;/script&gt;
+&lt;script defer src="../plugins/alignment-buttons/js/alignment-buttons.js"&gt;&lt;/script&gt;
+&lt;script defer src="../plugins/special-characters/js/special-characters.js"&gt;&lt;/script&gt;
+&lt;script defer src="../plugins/text-styles/js/text-styles.js"&gt;&lt;/script&gt;
+&lt;script defer src="../plugins/link-extractor/js/link-extractor.js"&gt;&lt;/script&gt;
+&lt;script defer src="../plugins/emoji-picker/js/emoji-picker.js"&gt;&lt;/script&gt;
+
+summernote.create('#plugin-showcase-editor', {
+  height: 280,
+  toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'underline', 'clear']],
+    ['plugins-paragraph', ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify']],
+    ['plugins-text', ['markText', 'inlineCode', 'kbdText', 'varText', 'sampleText']],
+    ['plugins-insert', ['specialCharacters', 'emojiPicker']],
+    ['plugins-tools', ['wordCounterToggle', 'linkExtractorToggle']],
+    ['view', ['fullscreen', 'codeview', 'help']],
+  ],
+});</code></pre>
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#plugin-showcase-editor';
+        const initialMarkup = document.getElementById('plugin-showcase-editor').innerHTML;
+        const output = document.getElementById('plugin-showcase-output');
+
+        summernote.create(target, {
+          height: 280,
+          toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['plugins-paragraph', ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify']],
+            ['plugins-text', ['markText', 'inlineCode', 'kbdText', 'varText', 'sampleText']],
+            ['plugins-insert', ['specialCharacters', 'emojiPicker']],
+            ['plugins-tools', ['wordCounterToggle', 'linkExtractorToggle']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+          ],
+        });
+
+        document.getElementById('plugin-showcase-stats').addEventListener('click', () => {
+          const stats = summernote.invoke(target, 'wordCounter.stats');
+          output.textContent = `Word counter stats:\n${JSON.stringify(stats, null, 2)}`;
+        });
+
+        document.getElementById('plugin-showcase-links').addEventListener('click', () => {
+          const links = summernote.invoke(target, 'linkExtractor.list');
+          output.textContent = `Extracted ${links.length} link(s):\n${JSON.stringify(links, null, 2)}`;
+        });
+
+        document.getElementById('plugin-showcase-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset editor content. Plugins stay active.';
+        });
+      });
+    </script>
+
+  </body>
+</html>

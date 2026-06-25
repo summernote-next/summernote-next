@@ -1,0 +1,21 @@
+/**
+ * Summernote Next - Alignment Buttons Plugin stylesheet
+ */
+
+.sn-plugin-align {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+}
+
+.sn-plugin-align svg {
+  display: block;
+}
+
+.note-toolbar .note-btn.sn-plugin-align.is-active,
+.note-toolbar .note-btn.sn-plugin-align.active {
+  background-color: var(--bs-primary, #0d6efd);
+  color: var(--bs-white, #fff);
+  border-color: var(--bs-primary, #0d6efd);
+}

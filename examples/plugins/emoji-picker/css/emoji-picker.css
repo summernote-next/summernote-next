@@ -1,0 +1,57 @@
+/**
+ * Summernote Next - Emoji Picker Plugin stylesheet
+ */
+
+.sn-plugin-emoji-picker {
+  max-width: 22rem;
+  padding: 0.5rem;
+}
+
+.sn-plugin-emoji-group + .sn-plugin-emoji-group {
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.1));
+  padding-top: 0.5rem;
+}
+
+.sn-plugin-emoji-group-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bs-secondary-color, #6c757d);
+  margin-bottom: 0.25rem;
+}
+
+.sn-plugin-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 0.1rem;
+}
+
+.sn-plugin-emoji-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  background: transparent;
+  font-size: 1.05rem;
+  cursor: pointer;
+  color: inherit;
+  transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.sn-plugin-emoji-cell:hover,
+.sn-plugin-emoji-cell:focus-visible {
+  background-color: var(--bs-tertiary-bg, rgba(13, 110, 253, 0.08));
+  border-color: var(--bs-primary, #0d6efd);
+  transform: scale(1.08);
+  outline: none;
+}
+
+.sn-plugin-emoji-toggle .sn-plugin-emoji-glyph {
+  font-size: 1.05rem;
+}

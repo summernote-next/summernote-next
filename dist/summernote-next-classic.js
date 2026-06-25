@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-06-20T13:44Z
+Date: 2026-06-25T12:04Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -3083,7 +3083,15 @@ var summernote = (function() {
 	DomQuery.prototype.summernote = function() {
 		const type = typeof lists_default.head(arguments);
 		const isExternalAPICalled = type === "string";
-		const initOptions = type === "object" ? lists_default.head(arguments) : {};
+		let initOptions = type === "object" ? lists_default.head(arguments) : {};
+		const pluginMeta = $$.summernote && $$.summernote.pluginMeta || {};
+		if (Object.keys(pluginMeta).length) {
+			const mergedButtons = {};
+			Object.values(pluginMeta).forEach((meta) => {
+				if (meta && meta.buttons) Object.assign(mergedButtons, meta.buttons);
+			});
+			if (Object.keys(mergedButtons).length) initOptions = $$.extend({}, initOptions, { buttons: $$.extend({}, mergedButtons, initOptions.buttons || {}) });
+		}
 		const options = $$.extend({}, $$.summernote.options, initOptions);
 		options.langInfo = $$.extend(true, {}, $$.summernote.lang["en-US"], $$.summernote.lang[options.lang]);
 		if (!Object.prototype.hasOwnProperty.call(initOptions, "colorsName") && options.langInfo.color?.colorsName) options.colorsName = options.langInfo.color.colorsName;
@@ -3105,6 +3113,26 @@ var summernote = (function() {
 		}
 		return this;
 	};
+	var loadedStylesheetUrls = /* @__PURE__ */ new Set();
+	function loadStylesheet(url) {
+		if (!url || typeof document === "undefined" || loadedStylesheetUrls.has(url)) return Promise.resolve();
+		loadedStylesheetUrls.add(url);
+		return new Promise((resolve, reject) => {
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+			link.href = url;
+			link.dataset.summernotePluginStylesheet = "";
+			link.addEventListener("load", () => resolve());
+			link.addEventListener("error", (event) => {
+				loadedStylesheetUrls.delete(url);
+				reject(event);
+			});
+			document.head.appendChild(link);
+		});
+	}
+	function loadStylesheets(urls) {
+		return Promise.all((urls || []).map(loadStylesheet));
+	}
 	Object.assign($$, {
 		create(target, options = {}) {
 			const collection = resolveCollection(target);
@@ -3119,6 +3147,39 @@ var summernote = (function() {
 		},
 		invoke(target, method, ...args) {
 			return unwrapResult(getContexts(target).map((context) => context.invoke(method, ...args)));
+		},
+		loadPluginStylesheet(url) {
+			return loadStylesheet(url);
+		},
+		loadPluginStylesheets(urls) {
+			return loadStylesheets(urls);
+		},
+		registerPlugin(name, pluginClass, options = {}) {
+			if (!name || typeof name !== "string") throw new Error("registerPlugin(name, pluginClass) requires a non-empty plugin name.");
+			if (typeof pluginClass !== "function") throw new Error("registerPlugin(name, pluginClass) requires a plugin class constructor.");
+			$$.summernote = $$.summernote || {
+				lang: {},
+				plugins: {}
+			};
+			$$.summernote.plugins = $$.summernote.plugins || {};
+			$$.summernote.pluginMeta = $$.summernote.pluginMeta || {};
+			$$.summernote.plugins[name] = pluginClass;
+			$$.summernote.pluginMeta[name] = Object.freeze({
+				name,
+				stylesheets: Object.freeze([...options.stylesheets || []]),
+				scripts: Object.freeze([...options.scripts || []]),
+				buttons: Object.freeze({ ...options.buttons || {} }),
+				version: options.version || null
+			});
+			const stylesheets = $$.summernote.pluginMeta[name].stylesheets;
+			if (stylesheets.length) loadStylesheets(stylesheets);
+			return pluginClass;
+		},
+		getPluginMeta(name) {
+			return $$.summernote && $$.summernote.pluginMeta && $$.summernote.pluginMeta[name] || null;
+		},
+		listPlugins() {
+			return Object.keys($$.summernote && $$.summernote.plugins || {});
 		}
 	});
 	//#endregion
