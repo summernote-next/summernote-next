@@ -3,7 +3,34 @@ import { nextTick } from '/test/util';
 import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
 import Toolbar from '@/js/module/Toolbar';
+import { loadAllIcons } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
+
+async function paintToolbarIcons() {
+  // The icon SVGs are fetched lazily by the bs5 ui template. Wait for the
+  // fetch promise so every glyph used by the current toolbar is painted
+  // before measuring layout, otherwise we would observe placeholder
+  // wrappers instead of the rendered icons.
+  await loadAllIcons();
+  await nextTick();
+}
+
+async function waitForSvg(button) {
+  for (let i = 0; i < 40; i++) {
+    const icons = button.querySelectorAll('.note-icon');
+    let ready = icons.length > 0;
+    icons.forEach((icon) => {
+      if (!icon.querySelector(':scope > svg')) {
+        ready = false;
+      }
+    });
+    if (ready) {
+      await nextTick();
+      return;
+    }
+    await nextTick();
+  }
+}
 
 describe('Toolbar', () => {
   let context;
@@ -17,8 +44,9 @@ describe('Toolbar', () => {
       $$.extend({}, $$.summernote.options, {
         toolbar: [
           ['style', ['style']],
-          ['font', ['fontname']],
-          ['view', ['fullscreen', 'codeview']],
+          ['font', ['bold', 'italic', 'underline', 'fontname']],
+          ['para', ['ul', 'ol', 'paragraph', 'height']],
+          ['view', ['fullscreen', 'codeview', 'help']],
         ],
       }),
     );
@@ -260,5 +288,87 @@ describe('Toolbar', () => {
     const event = { target: document.createTextNode('text'), preventDefault: vi.fn() };
     toolbar.handleDropdownClick(event);
     expect(event.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('lays out icon-only buttons as square blocks with centred glyphs', async() => {
+    await paintToolbarIcons();
+    const $boldButton = $toolbar.find('.note-btn-bold');
+    await waitForSvg($boldButton[0]);
+    const $boldIcon = $boldButton.find('.note-icon');
+    const $boldSvg = $boldButton.find('.note-icon > svg');
+    const buttonRect = $boldButton[0].getBoundingClientRect();
+    const iconRect = $boldIcon[0].getBoundingClientRect();
+    const svgRect = $boldSvg[0].getBoundingClientRect();
+
+    expect(buttonRect.width).to.be.greaterThan(0);
+    expect(Math.abs(buttonRect.width - buttonRect.height)).to.be.lessThan(0.5);
+    expect(Math.abs(iconRect.width - iconRect.height)).to.be.lessThan(0.5);
+    // The icon wrapper should fill the button's content area. The Bootstrap
+    // border is 1px on each side, so the icon may be up to 4px smaller than
+    // the button depending on how the test layout resolves percentages.
+    expect(Math.abs(iconRect.width - buttonRect.width)).to.be.lessThan(5);
+    expect(Math.abs(iconRect.height - buttonRect.height)).to.be.lessThan(5);
+
+    const expectedSvg = iconRect.width * 0.7;
+    expect(Math.abs(svgRect.width - expectedSvg)).to.be.lessThan(1);
+    expect(Math.abs(svgRect.height - expectedSvg)).to.be.lessThan(1);
+  });
+
+  it('renders dropdown toggles with icons as square blocks too', async() => {
+    const $paragraphButton = $toolbar.find('.note-para .dropdown-toggle');
+    await waitForSvg($paragraphButton[0]);
+    const paragraphNode = $paragraphButton[0];
+    const rect = paragraphNode.getBoundingClientRect();
+    const directIcons = Array.from(paragraphNode.children).filter(
+      (child) => child.classList && child.classList.contains('note-icon'),
+    );
+
+    expect(directIcons).to.have.length(1);
+    expect(Math.abs(rect.width - rect.height)).to.be.lessThan(0.5);
+  });
+
+  it('hides the Bootstrap caret arrow on icon-only buttons so it does not overflow', () => {
+    const $boldButton = $toolbar.find('.note-btn-bold');
+    const afterDisplay = window.getComputedStyle($boldButton[0], '::after').display;
+
+    expect(afterDisplay).to.equal('none');
+  });
+
+  it('sizes the source/code icon at 80% of the icon wrapper', async() => {
+    await paintToolbarIcons();
+    const $codeButton = $toolbar.find('.btn-codeview');
+    await waitForSvg($codeButton[0]);
+    const $codeIcon = $codeButton.find('.note-icon-code');
+    const $codeSvg = $codeButton.find('.note-icon-code > svg');
+    const iconRect = $codeIcon[0].getBoundingClientRect();
+    const svgRect = $codeSvg[0].getBoundingClientRect();
+
+    const expectedWidth = iconRect.width * 0.8;
+    expect(Math.abs(svgRect.width - expectedWidth)).to.be.lessThan(1);
+    expect(Math.abs(svgRect.height - expectedWidth)).to.be.lessThan(1);
+  });
+
+  it('keeps text-only dropdown buttons at their natural width instead of forcing a square', () => {
+    context.destroy();
+    context = new Context(
+      $$('<div><p>hello</p></div>').appendTo('body'),
+      $$.extend({}, $$.summernote.options, {
+        toolbar: [['fontname', ['fontname']]],
+      }),
+    );
+    toolbar = context.modules.toolbar;
+    $toolbar = context.layoutInfo.toolbar;
+
+    const $fontNameButton = $toolbar.find('.dropdown-toggle');
+    expect($fontNameButton.length).to.be.greaterThan(0);
+
+    const fontNameNode = $fontNameButton[0];
+    const rect = fontNameNode.getBoundingClientRect();
+    const directIcons = Array.from(fontNameNode.children).filter(
+      (child) => child.classList && child.classList.contains('note-icon'),
+    );
+
+    expect(directIcons).to.have.length(0);
+    expect(rect.width).to.be.greaterThan(rect.height);
   });
 });

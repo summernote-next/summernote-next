@@ -6,9 +6,21 @@ $sni-css-prefix: note-icon !default;
 // Icons are rendered as `<i class="note-icon note-icon-<name>"><svg>...</svg></i>`
 // by the icon() helper; the glyph inherits the parent's `currentColor` so the
 // icon picks up text colour and hover/active states for free.
+//
+// Each toolbar button is laid out as a square "block" so the icons line up in
+// a uniform grid. The `.note-icon` wrapper is a square inline-flex (1em x 1em)
+// that fills its parent button and centres its child SVG both horizontally
+// and vertically ("mittig mittig"). The inner SVG is sized to 70% of the
+// wrapper, which keeps enough breathing room around the glyph regardless of
+// whether the source path is wider or taller than tall. The browser keeps the
+// glyph's own aspect ratio (the SVG `viewBox` plus the default
+// `preserveAspectRatio="xMidYMid meet"`), so the icon only ever reaches 70% in
+// the dimension it actually fills.
 
 .#{$sni-css-prefix} {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 1em;
   height: 1em;
   line-height: 1;
@@ -24,11 +36,19 @@ $sni-css-prefix: note-icon !default;
 
   > svg {
     display: block;
-    width: 1em;
-    height: 1em;
+    width: 70%;
+    height: 70%;
     fill: currentColor;
     pointer-events: none;
   }
+}
+
+// The "source" / code-view glyph has more horizontal whitespace than the
+// other icons and reads smaller at 70%. Give it a bit more room so the `<>`
+// symbol stays visually balanced with the rest of the toolbar.
+.#{$sni-css-prefix}-code > svg {
+  width: 80%;
+  height: 80%;
 }
 
 // Extras

@@ -182,6 +182,39 @@ body:has(.note-air-popover) {
   border-color: var(--note-border-color, var(--bs-border-color, #dee2e6));
 }
 
+// Toolbar buttons that only render an SVG glyph become square "blocks" so
+// every icon lines up in a uniform grid. The icon wrapper fills the button
+// and centres the glyph horizontally and vertically, while the glyph itself
+// is sized to 70% of the wrapper (the "source" icon overrides this to 80%
+// in icons.scss).
+.note-editor .note-btn:has(> .note-icon),
+.note-popover .note-btn:has(> .note-icon),
+.note-modal .note-btn:has(> .note-icon) {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-editor .note-btn:has(> .note-icon) > .note-icon,
+.note-popover .note-btn:has(> .note-icon) > .note-icon,
+.note-modal .note-btn:has(> .note-icon) > .note-icon {
+  width: 100%;
+  height: 100%;
+}
+
+// The Bootstrap caret arrow would otherwise overflow the now-square icon
+// button. The glyph itself signals the dropdown affordance, so we hide the
+// trailing triangle.
+.note-editor .note-btn:has(> .note-icon)::after,
+.note-popover .note-btn:has(> .note-icon)::after,
+.note-modal .note-btn:has(> .note-icon)::after {
+  display: none;
+}
+
 .note-editor .note-dropdown-menu,
 .note-popover .note-dropdown-menu {
   color: var(--note-color);
