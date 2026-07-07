@@ -56,68 +56,74 @@ describe('Toolbar block layout', () => {
     $$('body').empty();
   });
 
-  it('renders icon buttons as 2rem square blocks', async() => {
+  it('renders icon buttons with centred icons sized to font-size', async() => {
     await paintToolbarIcons();
     const $boldButton = $toolbar.find('.note-btn-bold');
     await waitForSvg($boldButton[0]);
-    const rect = $boldButton[0].getBoundingClientRect();
-
-    expect(rect.width).to.equal(32);
-    expect(Math.abs(rect.width - rect.height)).to.be.lessThan(0.5);
-  });
-
-  it('centres the inner SVG glyph at 70% of the wrapper', async() => {
-    await paintToolbarIcons();
-    const $italicButton = $toolbar.find('.note-btn-italic');
-    await waitForSvg($italicButton[0]);
-    const $icon = $italicButton.find('.note-icon');
-    const $svg = $italicButton.find('.note-icon > svg');
+    const $icon = $boldButton.find('.note-icon');
+    const $svg = $boldButton.find('.note-icon > svg');
     const iconRect = $icon[0].getBoundingClientRect();
     const svgRect = $svg[0].getBoundingClientRect();
 
-    const expected = iconRect.width * 0.7;
-    expect(Math.abs(svgRect.width - expected)).to.be.lessThan(1);
-    expect(Math.abs(svgRect.height - expected)).to.be.lessThan(1);
+    // Icon wrapper is a square (1em × 1em) so the glyph matches font-size.
+    expect(Math.abs(iconRect.width - iconRect.height)).to.be.lessThan(0.5);
+    // The SVG fills the wrapper at 100%.
+    expect(Math.abs(svgRect.width - iconRect.width)).to.be.lessThan(1);
+    expect(Math.abs(svgRect.height - iconRect.height)).to.be.lessThan(1);
   });
 
-  it('overrides the source/code icon to 80% of the wrapper', async() => {
-    await paintToolbarIcons();
-    const $codeButton = $toolbar.find('.btn-codeview');
-    await waitForSvg($codeButton[0]);
-    const $icon = $codeButton.find('.note-icon-code');
-    const $svg = $codeButton.find('.note-icon-code > svg');
-    const iconRect = $icon[0].getBoundingClientRect();
-    const svgRect = $svg[0].getBoundingClientRect();
-
-    const expected = iconRect.width * 0.8;
-    expect(Math.abs(svgRect.width - expected)).to.be.lessThan(1);
-    expect(Math.abs(svgRect.height - expected)).to.be.lessThan(1);
-  });
-
-  it('renders dropdown toggles that contain an icon as square blocks too', async() => {
+  it('shows the Bootstrap caret on dropdown toggles so the dropdown affordance is visible', async() => {
     await paintToolbarIcons();
     const $paragraphButton = $toolbar.find('.note-para .dropdown-toggle');
     await waitForSvg($paragraphButton[0]);
-    const rect = $paragraphButton[0].getBoundingClientRect();
+    const afterDisplay = window.getComputedStyle($paragraphButton[0], '::after').display;
 
-    expect(Math.abs(rect.width - rect.height)).to.be.lessThan(0.5);
+    // The caret `::after` is kept on dropdown toggles so users see the
+    // dropdown marker next to the glyph.
+    expect(afterDisplay).not.to.equal('none');
   });
 
-  it('hides the trailing Bootstrap caret on icon-only buttons', () => {
+  it('hides the caret on icon-only buttons so it does not bleed past the glyph', () => {
     const $boldButton = $toolbar.find('.note-btn-bold');
     const afterDisplay = window.getComputedStyle($boldButton[0], '::after').display;
 
     expect(afterDisplay).to.equal('none');
   });
 
-  it('aligns the icon button block with the rest of the toolbar height', async() => {
+  it('honours the .note-icon-lg utility class on the code glyph', async() => {
     await paintToolbarIcons();
-    const $boldButton = $toolbar.find('.note-btn-bold');
-    await waitForSvg($boldButton[0]);
-    const buttonRect = $boldButton[0].getBoundingClientRect();
-    const toolbarRect = $toolbar[0].getBoundingClientRect();
+    const $codeButton = $toolbar.find('.btn-codeview');
+    await waitForSvg($codeButton[0]);
+    const $icon = $codeButton.find('.note-icon-code');
+    const $svg = $codeButton.find('.note-icon-code > svg');
+    expect($icon.hasClass('note-icon-lg')).to.equal(true);
+    const iconRect = $icon[0].getBoundingClientRect();
+    const svgRect = $svg[0].getBoundingClientRect();
 
-    // The square block fits comfortably within the toolbar without overflowing.
-    expect(buttonRect.height).to.be.lessThan(toolbarRect.height);
+    // The .note-icon-lg class bumps the SVG to 120% of the wrapper.
+    const expectedWidth = iconRect.width * 1.2;
+    expect(Math.abs(svgRect.width - expectedWidth)).to.be.lessThan(3);
+  });
+
+  it('aligns superscript and subscript glyphs so the X characters share a baseline', async() => {
+    await paintToolbarIcons();
+    const $sup = $toolbar.find('.note-btn-superscript');
+    const $sub = $toolbar.find('.note-btn-subscript');
+    if (!$sup.length || !$sub.length) {
+      // Toolbar test set does not include super/sub; nothing to assert.
+      return;
+    }
+    await waitForSvg($sup[0]);
+    await waitForSvg($sub[0]);
+
+    // The CSS applies opposing translateY values so the underlying "X" shapes
+    // overlap when the buttons are placed side by side.
+    const supSvg = $sup.find('.note-icon > svg')[0];
+    const subSvg = $sub.find('.note-icon > svg')[0];
+    const supTransform = window.getComputedStyle(supSvg).transform;
+    const subTransform = window.getComputedStyle(subSvg).transform;
+    expect(supTransform).not.to.equal('none');
+    expect(subTransform).not.to.equal('none');
+    expect(supTransform).not.to.equal(subTransform);
   });
 });

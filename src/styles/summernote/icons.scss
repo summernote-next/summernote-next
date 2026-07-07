@@ -7,15 +7,20 @@ $sni-css-prefix: note-icon !default;
 // by the icon() helper; the glyph inherits the parent's `currentColor` so the
 // icon picks up text colour and hover/active states for free.
 //
-// Each toolbar button is laid out as a square "block" so the icons line up in
-// a uniform grid. The `.note-icon` wrapper is a square inline-flex (1em x 1em)
-// that fills its parent button and centres its child SVG both horizontally
-// and vertically ("mittig mittig"). The inner SVG is sized to 70% of the
-// wrapper, which keeps enough breathing room around the glyph regardless of
-// whether the source path is wider or taller than tall. The browser keeps the
-// glyph's own aspect ratio (the SVG `viewBox` plus the default
-// `preserveAspectRatio="xMidYMid meet"`), so the icon only ever reaches 70% in
-// the dimension it actually fills.
+// The `.note-icon` wrapper is a square inline-flex that fills the parent
+// button and centres its child SVG both horizontally and vertically ("mittig
+// mittig"). By default the SVG fills the wrapper so the rendered glyph is
+// the same size as the surrounding `font-size`, which keeps every toolbar
+// button the same height as a natural Bootstrap `btn-sm`. The icons.scss
+// utilities (`.note-icon-sm`, `.note-icon-lg`, etc.) override that default
+// when a specific glyph needs to read larger or smaller without re-styling
+// the host button.
+//
+// Superscript and subscript both draw an "X" with a small marker, but the
+// source paths position the marker in opposite halves of the viewBox. The
+// `.note-icon-superscript` / `.note-icon-subscript` adjustments below nudge
+// each glyph vertically so the "X" characters share a baseline in the
+// toolbar.
 
 .#{$sni-css-prefix} {
   display: inline-flex;
@@ -33,22 +38,51 @@ $sni-css-prefix: note-icon !default;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   speak: none;
+  flex-shrink: 0;
 
   > svg {
     display: block;
-    width: 70%;
-    height: 70%;
+    width: 100%;
+    height: 100%;
     fill: currentColor;
     pointer-events: none;
+    flex-shrink: 0;
   }
 }
 
-// The "source" / code-view glyph has more horizontal whitespace than the
-// other icons and reads smaller at 70%. Give it a bit more room so the `<>`
-// symbol stays visually balanced with the rest of the toolbar.
-.#{$sni-css-prefix}-code > svg {
-  width: 80%;
-  height: 80%;
+// Size modifiers — utility classes that callers can opt into without
+// touching the base styles. `.note-icon-sm` is for icons that should sit
+// inside text (status messages, etc.), `.note-icon-md` gives glyphs a subtle
+// bump so they carry a bit more visual weight in the toolbar (style picker,
+// etc.) and `.note-icon-lg` is the full-fat size for glyphs that need to
+// stand out (code view, etc.).
+.#{$sni-css-prefix}-sm > svg {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+.#{$sni-css-prefix}-md > svg {
+  width: 1.125em;
+  height: 1.125em;
+}
+
+.#{$sni-css-prefix}-lg > svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+// Superscript and subscript draw the same "X" with a small marker, but the
+// source paths drop the marker in opposite halves of the viewBox. To keep
+// the toolbar from looking like the two glyphs sit on different ground
+// lines, shift the superscript icon down (and the subscript icon up) so the
+// X characters overlap on a shared horizontal axis when placed next to each
+// other in the toolbar.
+.#{$sni-css-prefix}-superscript > svg {
+  transform: translateY(8%);
+}
+
+.#{$sni-css-prefix}-subscript > svg {
+  transform: translateY(-8%);
 }
 
 // Extras

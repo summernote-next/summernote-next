@@ -351,7 +351,7 @@ export default class Buttons {
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(
-            this.ui.icon(this.options.icons.magic), this.options,
+            this.ui.icon(this.options.icons.magic + ' note-icon-lg'), this.options,
           ),
           tooltip: this.lang.style.style,
           data: {
@@ -739,7 +739,7 @@ export default class Buttons {
     this.context.memo('button.codeview', () => {
       return this.button({
         className: 'btn-codeview note-codeview-keep',
-        contents: this.ui.icon(this.options.icons.code),
+        contents: this.ui.icon(this.options.icons.code + ' note-icon-lg'),
         tooltip: this.lang.options.codeview,
         click: this.context.createInvokeHandler('codeview.toggle'),
       }).render();
