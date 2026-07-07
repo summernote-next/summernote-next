@@ -1,5 +1,7 @@
 .note-icon {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 1em;
   height: 1em;
   line-height: 1;
@@ -15,10 +17,15 @@
 }
 .note-icon > svg {
   display: block;
-  width: 1em;
-  height: 1em;
+  width: 70%;
+  height: 70%;
   fill: currentColor;
   pointer-events: none;
+}
+
+.note-icon-code > svg {
+  width: 80%;
+  height: 80%;
 }
 
 .note-icon-fw {
@@ -1040,6 +1047,31 @@ body:has(.note-air-popover) {
 .note-popover .note-btn-group .note-btn,
 .note-popover .note-btn-group .dropdown-toggle {
   border-color: var(--note-border-color, var(--bs-border-color, #dee2e6));
+}
+
+.note-editor .note-btn:has(> .note-icon),
+.note-popover .note-btn:has(> .note-icon),
+.note-modal .note-btn:has(> .note-icon) {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-editor .note-btn:has(> .note-icon) > .note-icon,
+.note-popover .note-btn:has(> .note-icon) > .note-icon,
+.note-modal .note-btn:has(> .note-icon) > .note-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.note-editor .note-btn:has(> .note-icon)::after,
+.note-popover .note-btn:has(> .note-icon)::after,
+.note-modal .note-btn:has(> .note-icon)::after {
+  display: none;
 }
 
 .note-editor .note-dropdown-menu,
