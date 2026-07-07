@@ -444,7 +444,7 @@ export default class Buttons {
     this.context.memo('button.superscript', () => {
       return this.button({
         className: 'note-btn-superscript',
-        contents: this.ui.icon(this.options.icons.superscript),
+        contents: this.ui.icon(this.options.icons.superscript + ' note-icon-lg'),
         tooltip: this.lang.font.superscript,
         click: this.context.createInvokeHandlerAndUpdateState('editor.superscript'),
       }).render();
@@ -453,7 +453,7 @@ export default class Buttons {
     this.context.memo('button.subscript', () => {
       return this.button({
         className: 'note-btn-subscript',
-        contents: this.ui.icon(this.options.icons.subscript),
+        contents: this.ui.icon(this.options.icons.subscript + ' note-icon-lg'),
         tooltip: this.lang.font.subscript,
         click: this.context.createInvokeHandlerAndUpdateState('editor.subscript'),
       }).render();

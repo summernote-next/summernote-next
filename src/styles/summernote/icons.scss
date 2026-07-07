@@ -72,17 +72,19 @@ $sni-css-prefix: note-icon !default;
 }
 
 // Superscript and subscript draw the same "X" with a small marker, but the
-// source paths drop the marker in opposite halves of the viewBox. To keep
-// the toolbar from looking like the two glyphs sit on different ground
-// lines, shift the superscript icon down (and the subscript icon up) so the
-// X characters overlap on a shared horizontal axis when placed next to each
-// other in the toolbar.
+// source paths drop the marker in opposite halves of the viewBox. The
+// superscript glyph is rendered without any shift (its X sits roughly in the
+// middle of the icon), while the subscript glyph is nudged down so the two
+// X characters line up on a shared baseline when placed side by side in the
+// toolbar. Both glyphs also pull in the `.note-icon-lg` utility class via
+// the Buttons module so they carry the same visual weight as the other
+// enlarged toolbar glyphs.
 .#{$sni-css-prefix}-superscript > svg {
-  transform: translateY(8%);
+  transform: translateY(0);
 }
 
 .#{$sni-css-prefix}-subscript > svg {
-  transform: translateY(-8%);
+  transform: translateY(8%);
 }
 
 // Extras
