@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-07T11:20Z
+Date: 2026-07-07T14:28Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -6461,7 +6461,7 @@ var summernote = (function() {
 			this.context.memo("button.style", () => {
 				return this.ui.buttonGroup([this.button({
 					className: "dropdown-toggle",
-					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.magic), this.options),
+					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.magic + " note-icon-lg"), this.options),
 					tooltip: this.lang.style.style,
 					data: { toggle: "dropdown" }
 				}), this.ui.dropdownCheck({
@@ -6536,7 +6536,7 @@ var summernote = (function() {
 			this.context.memo("button.superscript", () => {
 				return this.button({
 					className: "note-btn-superscript",
-					contents: this.ui.icon(this.options.icons.superscript),
+					contents: this.ui.icon(this.options.icons.superscript + " note-icon-lg"),
 					tooltip: this.lang.font.superscript,
 					click: this.context.createInvokeHandlerAndUpdateState("editor.superscript")
 				}).render();
@@ -6544,7 +6544,7 @@ var summernote = (function() {
 			this.context.memo("button.subscript", () => {
 				return this.button({
 					className: "note-btn-subscript",
-					contents: this.ui.icon(this.options.icons.subscript),
+					contents: this.ui.icon(this.options.icons.subscript + " note-icon-lg"),
 					tooltip: this.lang.font.subscript,
 					click: this.context.createInvokeHandlerAndUpdateState("editor.subscript")
 				}).render();
@@ -6764,7 +6764,7 @@ var summernote = (function() {
 			this.context.memo("button.codeview", () => {
 				return this.button({
 					className: "btn-codeview note-codeview-keep",
-					contents: this.ui.icon(this.options.icons.code),
+					contents: this.ui.icon(this.options.icons.code + " note-icon-lg"),
 					tooltip: this.lang.options.codeview,
 					click: this.context.createInvokeHandler("codeview.toggle")
 				}).render();
