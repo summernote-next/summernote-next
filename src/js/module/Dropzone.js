@@ -20,16 +20,13 @@ export default class Dropzone {
     this.$editor.prepend(this.$dropzone);
   }
 
-  /**
-   * attach Drag and Drop Events
-   */
   initialize() {
     if (this.options.disableDragAndDrop) {
-      // prevent default drop event
+      
       this.documentEventHandlers.onDrop = (e) => {
         e.preventDefault();
       };
-      // do not consider outside of dropzone
+      
       this.$eventListener = this.$dropzone;
       this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
     } else {
@@ -37,9 +34,6 @@ export default class Dropzone {
     }
   }
 
-  /**
-   * attach Drag and Drop Events
-   */
   attachDragAndDropEvent() {
     let collection = [];
     const $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
@@ -61,7 +55,6 @@ export default class Dropzone {
     this.documentEventHandlers.onDragleave = (e) => {
       collection = collection.filter(t => t !== e.target);
 
-      // If nodeName is BODY, then just make it over (fix for IE)
       if (!collection.length || e.target.nodeName === 'BODY') {
         collection = [];
         this.$editor.removeClass('dragover');
@@ -73,13 +66,10 @@ export default class Dropzone {
       this.$editor.removeClass('dragover');
     };
 
-    // show dropzone on dragenter when dragging a object to document
-    // -but only if the editor is visible, i.e. has a positive width and height
     this.$eventListener.on('dragenter', this.documentEventHandlers.onDragenter)
       .on('dragleave', this.documentEventHandlers.onDragleave)
       .on('drop', this.documentEventHandlers.onDrop);
 
-    // change dropzone's message on hover.
     this.$dropzone.on('dragenter', () => {
       this.$dropzone.addClass('hover');
       $dropzoneMessage.text(this.lang.image.dropImage);
@@ -88,11 +78,9 @@ export default class Dropzone {
       $dropzoneMessage.text(this.lang.image.dragImageHere);
     });
 
-    // attach dropImage
     this.$dropzone.on('drop', (event) => {
       const dataTransfer = event.dataTransfer;
 
-      // stop the browser from opening the dropped content
       event.preventDefault();
 
       if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
@@ -100,7 +88,7 @@ export default class Dropzone {
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
         $$.each(dataTransfer.types, (idx, type) => {
-          // skip moz-specific types
+          
           if (type.toLowerCase().indexOf('_moz_') > -1) {
             return;
           }
@@ -116,7 +104,7 @@ export default class Dropzone {
           }
         });
       }
-    }).on('dragover', (e) => { e.preventDefault(); }); // prevent default dragover event
+    }).on('dragover', (e) => { e.preventDefault(); }); 
   }
 
   destroy() {

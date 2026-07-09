@@ -9,13 +9,11 @@ const KEY_MAP = {
   'SPACE': 32,
   'DELETE': 46,
 
-  // Arrow
   'LEFT': 37,
   'UP': 38,
   'RIGHT': 39,
   'DOWN': 40,
 
-  // Number: 0-9
   'NUM0': 48,
   'NUM1': 49,
   'NUM2': 50,
@@ -26,7 +24,6 @@ const KEY_MAP = {
   'NUM7': 55,
   'NUM8': 56,
 
-  // Alphabet: a-z
   'B': 66,
   'E': 69,
   'I': 73,
@@ -45,28 +42,14 @@ const KEY_MAP = {
   'BACKSLASH': 220,
   'RIGHTBRACKET': 221,
 
-  // Navigation
   'HOME': 36,
   'END': 35,
   'PAGEUP': 33,
   'PAGEDOWN': 34,
 };
 
-/**
- * @class core.key
- *
- * Object for keycodes.
- *
- * @singleton
- * @alternateClassName key
- */
 export default {
-  /**
-   * @method isEdit
-   *
-   * @param {Number} keyCode
-   * @return {Boolean}
-   */
+  /* @param {Number} @return {Boolean} */
   isEdit: (keyCode) => {
     return lists.contains([
       KEY_MAP.BACKSPACE,
@@ -76,24 +59,14 @@ export default {
       KEY_MAP.DELETE,
     ], keyCode);
   },
-  /**
-   * @method isRemove
-   *
-   * @param {Number} keyCode
-   * @return {Boolean}
-   */
-  isRemove: (keyCode) => { // LB
+  /* @param {Number} @return {Boolean} */
+  isRemove: (keyCode) => { 
     return lists.contains([
       KEY_MAP.BACKSPACE,
       KEY_MAP.DELETE,
     ], keyCode);
   },
-  /**
-   * @method isMove
-   *
-   * @param {Number} keyCode
-   * @return {Boolean}
-   */
+  /* @param {Number} @return {Boolean} */
   isMove: (keyCode) => {
     return lists.contains([
       KEY_MAP.LEFT,
@@ -102,12 +75,7 @@ export default {
       KEY_MAP.DOWN,
     ], keyCode);
   },
-  /**
-   * @method isNavigation
-   *
-   * @param {Number} keyCode
-   * @return {Boolean}
-   */
+  /* @param {Number} @return {Boolean} */
   isNavigation: (keyCode) => {
     return lists.contains([
       KEY_MAP.HOME,
@@ -116,10 +84,7 @@ export default {
       KEY_MAP.PAGEDOWN,
     ], keyCode);
   },
-  /**
-   * @property {Object} nameFromCode
-   * @property {String} nameFromCode.8 "BACKSPACE"
-   */
+  
   nameFromCode: func.invertObject(KEY_MAP),
   code: KEY_MAP,
 };

@@ -1,13 +1,3 @@
-/**
- * Chainable DOM manipulation utilities used across the Vanilla JS runtime.
- *
- * @module dom-query
- */
-
-/**
- * Wrap a DOM element, NodeList, or selector in a DomQuery collection.
- * Usage: $$('selector'), $$(element), $$$(nodeList)
- */
 const elementDataStore = new WeakMap();
 const defaultDisplayCache = new Map();
 const fallbackModalStore = new WeakMap();
@@ -361,7 +351,6 @@ export class DomQuery {
     return this;
   }
 
-  /** Get raw element at index. Negative indices supported. */
   get(index = 0) {
     if (index < 0) index = this.length + index;
     return this.elements[index] || null;
@@ -375,7 +364,6 @@ export class DomQuery {
     return this.eq(-1);
   }
 
-  // --- Iteration ---
   each(callback) {
     this.elements.forEach((el, i) => callback.call(el, i, el));
     return this;
@@ -393,7 +381,6 @@ export class DomQuery {
     return dq;
   }
 
-  // --- Classes ---
   addClass(...classes) {
     const classNames = normalizeClassNames(classes);
     this.elements.forEach(el => el.classList.add(...classNames));
@@ -425,11 +412,10 @@ export class DomQuery {
     return this;
   }
 
-  // --- CSS ---
   css(prop, val) {
     if (typeof prop === 'string') {
       if (val === undefined) {
-        // Getter: return computed style of first element
+        
         const el = this.get(0);
         if (!el) {
           return undefined;
@@ -438,11 +424,11 @@ export class DomQuery {
         const computedStyle = getComputedStyle(el);
         return computedStyle.getPropertyValue(prop) || computedStyle[prop];
       }
-      // Setter
+      
       this.elements.forEach(el => el.style[prop] = formatStyleValue(prop, val));
       return this;
     }
-    // Object setter
+    
     if (typeof prop === 'object') {
       this.elements.forEach(el => {
         Object.entries(prop).forEach(([key, value]) => {
@@ -454,7 +440,6 @@ export class DomQuery {
     return this;
   }
 
-  // --- Attributes ---
   attr(name, value) {
     if (typeof name === 'object' && name !== null) {
       this.elements.forEach((el) => {
@@ -553,7 +538,6 @@ export class DomQuery {
     return this;
   }
 
-  // --- Content ---
   html(content) {
     if (content === undefined) {
       const el = this.get(0);
@@ -606,7 +590,6 @@ export class DomQuery {
     return this;
   }
 
-  // --- DOM Traversal ---
   find(selector) {
     const results = [];
     this.elements.forEach(el => {
@@ -720,7 +703,6 @@ export class DomQuery {
     return new DomQuery(this.get(index) || []);
   }
 
-  // --- DOM Manipulation ---
   append(child) {
     if (typeof child === 'string') {
       this.elements.forEach(el => el.insertAdjacentHTML('beforeend', child));
@@ -939,12 +921,11 @@ export class DomQuery {
     return this;
   }
 
-  // --- Events ---
   on(event, selectorOrHandler, handler) {
     const eventNames = getEventNames(event);
 
     if (typeof selectorOrHandler === 'function') {
-      // Direct binding: $(el).on('click', handler)
+      
       const h = selectorOrHandler;
       this.elements.forEach((el) => {
         const wrapped = (nativeEvent) => {
@@ -959,7 +940,7 @@ export class DomQuery {
         });
       });
     } else if (typeof selectorOrHandler === 'string' && typeof handler === 'function') {
-      // Delegated binding: $(el).on('click', 'selector', handler)
+      
       const selector = selectorOrHandler;
       const h = (nativeEvent) => {
         const e = normalizeEvent(nativeEvent);
@@ -972,7 +953,7 @@ export class DomQuery {
       };
       this.elements.forEach(el => {
         eventNames.forEach((eventName) => el.addEventListener(eventName, h));
-        // Store reference for off()
+        
         if (!el._domQueryHandlers) el._domQueryHandlers = [];
         eventNames.forEach((eventName) => {
           el._domQueryHandlers.push({ event: eventName, selector, handler, wrapper: h });
@@ -1004,19 +985,19 @@ export class DomQuery {
           eventNames.forEach((eventName) => el.removeEventListener(eventName, handler));
         }
       } else if (el._domQueryHandlers) {
-        // Remove all delegated handlers for this event
+        
         el._domQueryHandlers
           .filter(h => eventNames.includes(h.event))
           .forEach(h => el.removeEventListener(h.event, h.wrapper));
         el._domQueryHandlers = el._domQueryHandlers.filter(h => !eventNames.includes(h.event));
       } else {
-        // Remove all handlers (clone and replace)
+        
         const clone = el.cloneNode(true);
         if (!el.parentNode) {
           return;
         }
         el.parentNode.replaceChild(clone, el);
-        // Update internal reference
+        
         const idx = this.elements.indexOf(el);
         this.elements[idx] = clone;
       }
@@ -1073,7 +1054,6 @@ export class DomQuery {
     return this;
   }
 
-  // --- Visibility ---
   show() {
     this.elements.forEach(el => {
       const store = getElementDataStore(el);
@@ -1107,7 +1087,6 @@ export class DomQuery {
     return this;
   }
 
-  // --- Dimensions ---
   width(value) {
     if (value === undefined) {
       const el = this.get(0);
@@ -1233,7 +1212,6 @@ export class DomQuery {
     return this;
   }
 
-  // --- Focus ---
   focus() {
     this.elements.forEach(el => el.focus());
     return this;
@@ -1250,27 +1228,20 @@ export class DomQuery {
     return this;
   }
 
-  // --- Forms ---
   serialize() {
     const el = this.get(0);
     if (!el || !el.elements) return '';
     return new URLSearchParams(new FormData(el)).toString();
   }
 
-  // --- Check if collection is empty ---
   get [Symbol.iterator]() {
     return this.elements[Symbol.iterator];
   }
 }
 
-/**
- * Main selector function. Usage: $$('selector') or $$(element)
- */
 function $$(selector, context) {
   return new DomQuery(selector, context);
 }
-
-// --- Static utility functions (replacing $.xxx) ---
 
 $$.isArray = Array.isArray;
 
@@ -1322,10 +1293,9 @@ $$.parseHTML = (html) => {
   return parseHTMLString(html);
 };
 
-// Deep merge utility (replaces $.extend(true, ...))
 $$.extend = (deepOrTarget, ...args) => {
   if (deepOrTarget === true) {
-    // Deep merge
+    
     const target = args[0];
     const sources = args.slice(1);
     for (const source of sources) {
@@ -1342,7 +1312,7 @@ $$.extend = (deepOrTarget, ...args) => {
     }
     return target;
   }
-  // Shallow merge
+  
   const target = deepOrTarget;
   for (const source of args) {
     if (source && typeof source === 'object') {
@@ -1352,7 +1322,6 @@ $$.extend = (deepOrTarget, ...args) => {
   return target;
 };
 
-// Initialize summernote namespace (used by summernote-en-US.js and settings.js)
 $$.summernote = $$.summernote || { lang: {} };
 
 export default $$;

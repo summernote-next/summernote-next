@@ -19,7 +19,7 @@ describe('summernote-en-US', () => {
   it('creates the summernote namespace when it does not exist yet', async() => {
     delete $$.summernote;
 
-    await import(/* @vite-ignore */ `/src/js/summernote-en-US.js?fresh=${Math.random()}`);
+    await import( /* @vite-ignore */ `/src/js/summernote-en-US.js?fresh=${Math.random()}`);
 
     expect($$.summernote.lang['en-US'].font.bold).to.equal('Bold');
     expect($$.summernote.lang['en-US'].image.dragImageHere).to.equal('Drag image or text here');
@@ -32,7 +32,7 @@ describe('summernote-en-US', () => {
     };
     $$.summernote = existingNamespace;
 
-    await import(/* @vite-ignore */ `/src/js/summernote-en-US.js?reuse=${Math.random()}`);
+    await import( /* @vite-ignore */ `/src/js/summernote-en-US.js?reuse=${Math.random()}`);
 
     expect($$.summernote).to.equal(existingNamespace);
     expect($$.summernote.marker).to.equal('keep-existing-object');

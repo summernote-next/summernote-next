@@ -70,19 +70,19 @@ export default class ImageDialog {
     const preservedRange = this.context.modules.editor.lastRange || this.context.invoke('editor.getLastRange');
 
     this.showImageDialog().then((data) => {
-      // [workaround] hide dialog before restore range for IE range focus
+      
       this.ui.hideDialog(this.$dialog);
       this.context.invoke('editor.setLastRange', preservedRange);
       this.context.invoke('editor.restoreRange');
 
-      if (typeof data === 'string') { // image url
-        // If onImageLinkInsert set,
+      if (typeof data === 'string') { 
+        
         if (this.options.callbacks.onImageLinkInsert) {
           this.context.triggerEvent('image.link.insert', data);
         } else {
           this.context.invoke('editor.insertImage', data);
         }
-      } else { // array of files
+      } else { 
         this.context.invoke('editor.insertImagesOrCallback', data);
       }
     }).catch(() => {
@@ -91,11 +91,7 @@ export default class ImageDialog {
     });
   }
 
-  /**
-   * show image dialog
-   *
-   * @return {Promise}
-   */
+  /* @return {Promise} */
   showImageDialog() {
     return new Promise((resolve, reject) => {
       let isSettled = false;

@@ -47,7 +47,7 @@ export default class VideoDialog {
   }
 
   createVideoNode(url) {
-    // video url patterns(youtube, instagram, vimeo, dailymotion, youku, peertube, mp4, ogg, webm)
+    
     const ytRegExp = /(?:youtu\.be\/|youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=|shorts\/|live\/))([^&\n?]+)(?:.*[?&]t=([^&\n]+))?.*/;
     const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
@@ -174,7 +174,7 @@ export default class VideoDialog {
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');
     } else {
-      // this is not a known video link. Now what, Cat? Now what?
+      
       return false;
     }
 
@@ -187,15 +187,14 @@ export default class VideoDialog {
     const text = this.context.invoke('editor.getSelectedText');
     this.context.invoke('editor.saveRange');
     this.showVideoDialog(text).then((url) => {
-      // [workaround] hide dialog before restore range for IE range focus
+      
       this.ui.hideDialog(this.$dialog);
       this.context.invoke('editor.restoreRange');
 
-      // build node
       const $node = this.createVideoNode(url);
 
       if ($node) {
-        // insert video node
+        
         this.context.invoke('editor.insertNode', $node);
       }
     }).catch(() => {
@@ -203,12 +202,8 @@ export default class VideoDialog {
     });
   }
 
-  /**
-   * show video dialog
-   *
-   * @return {Promise}
-   */
-  showVideoDialog(/* text */) {
+  /* @return {Promise} */
+  showVideoDialog() {
     return new Promise((resolve, reject) => {
       let isSettled = false;
       const $videoUrl = this.$dialog.find('.note-video-url');

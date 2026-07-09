@@ -74,7 +74,7 @@ export default class Handle {
             this.context.invoke('editor.afterCommand');
           });
 
-        if (!$target.data('ratio')) { // original ratio.
+        if (!$target.data('ratio')) { 
           $target.data('ratio', $target.height() / $target.width());
         }
         return;
@@ -88,7 +88,6 @@ export default class Handle {
       }
     });
 
-    // Listen for scrolling on the handle overlay.
     this.$handle.on('wheel', (event) => {
       event.preventDefault();
       this.update();
@@ -223,9 +222,6 @@ export default class Handle {
     return isMedia;
   }
 
-  /**
-   * hide
-   */
   hide() {
     $$('.note-video-clip').removeClass('note-video-interactive');
     this.context.invoke('editor.clearTarget');

@@ -28,7 +28,7 @@ describe('base:core.env', () => {
   });
 
   it('keeps generic font names unchanged', async() => {
-    const env = (await import(/* @vite-ignore */ `/src/js/core/env.js?generic=${Math.random()}`)).default;
+    const env = (await import( /* @vite-ignore */ `/src/js/core/env.js?generic=${Math.random()}`)).default;
 
     expect(env.validFontName('serif')).to.equal('serif');
   });
@@ -40,7 +40,7 @@ describe('base:core.env', () => {
     setNavigatorProp('msMaxTouchPoints', 0);
     delete window.ontouchstart;
 
-    const env = (await import(/* @vite-ignore */ `/src/js/core/env.js?ie=${Math.random()}`)).default;
+    const env = (await import( /* @vite-ignore */ `/src/js/core/env.js?ie=${Math.random()}`)).default;
 
     expect(env.isMSIE).to.be.true;
     expect(env.browserVersion).to.equal(11);
@@ -53,7 +53,7 @@ describe('base:core.env', () => {
     setNavigatorProp('userAgent', 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0)');
     setNavigatorProp('appVersion', 'Windows');
 
-    const env = (await import(/* @vite-ignore */ `/src/js/core/env.js?trident-only=${Math.random()}`)).default;
+    const env = (await import( /* @vite-ignore */ `/src/js/core/env.js?trident-only=${Math.random()}`)).default;
 
     expect(env.isMSIE).to.be.true;
     expect(env.browserVersion).to.equal(11);
@@ -63,7 +63,7 @@ describe('base:core.env', () => {
     setNavigatorProp('userAgent', 'Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1)');
     setNavigatorProp('appVersion', 'Windows');
 
-    const env = (await import(/* @vite-ignore */ `/src/js/core/env.js?msie-only=${Math.random()}`)).default;
+    const env = (await import( /* @vite-ignore */ `/src/js/core/env.js?msie-only=${Math.random()}`)).default;
 
     expect(env.isMSIE).to.be.true;
     expect(env.browserVersion).to.equal(10);

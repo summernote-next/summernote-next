@@ -7,7 +7,6 @@ await buildDist();
 
 await buildLanguageAssets();
 
-// compress them all into a zip file for releasing
 try {
   const zip = new AdmZip();
   const zipFilename = `summernote-next-${version}-dist.zip`;

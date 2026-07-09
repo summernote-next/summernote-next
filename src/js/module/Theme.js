@@ -221,15 +221,6 @@ function watchNewSurfaces(callback) {
   return observer;
 }
 
-/**
- * @class Theme
- *
- * Resolves the editor's dark mode setting and applies matching surface classes.
- * The CSS in src/styles/classic/summernote-next-classic.scss already reacts to
- * common page-level signals (data-bs-theme="dark", data-theme, .dark class,
- * prefers-color-scheme, etc.). The Theme module only forces a mode or wires
- * a custom page-level signal that the CSS does not cover.
- */
 export default class Theme {
   constructor(context) {
     this.context = context;

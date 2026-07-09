@@ -50,7 +50,7 @@ describe('summernote locale registry', () => {
     delete $$.summernote;
 
     for (const locale of supportedLocales) {
-      await import(/* @vite-ignore */ `/src/js/summernote-${locale}.js?fresh=${Math.random()}`);
+      await import( /* @vite-ignore */ `/src/js/summernote-${locale}.js?fresh=${Math.random()}`);
     }
 
     expect(Object.keys($$.summernote.lang).sort()).to.deep.equal([...supportedLocales].sort());

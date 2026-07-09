@@ -1,10 +1,3 @@
-/**
- * Context.spec.js
- * (c) 2015-present Summernote Team
- * (c) 2026-present Jürgen Schwind
- * Summernote Next may be freely distributed under the MIT license.
- */
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$, { DomQuery } from '@/js/core/dom-query.js';
 import dom from '@/js/core/dom';

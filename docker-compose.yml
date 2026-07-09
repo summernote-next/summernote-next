@@ -8,7 +8,6 @@ services:
         volumes:
             - .:/app
             - ./dist:/app/examples/dist
-            - ./font:/app/examples/font
         tmpfs:
           - /tmp:mode=1777
         environment:

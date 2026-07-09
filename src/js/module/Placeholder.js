@@ -7,7 +7,7 @@ export default class Placeholder {
     this.options = context.options;
 
     if (this.options.inheritPlaceholder === true) {
-      // get placeholder value from the original element
+      
       this.options.placeholder = this.context.$note.attr('placeholder') || this.options.placeholder;
     }
 

@@ -47,8 +47,7 @@ $$.summernote = $$.extend($$.summernote, {
       'statusbar': Statusbar,
       'fullscreen': Fullscreen,
       'handle': Handle,
-      // FIXME: HintPopover must be front of autolink
-      //  - Script error about range when Enter key is pressed on hint popover
+      
       'hintPopover': HintPopover,
       'autoLink': AutoLink,
       'autoSync': AutoSync,
@@ -81,7 +80,6 @@ $$.summernote = $$.extend($$.summernote, {
     statusbarClassName: '',
     modalClassName: '',
 
-    // toolbar
     codeviewKeepButton: false,
     toolbarClassName: '',
     toolbarButtonClassName: '',
@@ -98,7 +96,6 @@ $$.summernote = $$.extend($$.summernote, {
       ['view', ['fullscreen', 'codeview', 'help']],
     ],
 
-    // popover
     popatmouse: true,
     popoverClassName: '',
     popoverButtonClassName: '',
@@ -133,16 +130,14 @@ $$.summernote = $$.extend($$.summernote, {
       ],
     },
 
-    // link options
     linkAddNoReferrer: false,
     addLinkNoOpener: false,
 
-    // air mode: inline editor
     airMode: false,
     airModeFullscreen: false,
     airModeFullscreenProxy: false,
     airModeFullscreenState: null,
-    overrideContextMenu: false, // TBD
+    overrideContextMenu: false, 
 
     width: null,
     height: null,
@@ -162,14 +157,12 @@ $$.summernote = $$.extend($$.summernote, {
     disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
-    // TODO: need to be documented
+    
     recordEveryKeystroke: false,
     historyLimit: 200,
 
-    // TODO: need to be documented
     showDomainOnlyForAutolink: false,
 
-    // TODO: need to be documented
     hintMode: 'word',
     hintSelect: 'after',
     hintDirection: 'bottom',
@@ -188,7 +181,6 @@ $$.summernote = $$.extend($$.summernote, {
 
     fontSizeUnits: ['px', 'pt'],
 
-    // pallete colors(n x n)
     colors: [
       ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
       ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
@@ -200,7 +192,6 @@ $$.summernote = $$.extend($$.summernote, {
       ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031'],
     ],
 
-    // http://chir.ag/projects/name-that-color/
     colorsName: [
       ['Black', 'Tundora', 'Dove Gray', 'Star Dust', 'Pale Slate', 'Gallery', 'Alabaster', 'White'],
       ['Red', 'Orange Peel', 'Yellow', 'Green', 'Cyan', 'Blue', 'Electric Violet', 'Magenta'],
@@ -226,7 +217,6 @@ $$.summernote = $$.extend($$.summernote, {
       row: 10,
     },
 
-    // By default, dialogs are attached in container.
     dialogsInBody: false,
     dialogsFade: false,
 

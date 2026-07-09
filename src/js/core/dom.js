@@ -5,38 +5,17 @@ import lists from './lists';
 const NBSP_CHAR = String.fromCharCode(160);
 const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
 
-/**
- * @method isEditable
- *
- * returns whether node is `note-editable` or not.
- *
- * @param {Node} node
- * @return {Boolean}
- */
+/* @param {Node} @return {Boolean} */
 function isEditable(node) {
   return node && $$(node).hasClass('note-editable');
 }
 
-/**
- * @method isControlSizing
- *
- * returns whether node is `note-control-sizing` or not.
- *
- * @param {Node} node
- * @return {Boolean}
- */
+/* @param {Node} @return {Boolean} */
 function isControlSizing(node) {
   return node && $$(node).hasClass('note-control-sizing');
 }
 
-/**
- * @method makePredByNodeName
- *
- * returns predicate which judge whether nodeName is same
- *
- * @param {String} nodeName
- * @return {Function}
- */
+/* @param {String} @return {Function} */
 function makePredByNodeName(nodeName) {
   nodeName = nodeName.toUpperCase();
   return function(node) {
@@ -44,34 +23,16 @@ function makePredByNodeName(nodeName) {
   };
 }
 
-/**
- * @method isText
- *
- *
- *
- * @param {Node} node
- * @return {Boolean} true if node's type is text(3)
- */
+/* @param {Node} @return {Boolean} */
 function isText(node) {
   return node && node.nodeType === 3;
 }
 
-/**
- * @method isElement
- *
- *
- *
- * @param {Node} node
- * @return {Boolean} true if node's type is element(1)
- */
+/* @param {Node} @return {Boolean} */
 function isElement(node) {
   return node && node.nodeType === 1;
 }
 
-/**
- * ex) br, col, embed, hr, img, input, ...
- * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
- */
 function isVoid(node) {
   return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^AUDIO|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
 }
@@ -81,7 +42,6 @@ function isPara(node) {
     return false;
   }
 
-  // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
   return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
 }
 
@@ -142,25 +102,13 @@ function isBodyInline(node) {
 
 const isBody = makePredByNodeName('BODY');
 
-/**
- * returns whether nodeB is closest sibling of nodeA
- *
- * @param {Node} nodeA
- * @param {Node} nodeB
- * @return {Boolean}
- */
+/* @param {Node} @param {Node} @return {Boolean} */
 function isClosestSibling(nodeA, nodeB) {
   return nodeA.nextSibling === nodeB ||
          nodeA.previousSibling === nodeB;
 }
 
-/**
- * returns array of closest siblings with node
- *
- * @param {Node} node
- * @param {function} [pred] - predicate function
- * @return {Node[]}
- */
+/* @param {Node} @param {function} @return {Node[]} */
 function withClosestSiblings(node, pred) {
   pred = pred || func.ok;
 
@@ -175,20 +123,9 @@ function withClosestSiblings(node, pred) {
   return siblings;
 }
 
-/**
- * blank HTML for cursor position
- * - [workaround] old IE only works with &nbsp;
- * - [workaround] IE11 and other browser works with bogus br
- */
 const blankHTML = '<br>';
 
-/**
- * @method nodeLength
- *
- * returns #text's text size or element's childNodes size
- *
- * @param {Node} node
- */
+/* @param {Node} */
 function nodeLength(node) {
   if (isText(node)) {
     return node.nodeValue.length;
@@ -201,12 +138,7 @@ function nodeLength(node) {
   return 0;
 }
 
-/**
- * returns whether deepest child node is empty or not.
- *
- * @param {Node} node
- * @return {Boolean}
- */
+/* @param {Node} @return {Boolean} */
 function deepestChildIsEmpty(node) {
   do {
     if (node.firstElementChild === null || node.firstElementChild.innerHTML === '') break;
@@ -215,43 +147,30 @@ function deepestChildIsEmpty(node) {
   return isEmpty(node);
 }
 
-/**
- * returns whether node is empty or not.
- *
- * @param {Node} node
- * @return {Boolean}
- */
+/* @param {Node} @return {Boolean} */
 function isEmpty(node) {
   const len = nodeLength(node);
 
   if (len === 0) {
     return true;
   } else if (!isText(node) && len === 1 && node.innerHTML === blankHTML) {
-    // ex) <p><br></p>, <span><br></span>
+    
     return true;
   } else if (lists.all(node.childNodes, isText) && node.innerHTML === '') {
-    // ex) <p></p>, <span></span>
+    
     return true;
   }
 
   return false;
 }
 
-/**
- * padding blankHTML if node is empty (for cursor position)
- */
 function paddingBlankHTML(node) {
   if (!isVoid(node) && !nodeLength(node)) {
     node.innerHTML = blankHTML;
   }
 }
 
-/**
- * find nearest ancestor predicate hit
- *
- * @param {Node} node
- * @param {Function} pred - predicate function
- */
+/* @param {Node} @param {Function} */
 function ancestor(node, pred) {
   while (node) {
     if (pred(node)) { return node; }
@@ -262,12 +181,7 @@ function ancestor(node, pred) {
   return null;
 }
 
-/**
- * find nearest ancestor only single child blood line and predicate hit
- *
- * @param {Node} node
- * @param {Function} pred - predicate function
- */
+/* @param {Node} @param {Function} */
 function singleChildAncestor(node, pred) {
   node = node.parentNode;
 
@@ -281,12 +195,7 @@ function singleChildAncestor(node, pred) {
   return null;
 }
 
-/**
- * returns new array of ancestor nodes (until predicate hit).
- *
- * @param {Node} node
- * @param {Function} [optional] pred - predicate function
- */
+/* @param {Node} @param {Function} */
 function listAncestor(node, pred) {
   pred = pred || func.fail;
 
@@ -301,34 +210,21 @@ function listAncestor(node, pred) {
   return ancestors;
 }
 
-/**
- * find farthest ancestor predicate hit
- */
 function lastAncestor(node, pred) {
   const ancestors = listAncestor(node);
   return lists.last(ancestors.filter(pred));
 }
 
-/**
- * returns common ancestor node between two nodes.
- *
- * @param {Node} nodeA
- * @param {Node} nodeB
- */
+/* @param {Node} @param {Node} */
 function commonAncestor(nodeA, nodeB) {
   const ancestors = listAncestor(nodeA);
   for (let n = nodeB; n; n = n.parentNode) {
     if (ancestors.indexOf(n) > -1) return n;
   }
-  return null; // difference document area
+  return null; 
 }
 
-/**
- * listing all previous siblings (until predicate hit).
- *
- * @param {Node} node
- * @param {Function} [optional] pred - predicate function
- */
+/* @param {Node} @param {Function} */
 function listPrev(node, pred) {
   pred = pred || func.fail;
 
@@ -341,12 +237,7 @@ function listPrev(node, pred) {
   return nodes;
 }
 
-/**
- * listing next siblings (until predicate hit).
- *
- * @param {Node} node
- * @param {Function} [pred] - predicate function
- */
+/* @param {Node} @param {Function} */
 function listNext(node, pred) {
   pred = pred || func.fail;
 
@@ -359,17 +250,11 @@ function listNext(node, pred) {
   return nodes;
 }
 
-/**
- * listing descendant nodes
- *
- * @param {Node} node
- * @param {Function} [pred] - predicate function
- */
+/* @param {Node} @param {Function} */
 function listDescendant(node, pred) {
   const descendants = [];
   pred = pred || func.ok;
 
-  // start DFS(depth first search) with node
   (function fnWalk(current) {
     if (node !== current && pred(current)) {
       descendants.push(current);
@@ -382,13 +267,7 @@ function listDescendant(node, pred) {
   return descendants;
 }
 
-/**
- * wrap node with new tag.
- *
- * @param {Node} node
- * @param {Node} tagName of wrapper
- * @return {Node} - wrapper
- */
+/* @param {Node} @param {Node} @return {Node} */
 function wrap(node, wrapperName) {
   const parent = node.parentNode;
   const wrapper = document.createElement(wrapperName);
@@ -399,12 +278,7 @@ function wrap(node, wrapperName) {
   return wrapper;
 }
 
-/**
- * insert node after preceding
- *
- * @param {Node} node
- * @param {Node} preceding - predicate function
- */
+/* @param {Node} @param {Node} */
 function insertAfter(node, preceding) {
   const next = preceding.nextSibling;
   let parent = preceding.parentNode;
@@ -416,17 +290,10 @@ function insertAfter(node, preceding) {
   return node;
 }
 
-/**
- * append elements.
- *
- * @param {Node} node
- * @param {Collection} aChild
- */
+/* @param {Node} @param {Collection} */
 function appendChildNodes(node, aChild, isSkipPaddingBlankHTML) {
   $$.each(aChild, function(idx, child) {
-    // special case: appending a pure UL/OL to a LI element creates inaccessible LI element
-    // e.g. press enter in last LI which has UL/OL-subelements
-    // Therefore, if current node is LI element with no child nodes (text-node) and appending a list, add a br before
+    
     if (!isSkipPaddingBlankHTML && isLi(node) && node.firstChild === null && isList(child)) {
       node.appendChild(create("br"));
     }
@@ -436,43 +303,22 @@ function appendChildNodes(node, aChild, isSkipPaddingBlankHTML) {
   return node;
 }
 
-/**
- * returns whether boundaryPoint is left edge or not.
- *
- * @param {BoundaryPoint} point
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @return {Boolean} */
 function isLeftEdgePoint(point) {
   return point.offset === 0;
 }
 
-/**
- * returns whether boundaryPoint is right edge or not.
- *
- * @param {BoundaryPoint} point
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @return {Boolean} */
 function isRightEdgePoint(point) {
   return point.offset === nodeLength(point.node);
 }
 
-/**
- * returns whether boundaryPoint is edge or not.
- *
- * @param {BoundaryPoint} point
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @return {Boolean} */
 function isEdgePoint(point) {
   return isLeftEdgePoint(point) || isRightEdgePoint(point);
 }
 
-/**
- * returns whether node is left edge of ancestor or not.
- *
- * @param {Node} node
- * @param {Node} ancestor
- * @return {Boolean}
- */
+/* @param {Node} @param {Node} @return {Boolean} */
 function isLeftEdgeOf(node, ancestor) {
   while (node && node !== ancestor) {
     if (position(node) !== 0) {
@@ -484,13 +330,7 @@ function isLeftEdgeOf(node, ancestor) {
   return true;
 }
 
-/**
- * returns whether node is right edge of ancestor or not.
- *
- * @param {Node} node
- * @param {Node} ancestor
- * @return {Boolean}
- */
+/* @param {Node} @param {Node} @return {Boolean} */
 function isRightEdgeOf(node, ancestor) {
   if (!ancestor) {
     return false;
@@ -505,31 +345,17 @@ function isRightEdgeOf(node, ancestor) {
   return true;
 }
 
-/**
- * returns whether point is left edge of ancestor or not.
- * @param {BoundaryPoint} point
- * @param {Node} ancestor
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @param {Node} @return {Boolean} */
 function isLeftEdgePointOf(point, ancestor) {
   return isLeftEdgePoint(point) && isLeftEdgeOf(point.node, ancestor);
 }
 
-/**
- * returns whether point is right edge of ancestor or not.
- * @param {BoundaryPoint} point
- * @param {Node} ancestor
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @param {Node} @return {Boolean} */
 function isRightEdgePointOf(point, ancestor) {
   return isRightEdgePoint(point) && isRightEdgeOf(point.node, ancestor);
 }
 
-/**
- * returns offset from parent.
- *
- * @param {Node} node
- */
+/* @param {Node} */
 function position(node) {
   let offset = 0;
   while ((node = node.previousSibling)) {
@@ -542,13 +368,7 @@ function hasChildren(node) {
   return !!(node && node.childNodes && node.childNodes.length);
 }
 
-/**
- * returns previous boundaryPoint
- *
- * @param {BoundaryPoint} point
- * @param {Boolean} isSkipInnerOffset
- * @return {BoundaryPoint}
- */
+/* @param {BoundaryPoint} @param {Boolean} @return {BoundaryPoint} */
 function prevPoint(point, isSkipInnerOffset) {
   let node;
   let offset;
@@ -574,13 +394,7 @@ function prevPoint(point, isSkipInnerOffset) {
   };
 }
 
-/**
- * returns next boundaryPoint
- *
- * @param {BoundaryPoint} point
- * @param {Boolean} isSkipInnerOffset
- * @return {BoundaryPoint}
- */
+/* @param {BoundaryPoint} @param {Boolean} @return {BoundaryPoint} */
 function nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
@@ -611,14 +425,7 @@ function nextPoint(point, isSkipInnerOffset) {
   };
 }
 
-/**
- * Find next boundaryPoint for preorder / depth first traversal of the DOM
- * returns next boundaryPoint with empty node
- *
- * @param {BoundaryPoint} point
- * @param {Boolean} isSkipInnerOffset
- * @return {BoundaryPoint}
- */
+/* @param {BoundaryPoint} @param {Boolean} @return {BoundaryPoint} */
 function nextPointWithEmptyNode(point, isSkipInnerOffset) {
   let node;
   let offset;
@@ -631,7 +438,6 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
     node = point.node.parentNode;
     offset = position(point.node) + 1;
 
-    // if parent node is editable,  return current node's sibling node.
     if (isEditable(node)) {
       node = point.node.nextSibling;
       offset = 0;
@@ -650,9 +456,6 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
   };
 }
 
-/*
-* returns the next Text node index or 0 if not found.
-*/
 function getNextTextNode(actual) {
   if(!actual.nextSibling) return undefined;
   if(actual.parent !== actual.nextSibling.parent) return undefined;
@@ -661,23 +464,12 @@ function getNextTextNode(actual) {
   else return getNextTextNode(actual.nextSibling);
 }
 
-/**
- * returns whether pointA and pointB is same or not.
- *
- * @param {BoundaryPoint} pointA
- * @param {BoundaryPoint} pointB
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @param {BoundaryPoint} @return {Boolean} */
 function isSamePoint(pointA, pointB) {
   return pointA.node === pointB.node && pointA.offset === pointB.offset;
 }
 
-/**
- * returns whether point is visible (can set cursor) or not.
- *
- * @param {BoundaryPoint} point
- * @return {Boolean}
- */
+/* @param {BoundaryPoint} @return {Boolean} */
 function isVisiblePoint(point) {
   if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
     return true;
@@ -692,13 +484,7 @@ function isVisiblePoint(point) {
   return false;
 }
 
-/**
- * @method prevPointUtil
- *
- * @param {BoundaryPoint} point
- * @param {Function} pred
- * @return {BoundaryPoint}
- */
+/* @param {BoundaryPoint} @param {Function} @return {BoundaryPoint} */
 function prevPointUntil(point, pred) {
   while (point) {
     if (pred(point)) {
@@ -711,13 +497,7 @@ function prevPointUntil(point, pred) {
   return null;
 }
 
-/**
- * @method nextPointUntil
- *
- * @param {BoundaryPoint} point
- * @param {Function} pred
- * @return {BoundaryPoint}
- */
+/* @param {BoundaryPoint} @param {Function} @return {BoundaryPoint} */
 function nextPointUntil(point, pred) {
   while (point) {
     if (pred(point)) {
@@ -730,12 +510,7 @@ function nextPointUntil(point, pred) {
   return null;
 }
 
-/**
- * returns whether point has character or not.
- *
- * @param {Point} point
- * @return {Boolean}
- */
+/* @param {Point} @return {Boolean} */
 function isCharPoint(point) {
   if (!isText(point.node)) {
     return false;
@@ -745,12 +520,7 @@ function isCharPoint(point) {
   return ch && (ch !== ' ' && ch !== NBSP_CHAR);
 }
 
-/**
- * returns whether point has space or not.
- *
- * @param {Point} point
- * @return {Boolean}
- */
+/* @param {Point} @return {Boolean} */
 function isSpacePoint(point) {
   if (!isText(point.node)) {
     return false;
@@ -760,14 +530,7 @@ function isSpacePoint(point) {
   return ch === ' ' || ch === NBSP_CHAR;
 }
 
-/**
- * @method walkPoint - preorder / depth first traversal of the DOM
- *
- * @param {BoundaryPoint} startPoint
- * @param {BoundaryPoint} endPoint
- * @param {Function} handler
- * @param {Boolean} isSkipInnerOffset
- */
+/* @param {BoundaryPoint} @param {BoundaryPoint} @param {Function} @param {Boolean} */
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   let point = startPoint;
 
@@ -785,27 +548,13 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   }
 }
 
-/**
- * @method makeOffsetPath
- *
- * return offsetPath(array of offset) from ancestor
- *
- * @param {Node} ancestor - ancestor node
- * @param {Node} node
- */
+/* @param {Node} @param {Node} */
 function makeOffsetPath(ancestor, node) {
   const ancestors = listAncestor(node, func.eq(ancestor));
   return ancestors.map(position).reverse();
 }
 
-/**
- * @method fromOffsetPath
- *
- * return element from offsetPath(array of offset)
- *
- * @param {Node} ancestor - ancestor node
- * @param {array} offsets - offsetPath
- */
+/* @param {Node} @param {array} */
 function fromOffsetPath(ancestor, offsets) {
   let current = ancestor;
   for (let i = 0, len = offsets.length; i < len; i++) {
@@ -818,18 +567,7 @@ function fromOffsetPath(ancestor, offsets) {
   return current;
 }
 
-/**
- * @method splitNode
- *
- * split element or #text
- *
- * @param {BoundaryPoint} point
- * @param {Object} [options]
- * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
- * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
- * @param {Boolean} [options.isDiscardEmptySplits] - default: false
- * @return {Node} right node of boundaryPoint
- */
+/* @param {BoundaryPoint} @param {Object} @param {Boolean} @param {Boolean} @param {Boolean} @return {Node} */
 function splitNode(point, options) {
   let isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
   const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
@@ -839,7 +577,6 @@ function splitNode(point, options) {
     isSkipPaddingBlankHTML = true;
   }
 
-  // edge case
   if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
     if (isLeftEdgePoint(point)) {
       return point.node;
@@ -847,7 +584,6 @@ function splitNode(point, options) {
     return point.node.nextSibling;
   }
 
-  // split #text
   if (isText(point.node)) {
     return point.node.splitText(point.offset);
   } else {
@@ -876,20 +612,9 @@ function splitNode(point, options) {
   }
 }
 
-/**
- * @method splitTree
- *
- * split tree by point
- *
- * @param {Node} root - split root
- * @param {BoundaryPoint} point
- * @param {Object} [options]
- * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
- * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
- * @return {Node} right node of boundaryPoint
- */
+/* @param {Node} @param {BoundaryPoint} @param {Object} @param {Boolean} @param {Boolean} @return {Node} */
 function splitTree(root, point, options) {
-  // ex) [#text, <span>, <p>]
+  
   let ancestors = listAncestor(point.node, func.eq(root));
 
   if (!ancestors.length) {
@@ -897,7 +622,7 @@ function splitTree(root, point, options) {
   } else if (ancestors.length === 1) {
     return splitNode(point, options);
   }
-  // Filter elements with sibling elements
+  
   if (ancestors.length > 2) {
     let domList = ancestors.slice(0, ancestors.length - 1);
     let ifHasNextSibling = domList.find(item => item.nextSibling);
@@ -934,17 +659,9 @@ function splitTree(root, point, options) {
   });
 }
 
-/**
- * split point
- *
- * @param {Point} point
- * @param {Boolean} isInline
- * @return {Object}
- */
+/* @param {Point} @param {Boolean} @return {Object} */
 function splitPoint(point, isInline) {
-  // find splitRoot, container
-  //  - inline: splitRoot is a child of paragraph
-  //  - block: splitRoot is a child of bodyContainer
+  
   const pred = isInline ? isPara : isBodyContainer;
   const ancestors = listAncestor(point.node, pred);
   const topAncestor = lists.last(ancestors);
@@ -958,13 +675,11 @@ function splitPoint(point, isInline) {
     container = splitRoot.parentNode;
   }
 
-  // if splitRoot is exists, split with splitTree
   let pivot = splitRoot && splitTree(splitRoot, point, {
     isSkipPaddingBlankHTML: isInline,
     isNotSplitEdgePoint: isInline,
   });
 
-  // if container is point.node, find pivot with point.offset
   if (!pivot && container === point.node) {
     pivot = point.node.childNodes[point.offset];
   }
@@ -983,14 +698,7 @@ function createText(text) {
   return document.createTextNode(text);
 }
 
-/**
- * @method remove
- *
- * remove node, (isRemoveChild: remove child or not)
- *
- * @param {Node} node
- * @param {Boolean} isRemoveChild
- */
+/* @param {Node} @param {Boolean} */
 function remove(node, isRemoveChild) {
   if (!node || !node.parentNode) { return; }
   if (node.removeNode) { return node.removeNode(isRemoveChild); }
@@ -1010,12 +718,7 @@ function remove(node, isRemoveChild) {
   parent.removeChild(node);
 }
 
-/**
- * @method removeWhile
- *
- * @param {Node} node
- * @param {Function} pred
- */
+/* @param {Node} @param {Function} */
 function removeWhile(node, pred) {
   while (node) {
     if (isEditable(node) || !pred(node)) {
@@ -1028,15 +731,7 @@ function removeWhile(node, pred) {
   }
 }
 
-/**
- * @method replace
- *
- * replace node with provided nodeName
- *
- * @param {Node} node
- * @param {String} nodeName
- * @return {Node} - new node
- */
+/* @param {Node} @param {String} @return {Node} */
 function replace(node, nodeName) {
   if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
     return node;
@@ -1057,10 +752,7 @@ function replace(node, nodeName) {
 
 const isTextarea = makePredByNodeName('TEXTAREA');
 
-/**
- * @param {DomQuery|Element} $node
- * @param {Boolean} [stripLinebreaks] - default: false
- */
+/* @param {DomQuery|Element} @param {Boolean} */
 function value($node, stripLinebreaks) {
   const el = $node.get ? $node.get(0) : $node[0];
   const val = isTextarea(el) ? (el.value || $node.val()) : $node.html();
@@ -1070,14 +762,7 @@ function value($node, stripLinebreaks) {
   return val;
 }
 
-/**
- * @method html
- *
- * get the HTML contents of node
- *
- * @param {DomQuery|Element} $node
- * @param {Boolean} [isNewlineOnBlock]
- */
+/* @param {DomQuery|Element} @param {Boolean} */
 function html($node, isNewlineOnBlock) {
   let markup = value($node);
 
@@ -1100,7 +785,7 @@ function html($node, isNewlineOnBlock) {
 function posFromPlaceholder(placeholder) {
   const $placeholder = $$(placeholder);
   const pos = $placeholder.offset();
-  const height = $placeholder.outerHeight(true); // include margin
+  const height = $placeholder.outerHeight(true); 
 
   return {
     left: pos.left,
@@ -1120,26 +805,19 @@ function detachEvents($node, events) {
   });
 }
 
-/**
- * @method isCustomStyleTag
- *
- * assert if a node contains a "note-styletag" class,
- * which implies that's a custom-made style tag node
- *
- * @param {Node} an HTML DOM node
- */
+/* @param {Node} */
 function isCustomStyleTag(node) {
   return node && !isText(node) && lists.contains(node.classList, 'note-styletag');
 }
 
 export default {
-  /** @property {String} NBSP_CHAR */
+  
   NBSP_CHAR,
-  /** @property {String} ZERO_WIDTH_NBSP_CHAR */
+  
   ZERO_WIDTH_NBSP_CHAR,
-  /** @property {String} blank */
+  
   blank: blankHTML,
-  /** @property {String} emptyPara */
+  
   emptyPara: `<p>${blankHTML}</p>`,
   makePredByNodeName,
   isEditable,

@@ -1,0 +1,85 @@
+$sni-css-prefix: note-icon !default;
+
+.#{$sni-css-prefix} {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: middle;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  text-rendering: auto;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  speak: none;
+  flex-shrink: 0;
+
+  > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+}
+
+.#{$sni-css-prefix}-xs > svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+.#{$sni-css-prefix}-sm > svg {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+.#{$sni-css-prefix}-md > svg {
+  width: 1.125em;
+  height: 1.125em;
+}
+
+.#{$sni-css-prefix}-lg > svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+.#{$sni-css-prefix}-superscript > svg {
+  transform: translateY(0);
+}
+
+.#{$sni-css-prefix}-subscript > svg {
+  transform: translateY(8%);
+}
+
+.#{$sni-css-prefix}-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.#{$sni-css-prefix}-border {
+  border: solid 0.08em #eee;
+  border-radius: 0.1em;
+  padding: 0.2em 0.25em 0.15em;
+}
+
+.#{$sni-css-prefix}-pull-left {
+  float: left;
+}
+
+.#{$sni-css-prefix}-pull-right {
+  float: right;
+}
+
+.#{$sni-css-prefix} {
+  &.#{$sni-css-prefix}-pull-left {
+    margin-right: 0.3em;
+  }
+  &.#{$sni-css-prefix}-pull-right {
+    margin-left: 0.3em;
+  }
+}

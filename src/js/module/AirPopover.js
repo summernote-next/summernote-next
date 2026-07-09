@@ -73,9 +73,8 @@ export default class AirPopover {
       classPrefix: 'popover',
     });
 
-    // disable hiding this popover preemptively by 'summernote.blur' event.
     this.$popover.on('mousedown', () => { this.hidable = false; });
-    // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+    
     this.$popover.on('mouseup', () => { this.hidable = true; });
   }
 
@@ -95,10 +94,7 @@ export default class AirPopover {
   }
 
   reposition() {
-    // The popover body uses `display: flex` with `gap`, so the popover width
-    // only stabilises after the browser finishes laying out the flex children
-    // and computing the inter-group gaps. Wait a few frames, then re-measure
-    // and re-apply. Repeat until the width is stable.
+    
     let lastWidth = -1;
     let frames = 0;
     const settle = () => {

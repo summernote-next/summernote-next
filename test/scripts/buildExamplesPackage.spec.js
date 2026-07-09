@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 describe('buildExamplesPackage', () => {
-  it('copies the real dist and font content into the former mount points', () => {
+  it('copies the real dist content into the former mount points', () => {
     const { zipPath } = buildExamplesPackage({ outputDir, zipName: 'test-examples.zip' });
 
     expect(existsSync(zipPath)).to.be.true;
@@ -34,10 +34,10 @@ describe('buildExamplesPackage', () => {
     expect(entries.has('examples/dist/lang/de-de.js')).to.be.true;
     expect(entries.has('examples/assets/examples.css')).to.be.true;
 
-    expect(entries.has('examples/font/summernote.woff2')).to.be.true;
-    expect(entries.has('examples/font/summernote.woff')).to.be.true;
-    expect(entries.has('examples/font/summernote.ttf')).to.be.true;
-    expect(entries.has('examples/font/summernote.eot')).to.be.true;
+    expect(entries.has('examples/font/summernote.woff2')).to.be.false;
+    expect(entries.has('examples/font/summernote.woff')).to.be.false;
+    expect(entries.has('examples/font/summernote.ttf')).to.be.false;
+    expect(entries.has('examples/font/summernote.eot')).to.be.false;
   });
 
   it('does not package any zip artifacts from the dist directory', () => {
@@ -67,22 +67,13 @@ describe('buildExamplesPackage', () => {
       });
   });
 
-  it('resolves the relative font reference used inside the compiled stylesheet', () => {
+  it('does not reference any font files from the compiled stylesheet', () => {
     const { zipPath } = buildExamplesPackage({ outputDir, zipName: 'test-examples.zip' });
 
     const zip = new AdmZip(zipPath);
-    const entries = new Set(zip.getEntries().map(entry => entry.entryName));
-
     const css = zip.getEntry('examples/dist/summernote-next.css').getData().toString('utf8');
-    const fontReferences = [...css.matchAll(/url\(["']?(\.\.\/font\/[^"')?]+)/g)].map(match => match[1]);
 
-    expect(fontReferences.length).to.be.greaterThan(0);
-
-    fontReferences
-      .map(reference => reference.replace(/^\.\.\//, ''))
-      .forEach(reference => {
-        const entry = `examples/${reference}`;
-        expect(entries.has(entry), `stylesheet font reference should resolve (${entry})`).to.be.true;
-      });
+    expect(css).not.to.match(/url\(["']?\.\.\/font\//);
+    expect(css).not.to.contain('@font-face');
   });
 });

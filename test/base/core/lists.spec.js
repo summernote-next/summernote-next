@@ -91,7 +91,7 @@ describe('base:core.lists', () => {
   describe('from', () => {
     it('should return an array of childNodes', () => {
       var $cont, $b, $u, $s, $i;
-      $cont = $$('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');

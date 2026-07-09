@@ -1,6 +1,7 @@
 import $$ from '@/js/core/dom-query.js';
 import '@/js/settings';
 import renderer from '@/js/renderer';
+import { ICON_PREFIX, getIconSvg, loadAllIcons, iconNames } from '@/js/icons-svg.js';
 
 import './summernote-bs5.scss';
 
@@ -119,12 +120,56 @@ const checkbox = renderer.create('<div class="form-check"></div>', function($nod
 });
 
 const icon = function(iconClassName, tagName) {
-  if (iconClassName.match(/^</)) {
+  if (!iconClassName) {
+    return '';
+  }
+  if (iconClassName.charAt(0) === '<') {
     return iconClassName;
   }
-  tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName+'>';
+  const tokens = iconClassName.split(/\s+/).filter(Boolean);
+  const iconToken = tokens.find((token) => token.startsWith(ICON_PREFIX));
+  if (!iconToken) {
+    tagName = tagName || 'i';
+    return '<' + tagName + ' class="' + iconClassName + '"></' + tagName + '>';
+  }
+  const name = iconToken.slice(ICON_PREFIX.length);
+  const extra = tokens.filter((token) => token !== iconToken).join(' ').trim();
+  const cls = 'note-icon ' + ICON_PREFIX + name + (extra ? ' ' + extra : '');
+  const svg = getIconSvg(name) || '';
+  return '<i class="' + cls + '" aria-hidden="true">' + svg + '</i>';
 };
+
+const paintIcon = function(name, lookup) {
+  const sourceLookup = lookup || getIconSvg;
+  const svg = sourceLookup(name);
+  if (!svg) {
+    return;
+  }
+  const nodes = document.querySelectorAll('i.' + ICON_PREFIX + name);
+  nodes.forEach((el) => {
+    if (!el.querySelector(':scope > svg')) {
+      el.innerHTML = svg;
+    }
+  });
+};
+
+const paintAllIcons = function() {
+  iconNames().forEach((name) => paintIcon(name));
+};
+
+let paintedPromise = null;
+const ensureIconsLoaded = function() {
+  const promise = loadAllIcons();
+  if (promise === paintedPromise) {
+    return;
+  }
+  paintedPromise = promise;
+  promise.then(() => paintAllIcons()).catch(() => {
+    paintedPromise = null;
+  });
+};
+
+export const __paintIcon__ = paintIcon;
 
 const initializeTooltip = function($node, options, editorOptions) {
   if (!options || !options.tooltip) {
@@ -146,6 +191,8 @@ const initializeTooltip = function($node, options, editorOptions) {
 };
 
 const ui = function(editorOptions) {
+  ensureIconsLoaded();
+
   return {
     editor: editor,
     toolbar: toolbar,

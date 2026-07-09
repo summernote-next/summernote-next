@@ -1,4 +1,4 @@
-@use '../summernote/font';
+@use '../summernote/icons';
 @use '../summernote/common';
 
 body:has(.note-air-popover) {
@@ -180,6 +180,21 @@ body:has(.note-air-popover) {
 .note-popover .note-btn-group .note-btn,
 .note-popover .note-btn-group .dropdown-toggle {
   border-color: var(--note-border-color, var(--bs-border-color, #dee2e6));
+}
+
+.note-editor .note-btn:has(> .note-icon),
+.note-popover .note-btn:has(> .note-icon),
+.note-modal .note-btn:has(> .note-icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(1.5em + 0.5rem + 2px); 
+}
+
+.note-editor .note-btn:has(> .note-icon):not(.dropdown-toggle)::after,
+.note-popover .note-btn:has(> .note-icon):not(.dropdown-toggle)::after,
+.note-modal .note-btn:has(> .note-icon):not(.dropdown-toggle)::after {
+  display: none;
 }
 
 .note-editor .note-dropdown-menu,

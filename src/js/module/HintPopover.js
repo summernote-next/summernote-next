@@ -112,10 +112,10 @@ export default class HintPopover {
 
     if ($item.length) {
       var node = this.nodeFromItem($item);
-      // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
+      
       if (this.matchingWord !== null && this.matchingWord.length === 0) {
         this.lastWordRange.so = this.lastWordRange.eo;
-      // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
+      
       } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
         let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
         if (rangeCompute > 0) {
@@ -250,10 +250,9 @@ export default class HintPopover {
             this.createGroup(idx, keyword).appendTo(this.$content);
           }
         });
-        // select first .note-hint-item
+        
         this.$content.find('.note-hint-item').first().addClass('active');
 
-        // set position for popover after group is created
         if (this.direction === 'top') {
           this.$popover.css({
             left: bnd.left,

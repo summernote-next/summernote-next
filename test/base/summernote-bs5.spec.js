@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
+import {
+  __paintIcon__,
+} from '@/styles/bs5/summernote-bs5';
+import * as iconsModule from '@/js/icons-svg.js';
+import { loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote bs5 ui template', () => {
@@ -89,7 +94,7 @@ describe('summernote bs5 ui template', () => {
     expect($checkItems).to.have.length(3);
     expect($checkItems.eq(0).attr('data-value')).to.equal('alpha');
     expect($checkItems.eq(0).attr('aria-label')).to.equal('alpha');
-    expect($checkItems.eq(1).html()).to.contain('<i class="note-icon-check"></i>');
+    expect($checkItems.eq(1).html()).to.contain('<i class="note-icon note-icon-check" aria-hidden="true">');
     expect($checkItems.eq(1).html()).to.contain('<em>beta</em>');
     expect($checkItems.eq(2).attr('data-value')).to.equal('');
     expect($checkItems.eq(2).html()).to.contain('<em>none</em>');
@@ -98,7 +103,7 @@ describe('summernote bs5 ui template', () => {
     expect($emptyDropdownCheck.find('.dropdown-item')).to.have.length(0);
   });
 
-  it('renders dialogs, popovers, checkboxes, and raw icon markup', () => {
+  it('renders dialogs, popovers, checkboxes, and raw icon markup', async() => {
     const ui = $$.summernote.ui_template({});
 
     const $dialog = ui.dialog({
@@ -144,6 +149,72 @@ describe('summernote bs5 ui template', () => {
 
     expect(ui.icon('<svg class="icon"></svg>')).to.equal('<svg class="icon"></svg>');
     expect(ui.icon('bi bi-type-bold', 'span')).to.equal('<span class="bi bi-type-bold"></span>');
+    expect(ui.icon('bi bi-type-bold')).to.equal('<i class="bi bi-type-bold"></i>');
+    expect(ui.icon('')).to.equal('');
+    expect(ui.icon(undefined)).to.equal('');
+
+    resetIconCache();
+    const placeholder = ui.icon('note-icon-bold');
+    expect(placeholder).to.contain('class="note-icon note-icon-bold"');
+    expect(placeholder).to.contain('aria-hidden="true"');
+    expect(placeholder).not.to.contain('<svg');
+
+    await loadAllIcons();
+
+    const noteIcon = ui.icon('note-icon-bold');
+    expect(noteIcon).to.contain('class="note-icon note-icon-bold"');
+    expect(noteIcon).to.contain('<svg');
+    expect(noteIcon).to.contain('aria-hidden="true"');
+
+    const noteIconWithExtra = ui.icon('note-icon-bold some-extra-class');
+    expect(noteIconWithExtra).to.contain('class="note-icon note-icon-bold some-extra-class"');
+
+    const noteIconUnknown = ui.icon('note-icon-does-not-exist');
+    expect(noteIconUnknown).to.contain('class="note-icon note-icon-does-not-exist"');
+  });
+
+  it('paints placeholder icons in the DOM once they have been lazily loaded', async() => {
+    resetIconCache();
+    const ui = $$.summernote.ui_template({});
+
+    const $host = $$('<div></div>').appendTo('body');
+    $host.html(ui.icon('note-icon-bold'));
+    expect($host.find('i.note-icon-bold').length).to.equal(1);
+    expect($host.find('i.note-icon-bold svg').length).to.equal(0);
+
+    await loadAllIcons();
+    await vi.waitFor(() => {
+      expect($host.find('i.note-icon-bold svg').length).to.equal(1);
+    });
+
+    $host.remove();
+  });
+
+  it('skips painting when the loaded svg is not available for an icon name', () => {
+    const $host = $$('<div></div>').appendTo('body');
+    $host.html('<i class="note-icon note-icon-bold"></i>');
+
+    const originalGetIconSvg = iconsModule.getIconSvg;
+    const stubGetIconSvg = (name) => (name === 'bold' ? null : originalGetIconSvg(name));
+
+    __paintIcon__('bold', stubGetIconSvg);
+
+    expect($host.find('i.note-icon-bold svg').length).to.equal(0);
+
+    $host.remove();
+  });
+
+  it('resets the painted-promise tracker when loadAllIcons rejects', async() => {
+    resetIconCache();
+    setIconBaseUrl('/definitely/not/where/icons/live/');
+
+    try {
+      $$.summernote.ui_template({});
+      await expect(loadAllIcons()).rejects.toThrow();
+    } finally {
+      setIconBaseUrl('/src/font/icons/');
+      resetIconCache();
+    }
   });
 
   it('initializes tooltips for buttons and palettes with every container source', () => {

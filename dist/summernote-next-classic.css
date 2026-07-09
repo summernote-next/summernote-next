@@ -1,23 +1,56 @@
-@font-face {
-  font-family: "summernote";
+.note-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: middle;
   font-style: normal;
-  font-weight: 400;
-  font-display: auto;
-  src: url("../font/summernote.eot?#iefix") format("embedded-opentype"), url("../font/summernote.woff2") format("woff2"), url("../font/summernote.woff") format("woff"), url("../font/summernote.ttf") format("truetype");
-}
-[class^=note-icon]:before,
-[class*=" note-icon"]:before {
-  display: inline-block;
-  font-family: "summernote";
-  font-style: normal;
-  font-size: inherit;
+  font-weight: normal;
   text-decoration: inherit;
   text-rendering: auto;
   text-transform: none;
-  vertical-align: middle;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   speak: none;
+  flex-shrink: 0;
+}
+.note-icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.note-icon-xs > svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+.note-icon-sm > svg {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+.note-icon-md > svg {
+  width: 1.125em;
+  height: 1.125em;
+}
+
+.note-icon-lg > svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+.note-icon-superscript > svg {
+  transform: translateY(0);
+}
+
+.note-icon-subscript > svg {
+  transform: translateY(8%);
 }
 
 .note-icon-fw {
@@ -46,234 +79,6 @@
   margin-left: 0.3em;
 }
 
-.note-icon-align::before {
-  content: "\ea01";
-}
-
-.note-icon-align-center::before {
-  content: "\ea02";
-}
-
-.note-icon-align-indent::before {
-  content: "\ea03";
-}
-
-.note-icon-align-justify::before {
-  content: "\ea04";
-}
-
-.note-icon-align-left::before {
-  content: "\ea05";
-}
-
-.note-icon-align-outdent::before {
-  content: "\ea06";
-}
-
-.note-icon-align-right::before {
-  content: "\ea07";
-}
-
-.note-icon-arrow-circle-down::before {
-  content: "\ea08";
-}
-
-.note-icon-arrow-circle-left::before {
-  content: "\ea09";
-}
-
-.note-icon-arrow-circle-right::before {
-  content: "\ea0a";
-}
-
-.note-icon-arrow-circle-up::before {
-  content: "\ea0b";
-}
-
-.note-icon-arrows-alt::before {
-  content: "\ea0c";
-}
-
-.note-icon-arrows-h::before {
-  content: "\ea0d";
-}
-
-.note-icon-arrows-v::before {
-  content: "\ea0e";
-}
-
-.note-icon-bold::before {
-  content: "\ea0f";
-}
-
-.note-icon-caret::before {
-  content: "\ea10";
-}
-
-.note-icon-chain-broken::before {
-  content: "\ea11";
-}
-
-.note-icon-circle::before {
-  content: "\ea12";
-}
-
-.note-icon-close::before {
-  content: "\ea13";
-}
-
-.note-icon-code::before {
-  content: "\ea14";
-}
-
-.note-icon-col-after::before {
-  content: "\ea15";
-}
-
-.note-icon-col-before::before {
-  content: "\ea16";
-}
-
-.note-icon-col-remove::before {
-  content: "\ea17";
-}
-
-.note-icon-eraser::before {
-  content: "\ea18";
-}
-
-.note-icon-float-left::before {
-  content: "\ea19";
-}
-
-.note-icon-float-none::before {
-  content: "\ea1a";
-}
-
-.note-icon-float-right::before {
-  content: "\ea1b";
-}
-
-.note-icon-font::before {
-  content: "\ea1c";
-}
-
-.note-icon-frame::before {
-  content: "\ea1d";
-}
-
-.note-icon-italic::before {
-  content: "\ea1e";
-}
-
-.note-icon-link::before {
-  content: "\ea1f";
-}
-
-.note-icon-magic::before {
-  content: "\ea20";
-}
-
-.note-icon-menu-check::before {
-  content: "\ea21";
-}
-
-.note-icon-minus::before {
-  content: "\ea22";
-}
-
-.note-icon-orderedlist::before {
-  content: "\ea23";
-}
-
-.note-icon-pencil::before {
-  content: "\ea24";
-}
-
-.note-icon-picture::before {
-  content: "\ea25";
-}
-
-.note-icon-question::before {
-  content: "\ea26";
-}
-
-.note-icon-redo::before {
-  content: "\ea27";
-}
-
-.note-icon-rollback::before {
-  content: "\ea28";
-}
-
-.note-icon-row-above::before {
-  content: "\ea29";
-}
-
-.note-icon-row-below::before {
-  content: "\ea2a";
-}
-
-.note-icon-row-remove::before {
-  content: "\ea2b";
-}
-
-.note-icon-special-character::before {
-  content: "\ea2c";
-}
-
-.note-icon-square::before {
-  content: "\ea2d";
-}
-
-.note-icon-strikethrough::before {
-  content: "\ea2e";
-}
-
-.note-icon-subscript::before {
-  content: "\ea2f";
-}
-
-.note-icon-summernote::before {
-  content: "\ea30";
-}
-
-.note-icon-superscript::before {
-  content: "\ea31";
-}
-
-.note-icon-table::before {
-  content: "\ea32";
-}
-
-.note-icon-text-height::before {
-  content: "\ea33";
-}
-
-.note-icon-trash::before {
-  content: "\ea34";
-}
-
-.note-icon-underline::before {
-  content: "\ea35";
-}
-
-.note-icon-undo::before {
-  content: "\ea36";
-}
-
-.note-icon-unorderedlist::before {
-  content: "\ea37";
-}
-
-.note-icon-video::before {
-  content: "\ea38";
-}
-
-/* Theme Variables
- ------------------------------------------ */
-/* Layout
- ------------------------------------------ */
 .note-editor {
   position: relative;
 }
@@ -320,8 +125,6 @@
   cursor: pointer;
 }
 
-/* Frame mode layout
- ------------------------------------------ */
 .note-editor.note-frame,
 .note-editor.note-airframe {
   border: var(--bs-border-width) solid var(--bs-border-color-translucent);
@@ -543,8 +346,6 @@
   padding: 0;
 }
 
-/* Popover
- ------------------------------------------ */
 .note-popover.popover {
   position: absolute;
   display: none;
@@ -563,8 +364,6 @@
   vertical-align: middle;
 }
 
-/* Popover and Toolbar (Button container)
- ------------------------------------------ */
 .note-toolbar {
   position: relative;
 }
@@ -872,8 +671,6 @@
   margin: 0;
 }
 
-/* Dialog
- ------------------------------------------ */
 .note-modal .modal-dialog {
   outline: 0;
   border-radius: var(--bs-border-radius);
@@ -954,16 +751,12 @@
   min-width: 9rem;
 }
 
-/* Placeholder
- ------------------------------------------ */
 .note-placeholder {
   position: absolute;
   display: none;
   color: var(--bs-secondary-color);
 }
 
-/* Handle
- ------------------------------------------ */
 .note-handle {
   position: absolute;
   top: 0;
@@ -1072,8 +865,6 @@
   cursor: pointer;
 }
 
-/* Handle
- ------------------------------------------ */
 html .note-fullscreen-body, body .note-fullscreen-body {
   overflow: hidden !important;
 }
@@ -1263,6 +1054,21 @@ body:has(.note-air-popover) {
 .note-popover .note-btn-group .note-btn,
 .note-popover .note-btn-group .dropdown-toggle {
   border-color: var(--note-border-color, var(--bs-border-color, #dee2e6));
+}
+
+.note-editor .note-btn:has(> .note-icon),
+.note-popover .note-btn:has(> .note-icon),
+.note-modal .note-btn:has(> .note-icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(1.5em + 0.5rem + 2px);
+}
+
+.note-editor .note-btn:has(> .note-icon):not(.dropdown-toggle)::after,
+.note-popover .note-btn:has(> .note-icon):not(.dropdown-toggle)::after,
+.note-modal .note-btn:has(> .note-icon):not(.dropdown-toggle)::after {
+  display: none;
 }
 
 .note-editor .note-dropdown-menu,
@@ -1611,26 +1417,59 @@ body:has(.note-air-popover) {
 .note-hint-popover .note-hint-item:focus-visible {
   color: var(--note-accent-color);
   background-color: var(--note-accent-bg);
-}@font-face {
-  font-family: "summernote";
+}.note-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: middle;
   font-style: normal;
-  font-weight: 400;
-  font-display: auto;
-  src: url("../font/summernote.eot?#iefix") format("embedded-opentype"), url("../font/summernote.woff2") format("woff2"), url("../font/summernote.woff") format("woff"), url("../font/summernote.ttf") format("truetype");
-}
-[class^=note-icon]:before,
-[class*=" note-icon"]:before {
-  display: inline-block;
-  font-family: "summernote";
-  font-style: normal;
-  font-size: inherit;
+  font-weight: normal;
   text-decoration: inherit;
   text-rendering: auto;
   text-transform: none;
-  vertical-align: middle;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   speak: none;
+  flex-shrink: 0;
+}
+.note-icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.note-icon-xs > svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+.note-icon-sm > svg {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+.note-icon-md > svg {
+  width: 1.125em;
+  height: 1.125em;
+}
+
+.note-icon-lg > svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+.note-icon-superscript > svg {
+  transform: translateY(0);
+}
+
+.note-icon-subscript > svg {
+  transform: translateY(8%);
 }
 
 .note-icon-fw {
@@ -1659,234 +1498,6 @@ body:has(.note-air-popover) {
   margin-left: 0.3em;
 }
 
-.note-icon-align::before {
-  content: "\ea01";
-}
-
-.note-icon-align-center::before {
-  content: "\ea02";
-}
-
-.note-icon-align-indent::before {
-  content: "\ea03";
-}
-
-.note-icon-align-justify::before {
-  content: "\ea04";
-}
-
-.note-icon-align-left::before {
-  content: "\ea05";
-}
-
-.note-icon-align-outdent::before {
-  content: "\ea06";
-}
-
-.note-icon-align-right::before {
-  content: "\ea07";
-}
-
-.note-icon-arrow-circle-down::before {
-  content: "\ea08";
-}
-
-.note-icon-arrow-circle-left::before {
-  content: "\ea09";
-}
-
-.note-icon-arrow-circle-right::before {
-  content: "\ea0a";
-}
-
-.note-icon-arrow-circle-up::before {
-  content: "\ea0b";
-}
-
-.note-icon-arrows-alt::before {
-  content: "\ea0c";
-}
-
-.note-icon-arrows-h::before {
-  content: "\ea0d";
-}
-
-.note-icon-arrows-v::before {
-  content: "\ea0e";
-}
-
-.note-icon-bold::before {
-  content: "\ea0f";
-}
-
-.note-icon-caret::before {
-  content: "\ea10";
-}
-
-.note-icon-chain-broken::before {
-  content: "\ea11";
-}
-
-.note-icon-circle::before {
-  content: "\ea12";
-}
-
-.note-icon-close::before {
-  content: "\ea13";
-}
-
-.note-icon-code::before {
-  content: "\ea14";
-}
-
-.note-icon-col-after::before {
-  content: "\ea15";
-}
-
-.note-icon-col-before::before {
-  content: "\ea16";
-}
-
-.note-icon-col-remove::before {
-  content: "\ea17";
-}
-
-.note-icon-eraser::before {
-  content: "\ea18";
-}
-
-.note-icon-float-left::before {
-  content: "\ea19";
-}
-
-.note-icon-float-none::before {
-  content: "\ea1a";
-}
-
-.note-icon-float-right::before {
-  content: "\ea1b";
-}
-
-.note-icon-font::before {
-  content: "\ea1c";
-}
-
-.note-icon-frame::before {
-  content: "\ea1d";
-}
-
-.note-icon-italic::before {
-  content: "\ea1e";
-}
-
-.note-icon-link::before {
-  content: "\ea1f";
-}
-
-.note-icon-magic::before {
-  content: "\ea20";
-}
-
-.note-icon-menu-check::before {
-  content: "\ea21";
-}
-
-.note-icon-minus::before {
-  content: "\ea22";
-}
-
-.note-icon-orderedlist::before {
-  content: "\ea23";
-}
-
-.note-icon-pencil::before {
-  content: "\ea24";
-}
-
-.note-icon-picture::before {
-  content: "\ea25";
-}
-
-.note-icon-question::before {
-  content: "\ea26";
-}
-
-.note-icon-redo::before {
-  content: "\ea27";
-}
-
-.note-icon-rollback::before {
-  content: "\ea28";
-}
-
-.note-icon-row-above::before {
-  content: "\ea29";
-}
-
-.note-icon-row-below::before {
-  content: "\ea2a";
-}
-
-.note-icon-row-remove::before {
-  content: "\ea2b";
-}
-
-.note-icon-special-character::before {
-  content: "\ea2c";
-}
-
-.note-icon-square::before {
-  content: "\ea2d";
-}
-
-.note-icon-strikethrough::before {
-  content: "\ea2e";
-}
-
-.note-icon-subscript::before {
-  content: "\ea2f";
-}
-
-.note-icon-summernote::before {
-  content: "\ea30";
-}
-
-.note-icon-superscript::before {
-  content: "\ea31";
-}
-
-.note-icon-table::before {
-  content: "\ea32";
-}
-
-.note-icon-text-height::before {
-  content: "\ea33";
-}
-
-.note-icon-trash::before {
-  content: "\ea34";
-}
-
-.note-icon-underline::before {
-  content: "\ea35";
-}
-
-.note-icon-undo::before {
-  content: "\ea36";
-}
-
-.note-icon-unorderedlist::before {
-  content: "\ea37";
-}
-
-.note-icon-video::before {
-  content: "\ea38";
-}
-
-/* Theme Variables
- ------------------------------------------ */
-/* Layout
- ------------------------------------------ */
 .note-editor {
   position: relative;
 }
@@ -1933,8 +1544,6 @@ body:has(.note-air-popover) {
   cursor: pointer;
 }
 
-/* Frame mode layout
- ------------------------------------------ */
 .note-editor.note-frame,
 .note-editor.note-airframe {
   border: var(--bs-border-width) solid var(--bs-border-color-translucent);
@@ -2156,8 +1765,6 @@ body:has(.note-air-popover) {
   padding: 0;
 }
 
-/* Popover
- ------------------------------------------ */
 .note-popover.popover {
   position: absolute;
   display: none;
@@ -2176,8 +1783,6 @@ body:has(.note-air-popover) {
   vertical-align: middle;
 }
 
-/* Popover and Toolbar (Button container)
- ------------------------------------------ */
 .note-toolbar {
   position: relative;
 }
@@ -2485,8 +2090,6 @@ body:has(.note-air-popover) {
   margin: 0;
 }
 
-/* Dialog
- ------------------------------------------ */
 .note-modal .modal-dialog {
   outline: 0;
   border-radius: var(--bs-border-radius);
@@ -2567,16 +2170,12 @@ body:has(.note-air-popover) {
   min-width: 9rem;
 }
 
-/* Placeholder
- ------------------------------------------ */
 .note-placeholder {
   position: absolute;
   display: none;
   color: var(--bs-secondary-color);
 }
 
-/* Handle
- ------------------------------------------ */
 .note-handle {
   position: absolute;
   top: 0;
@@ -2685,8 +2284,6 @@ body:has(.note-air-popover) {
   cursor: pointer;
 }
 
-/* Handle
- ------------------------------------------ */
 html .note-fullscreen-body, body .note-fullscreen-body {
   overflow: hidden !important;
 }

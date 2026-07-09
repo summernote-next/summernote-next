@@ -2,9 +2,6 @@ import $$ from '../core/dom-query.js';
 import dom from '../core/dom';
 import key from '../core/key';
 
-/**
- * @class Codeview
- */
 export default class CodeView {
   constructor(context) {
     this.context = context;
@@ -93,16 +90,11 @@ export default class CodeView {
     });
   }
 
-  /**
-   * @return {Boolean}
-   */
+  /* @return {Boolean} */
   isActivated() {
     return this.$editor.hasClass('codeview');
   }
 
-  /**
-   * toggle codeview
-   */
   toggle() {
     if (this.isActivated()) {
       this.deactivate();
@@ -112,25 +104,21 @@ export default class CodeView {
     this.context.triggerEvent('codeview.toggled');
   }
 
-  /**
-   * purify input value
-   * @param value
-   * @returns {*}
-   */
+  /* @returns {*} */
   purify(value) {
     if (this.options.codeviewFilter) {
-      // filter code view regex
+      
       value = value.replace(this.options.codeviewFilterRegex, '');
-      // allow specific iframe tag
+      
       if (this.options.codeviewIframeFilter) {
         const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
         value = value.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, function(tag) {
-          // remove if src attribute is duplicated
+          
           if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
             return '';
           }
           for (const src of whitelist) {
-            // pass if src is trusted
+            
             if ((new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"')).test(tag)) {
               return tag;
             }
@@ -142,9 +130,6 @@ export default class CodeView {
     return value;
   }
 
-  /**
-   * activate code view
-   */
   activate() {
     const CodeMirror = this.CodeMirrorConstructor;
     this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
@@ -159,11 +144,9 @@ export default class CodeView {
     }
     this.$codable.trigger('focus');
 
-    // activate CodeMirror as codable
     if (CodeMirror) {
       const cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror);
 
-      // CodeMirror TernServer
       if (this.options.codemirror.tern) {
         const server = new CodeMirror.TernServer(this.options.codemirror.tern);
         cmEditor.ternServer = server;
@@ -179,7 +162,6 @@ export default class CodeView {
         this.context.triggerEvent('change.codeview', cmEditor.getValue(), cmEditor);
       });
 
-      // CodeMirror hasn't Padding.
       cmEditor.setSize(null, this.$editable.outerHeight());
       this.$codable.data('cmEditor', cmEditor);
     } else {
@@ -192,12 +174,9 @@ export default class CodeView {
     }
   }
 
-  /**
-   * deactivate code view
-   */
   deactivate() {
     const CodeMirror = this.CodeMirrorConstructor;
-    // deactivate CodeMirror as codable
+    
     if (CodeMirror) {
       const cmEditor = this.$codable.data('cmEditor');
       this.$codable.val(cmEditor.getValue());

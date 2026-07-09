@@ -12,8 +12,8 @@ describe('base:core.dom', () => {
   describe('ancestor', () => {
     let $cont, $b, txtB;
     beforeAll(() => {
-      // basic case
-      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $b = $cont.find('b');
       txtB = $b[0].firstChild;
     });
@@ -38,7 +38,7 @@ describe('base:core.dom', () => {
   describe('listAncestor', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><i><s><u><b>b</b></u></s></i></div>'); // busi
+      $cont = $$('<div class="note-editable"><i><s><u><b>b</b></u></s></i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -63,7 +63,7 @@ describe('base:core.dom', () => {
   describe('listDescendant', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><b></b><u></u><s></s><i></i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b></b><u></u><s></s><i></i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -143,7 +143,7 @@ describe('base:core.dom', () => {
   describe('listNext', () => {
     let $cont, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $u = $cont.find('u');
       $s = $cont.find('s');
       $i = $cont.find('i');
@@ -165,7 +165,7 @@ describe('base:core.dom', () => {
   describe('listPrev', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -188,7 +188,7 @@ describe('base:core.dom', () => {
   describe('position', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -210,7 +210,7 @@ describe('base:core.dom', () => {
   describe('makeOffsetPath', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -245,7 +245,7 @@ describe('base:core.dom', () => {
   describe('fromOffsetPath', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); 
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -265,7 +265,7 @@ describe('base:core.dom', () => {
   describe('splitTree', () => {
     let $para;
     beforeEach(() => {
-      let $busi = $$('<div class="note-editable"><p><b>b</b><u>u</u><s>strike</s><i>i</i></p></div>'); // busi
+      let $busi = $$('<div class="note-editable"><p><b>b</b><u>u</u><s>strike</s><i>i</i></p></div>'); 
       $para = $busi.clone().find('p');
     });
 
@@ -359,7 +359,7 @@ describe('base:core.dom', () => {
       });
 
       it('should be split by span tag with offset 2 (1 depth and element case)', () => {
-        let $cont = $$('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); // busi
+        let $cont = $$('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); 
         let $span = $cont.find('span');
         dom.splitTree($span[0], { node: $span[0], offset: 2 });
 
