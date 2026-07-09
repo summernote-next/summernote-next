@@ -25,6 +25,11 @@
   flex-shrink: 0;
 }
 
+.note-icon-xs > svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
 .note-icon-sm > svg {
   width: 0.75em;
   height: 0.75em;
@@ -74,10 +79,6 @@
   margin-left: 0.3em;
 }
 
-/* Theme Variables
- ------------------------------------------ */
-/* Layout
- ------------------------------------------ */
 .note-editor {
   position: relative;
 }
@@ -124,8 +125,6 @@
   cursor: pointer;
 }
 
-/* Frame mode layout
- ------------------------------------------ */
 .note-editor.note-frame,
 .note-editor.note-airframe {
   border: var(--bs-border-width) solid var(--bs-border-color-translucent);
@@ -347,8 +346,6 @@
   padding: 0;
 }
 
-/* Popover
- ------------------------------------------ */
 .note-popover.popover {
   position: absolute;
   display: none;
@@ -367,8 +364,6 @@
   vertical-align: middle;
 }
 
-/* Popover and Toolbar (Button container)
- ------------------------------------------ */
 .note-toolbar {
   position: relative;
 }
@@ -676,8 +671,6 @@
   margin: 0;
 }
 
-/* Dialog
- ------------------------------------------ */
 .note-modal .modal-dialog {
   outline: 0;
   border-radius: var(--bs-border-radius);
@@ -758,16 +751,12 @@
   min-width: 9rem;
 }
 
-/* Placeholder
- ------------------------------------------ */
 .note-placeholder {
   position: absolute;
   display: none;
   color: var(--bs-secondary-color);
 }
 
-/* Handle
- ------------------------------------------ */
 .note-handle {
   position: absolute;
   top: 0;
@@ -876,8 +865,6 @@
   cursor: pointer;
 }
 
-/* Handle
- ------------------------------------------ */
 html .note-fullscreen-body, body .note-fullscreen-body {
   overflow: hidden !important;
 }
@@ -1457,6 +1444,11 @@ body:has(.note-air-popover) {
   flex-shrink: 0;
 }
 
+.note-icon-xs > svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
 .note-icon-sm > svg {
   width: 0.75em;
   height: 0.75em;
@@ -1506,10 +1498,6 @@ body:has(.note-air-popover) {
   margin-left: 0.3em;
 }
 
-/* Theme Variables
- ------------------------------------------ */
-/* Layout
- ------------------------------------------ */
 .note-editor {
   position: relative;
 }
@@ -1556,8 +1544,6 @@ body:has(.note-air-popover) {
   cursor: pointer;
 }
 
-/* Frame mode layout
- ------------------------------------------ */
 .note-editor.note-frame,
 .note-editor.note-airframe {
   border: var(--bs-border-width) solid var(--bs-border-color-translucent);
@@ -1779,8 +1765,6 @@ body:has(.note-air-popover) {
   padding: 0;
 }
 
-/* Popover
- ------------------------------------------ */
 .note-popover.popover {
   position: absolute;
   display: none;
@@ -1799,8 +1783,6 @@ body:has(.note-air-popover) {
   vertical-align: middle;
 }
 
-/* Popover and Toolbar (Button container)
- ------------------------------------------ */
 .note-toolbar {
   position: relative;
 }
@@ -2108,8 +2090,6 @@ body:has(.note-air-popover) {
   margin: 0;
 }
 
-/* Dialog
- ------------------------------------------ */
 .note-modal .modal-dialog {
   outline: 0;
   border-radius: var(--bs-border-radius);
@@ -2190,16 +2170,12 @@ body:has(.note-air-popover) {
   min-width: 9rem;
 }
 
-/* Placeholder
- ------------------------------------------ */
 .note-placeholder {
   position: absolute;
   display: none;
   color: var(--bs-secondary-color);
 }
 
-/* Handle
- ------------------------------------------ */
 .note-handle {
   position: absolute;
   top: 0;
@@ -2308,8 +2284,6 @@ body:has(.note-air-popover) {
   cursor: pointer;
 }
 
-/* Handle
- ------------------------------------------ */
 html .note-fullscreen-body, body .note-fullscreen-body {
   overflow: hidden !important;
 }

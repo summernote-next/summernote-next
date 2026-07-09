@@ -8,19 +8,10 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-07T14:28Z
+Date: 2026-07-09T10:30Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
-	/**
-	* Chainable DOM manipulation utilities used across the Vanilla JS runtime.
-	*
-	* @module dom-query
-	*/
-	/**
-	* Wrap a DOM element, NodeList, or selector in a DomQuery collection.
-	* Usage: $$('selector'), $$(element), $$$(nodeList)
-	*/
 	var elementDataStore = /* @__PURE__ */ new WeakMap();
 	var defaultDisplayCache = /* @__PURE__ */ new Map();
 	var fallbackModalStore = /* @__PURE__ */ new WeakMap();
@@ -237,7 +228,6 @@ var summernote = (function() {
 			});
 			return this;
 		}
-		/** Get raw element at index. Negative indices supported. */
 		get(index = 0) {
 			if (index < 0) index = this.length + index;
 			return this.elements[index] || null;
@@ -935,9 +925,6 @@ var summernote = (function() {
 			return this.elements[Symbol.iterator];
 		}
 	};
-	/**
-	* Main selector function. Usage: $$('selector') or $$(element)
-	*/
 	function $$(selector, context) {
 		return new DomQuery(selector, context);
 	}
@@ -999,12 +986,6 @@ var summernote = (function() {
 	function hasDocument() {
 		return typeof document !== "undefined";
 	}
-	/**
-	* returns whether font is installed or not.
-	*
-	* @param {String} fontName
-	* @return {Boolean}
-	*/
 	var genericFontFamilies = [
 		"sans-serif",
 		"serif",
@@ -1049,14 +1030,6 @@ var summernote = (function() {
 	var isEdge = /Edge\/\d+/.test(userAgent);
 	var isSupportTouch = "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 	var inputEventName = isMSIE ? "DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted" : "input";
-	/**
-	* @class core.env
-	*
-	* Object which check platform and agent
-	*
-	* @singleton
-	* @alternateClassName env
-	*/
 	var env_default = {
 		isMac: navigator.appVersion.indexOf("Mac") > -1,
 		isMSIE,
@@ -1205,15 +1178,6 @@ var summernote = (function() {
 		});
 		return observer;
 	}
-	/**
-	* @class Theme
-	*
-	* Resolves the editor's dark mode setting and applies matching surface classes.
-	* The CSS in src/styles/classic/summernote-next-classic.scss already reacts to
-	* common page-level signals (data-bs-theme="dark", data-theme, .dark class,
-	* prefers-color-scheme, etc.). The Theme module only forces a mode or wires
-	* a custom page-level signal that the CSS does not cover.
-	*/
 	var Theme = class {
 		constructor(context) {
 			this.context = context;
@@ -1569,14 +1533,6 @@ var summernote = (function() {
 	} });
 	//#endregion
 	//#region src/js/core/func.js
-	/**
-	* @class core.func
-	*
-	* func utils (for high-order func's arg)
-	*
-	* @singleton
-	* @alternateClassName func
-	*/
 	function eq(itemA) {
 		return function(itemB) {
 			return itemA === itemB;
@@ -1615,35 +1571,13 @@ var summernote = (function() {
 		};
 	}
 	var idCounter = 0;
-	/**
-	* reset globally-unique id
-	*
-	*/
 	function resetUniqueId() {
 		idCounter = 0;
 	}
-	/**
-	* generate a globally-unique id
-	*
-	* @param {String} [prefix]
-	*/
 	function uniqueId(prefix) {
 		const id = ++idCounter + "";
 		return prefix ? prefix + id : id;
 	}
-	/**
-	* returns bnd (bounds) from rect
-	*
-	* - IE Compatibility Issue: http://goo.gl/sRLOAo
-	* - Scroll Issue: http://goo.gl/sNjUc
-	*
-	* @param {Rect} rect
-	* @return {Object} bounds
-	* @return {Number} bounds.top
-	* @return {Number} bounds.left
-	* @return {Number} bounds.width
-	* @return {Number} bounds.height
-	*/
 	function rect2bnd(rect) {
 		if (!rect) return {
 			top: 0,
@@ -1658,37 +1592,17 @@ var summernote = (function() {
 			height: rect.bottom - rect.top
 		};
 	}
-	/**
-	* returns a copy of the object where the keys have become the values and the values the keys.
-	* @param {Object} obj
-	* @return {Object}
-	*/
 	function invertObject(obj) {
 		const inverted = {};
 		for (const key in obj) if (Object.prototype.hasOwnProperty.call(obj, key)) inverted[obj[key]] = key;
 		return inverted;
 	}
-	/**
-	* @param {String} namespace
-	* @param {String} [prefix]
-	* @return {String}
-	*/
 	function namespaceToCamel(namespace, prefix) {
 		prefix = prefix || "";
 		return prefix + namespace.split(".").map(function(name) {
 			return name.substring(0, 1).toUpperCase() + name.substring(1);
 		}).join("");
 	}
-	/**
-	* Returns a function, that, as long as it continues to be invoked, will not
-	* be triggered. The function will be called after it stops being called for
-	* N milliseconds. If `immediate` is passed, trigger the function on the
-	* leading edge, instead of the trailing.
-	* @param {Function} func
-	* @param {Number} wait
-	* @param {Boolean} immediate
-	* @return {Function}
-	*/
 	function debounce(func, wait, immediate) {
 		let timeout;
 		return function() {
@@ -1704,11 +1618,6 @@ var summernote = (function() {
 			if (callNow) func.apply(context, args);
 		};
 	}
-	/**
-	*
-	* @param {String} url
-	* @return {Boolean}
-	*/
 	function isValidUrl(url) {
 		return /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi.test(url);
 	}
@@ -1732,57 +1641,28 @@ var summernote = (function() {
 	};
 	//#endregion
 	//#region src/js/core/lists.js
-	/**
-	* returns the first item of an array.
-	*
-	* @param {Array} array
-	*/
 	function head(array) {
 		return array[0];
 	}
-	/**
-	* returns the last item of an array.
-	*
-	* @param {Array} array
-	*/
 	function last(array) {
 		return array[array.length - 1];
 	}
-	/**
-	* returns everything but the last entry of the array.
-	*
-	* @param {Array} array
-	*/
 	function initial(array) {
 		return array.slice(0, array.length - 1);
 	}
-	/**
-	* returns the rest of the items in an array.
-	*
-	* @param {Array} array
-	*/
 	function tail(array) {
 		return array.slice(1);
 	}
-	/**
-	* returns item of array
-	*/
 	function find(array, pred) {
 		for (let idx = 0, len = array.length; idx < len; idx++) {
 			const item = array[idx];
 			if (pred(item)) return item;
 		}
 	}
-	/**
-	* returns true if all of the values in the array pass the predicate truth test.
-	*/
 	function all(array, pred) {
 		for (let idx = 0, len = array.length; idx < len; idx++) if (!pred(array[idx])) return false;
 		return true;
 	}
-	/**
-	* returns true if the value is present in the list.
-	*/
 	function contains(array, item) {
 		if (array && array.length && item) {
 			if (array.indexOf) return array.indexOf(item) !== -1;
@@ -1790,22 +1670,12 @@ var summernote = (function() {
 		}
 		return false;
 	}
-	/**
-	* get sum from a list
-	*
-	* @param {Array} array - array
-	* @param {Function} fn - iterator
-	*/
 	function sum(array, fn) {
 		fn = fn || func_default.self;
 		return array.reduce(function(memo, v) {
 			return memo + fn(v);
 		}, 0);
 	}
-	/**
-	* returns a copy of the collection with array type.
-	* @param {Collection} collection - collection eg) node.childNodes, ...
-	*/
 	function from(collection) {
 		const result = [];
 		const length = collection.length;
@@ -1813,19 +1683,9 @@ var summernote = (function() {
 		while (++idx < length) result[idx] = collection[idx];
 		return result;
 	}
-	/**
-	* returns whether list is empty or not
-	*/
 	function isEmpty$1(array) {
 		return !array || !array.length;
 	}
-	/**
-	* cluster elements by predicate function.
-	*
-	* @param {Array} array - array
-	* @param {Function} fn - predicate function for cluster rule
-	* @param {Array[]}
-	*/
 	function clusterBy(array, fn) {
 		if (!array.length) return [];
 		return tail(array).reduce(function(memo, v) {
@@ -1835,31 +1695,16 @@ var summernote = (function() {
 			return memo;
 		}, [[head(array)]]);
 	}
-	/**
-	* returns a copy of the array with all false values removed
-	*
-	* @param {Array} array - array
-	* @param {Function} fn - predicate function for cluster rule
-	*/
 	function compact(array) {
 		const aResult = [];
 		for (let idx = 0, len = array.length; idx < len; idx++) if (array[idx]) aResult.push(array[idx]);
 		return aResult;
 	}
-	/**
-	* produces a duplicate-free version of the array
-	*
-	* @param {Array} array
-	*/
 	function unique(array) {
 		const results = [];
 		for (let idx = 0, len = array.length; idx < len; idx++) if (!contains(results, array[idx])) results.push(array[idx]);
 		return results;
 	}
-	/**
-	* returns next item.
-	* @param {Array} array
-	*/
 	function next(array, item) {
 		if (array && array.length && item) {
 			const idx = array.indexOf(item);
@@ -1867,10 +1712,6 @@ var summernote = (function() {
 		}
 		return null;
 	}
-	/**
-	* returns prev item.
-	* @param {Array} array
-	*/
 	function prev(array, item) {
 		if (array && array.length && item) {
 			const idx = array.indexOf(item);
@@ -1878,14 +1719,6 @@ var summernote = (function() {
 		}
 		return null;
 	}
-	/**
-	* @class core.list
-	*
-	* list utils
-	*
-	* @singleton
-	* @alternateClassName list
-	*/
 	var lists_default = {
 		head,
 		last,
@@ -1907,68 +1740,24 @@ var summernote = (function() {
 	//#region src/js/core/dom.js
 	var NBSP_CHAR = String.fromCharCode(160);
 	var ZERO_WIDTH_NBSP_CHAR = "﻿";
-	/**
-	* @method isEditable
-	*
-	* returns whether node is `note-editable` or not.
-	*
-	* @param {Node} node
-	* @return {Boolean}
-	*/
 	function isEditable(node) {
 		return node && $$(node).hasClass("note-editable");
 	}
-	/**
-	* @method isControlSizing
-	*
-	* returns whether node is `note-control-sizing` or not.
-	*
-	* @param {Node} node
-	* @return {Boolean}
-	*/
 	function isControlSizing(node) {
 		return node && $$(node).hasClass("note-control-sizing");
 	}
-	/**
-	* @method makePredByNodeName
-	*
-	* returns predicate which judge whether nodeName is same
-	*
-	* @param {String} nodeName
-	* @return {Function}
-	*/
 	function makePredByNodeName(nodeName) {
 		nodeName = nodeName.toUpperCase();
 		return function(node) {
 			return node && node.nodeName.toUpperCase() === nodeName;
 		};
 	}
-	/**
-	* @method isText
-	*
-	*
-	*
-	* @param {Node} node
-	* @return {Boolean} true if node's type is text(3)
-	*/
 	function isText(node) {
 		return node && node.nodeType === 3;
 	}
-	/**
-	* @method isElement
-	*
-	*
-	*
-	* @param {Node} node
-	* @return {Boolean} true if node's type is element(1)
-	*/
 	function isElement(node) {
 		return node && node.nodeType === 1;
 	}
-	/**
-	* ex) br, col, embed, hr, img, input, ...
-	* @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
-	*/
 	function isVoid(node) {
 		return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^AUDIO|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
 	}
@@ -2011,23 +1800,9 @@ var summernote = (function() {
 		return isInline(node) && !ancestor(node, isPara);
 	}
 	var isBody = makePredByNodeName("BODY");
-	/**
-	* returns whether nodeB is closest sibling of nodeA
-	*
-	* @param {Node} nodeA
-	* @param {Node} nodeB
-	* @return {Boolean}
-	*/
 	function isClosestSibling(nodeA, nodeB) {
 		return nodeA.nextSibling === nodeB || nodeA.previousSibling === nodeB;
 	}
-	/**
-	* returns array of closest siblings with node
-	*
-	* @param {Node} node
-	* @param {function} [pred] - predicate function
-	* @return {Node[]}
-	*/
 	function withClosestSiblings(node, pred) {
 		pred = pred || func_default.ok;
 		const siblings = [];
@@ -2036,42 +1811,18 @@ var summernote = (function() {
 		if (node.nextSibling && pred(node.nextSibling)) siblings.push(node.nextSibling);
 		return siblings;
 	}
-	/**
-	* blank HTML for cursor position
-	* - [workaround] old IE only works with &nbsp;
-	* - [workaround] IE11 and other browser works with bogus br
-	*/
 	var blankHTML = "<br>";
-	/**
-	* @method nodeLength
-	*
-	* returns #text's text size or element's childNodes size
-	*
-	* @param {Node} node
-	*/
 	function nodeLength(node) {
 		if (isText(node)) return node.nodeValue.length;
 		if (node) return node.childNodes.length;
 		return 0;
 	}
-	/**
-	* returns whether deepest child node is empty or not.
-	*
-	* @param {Node} node
-	* @return {Boolean}
-	*/
 	function deepestChildIsEmpty(node) {
 		do
 			if (node.firstElementChild === null || node.firstElementChild.innerHTML === "") break;
 		while (node = node.firstElementChild);
 		return isEmpty(node);
 	}
-	/**
-	* returns whether node is empty or not.
-	*
-	* @param {Node} node
-	* @return {Boolean}
-	*/
 	function isEmpty(node) {
 		const len = nodeLength(node);
 		if (len === 0) return true;
@@ -2079,18 +1830,9 @@ var summernote = (function() {
 		else if (lists_default.all(node.childNodes, isText) && node.innerHTML === "") return true;
 		return false;
 	}
-	/**
-	* padding blankHTML if node is empty (for cursor position)
-	*/
 	function paddingBlankHTML(node) {
 		if (!isVoid(node) && !nodeLength(node)) node.innerHTML = blankHTML;
 	}
-	/**
-	* find nearest ancestor predicate hit
-	*
-	* @param {Node} node
-	* @param {Function} pred - predicate function
-	*/
 	function ancestor(node, pred) {
 		while (node) {
 			if (pred(node)) return node;
@@ -2099,12 +1841,6 @@ var summernote = (function() {
 		}
 		return null;
 	}
-	/**
-	* find nearest ancestor only single child blood line and predicate hit
-	*
-	* @param {Node} node
-	* @param {Function} pred - predicate function
-	*/
 	function singleChildAncestor(node, pred) {
 		node = node.parentNode;
 		while (node) {
@@ -2115,12 +1851,6 @@ var summernote = (function() {
 		}
 		return null;
 	}
-	/**
-	* returns new array of ancestor nodes (until predicate hit).
-	*
-	* @param {Node} node
-	* @param {Function} [optional] pred - predicate function
-	*/
 	function listAncestor(node, pred) {
 		pred = pred || func_default.fail;
 		const ancestors = [];
@@ -2130,30 +1860,15 @@ var summernote = (function() {
 		});
 		return ancestors;
 	}
-	/**
-	* find farthest ancestor predicate hit
-	*/
 	function lastAncestor(node, pred) {
 		const ancestors = listAncestor(node);
 		return lists_default.last(ancestors.filter(pred));
 	}
-	/**
-	* returns common ancestor node between two nodes.
-	*
-	* @param {Node} nodeA
-	* @param {Node} nodeB
-	*/
 	function commonAncestor(nodeA, nodeB) {
 		const ancestors = listAncestor(nodeA);
 		for (let n = nodeB; n; n = n.parentNode) if (ancestors.indexOf(n) > -1) return n;
 		return null;
 	}
-	/**
-	* listing all previous siblings (until predicate hit).
-	*
-	* @param {Node} node
-	* @param {Function} [optional] pred - predicate function
-	*/
 	function listPrev(node, pred) {
 		pred = pred || func_default.fail;
 		const nodes = [];
@@ -2164,12 +1879,6 @@ var summernote = (function() {
 		}
 		return nodes;
 	}
-	/**
-	* listing next siblings (until predicate hit).
-	*
-	* @param {Node} node
-	* @param {Function} [pred] - predicate function
-	*/
 	function listNext(node, pred) {
 		pred = pred || func_default.fail;
 		const nodes = [];
@@ -2180,12 +1889,6 @@ var summernote = (function() {
 		}
 		return nodes;
 	}
-	/**
-	* listing descendant nodes
-	*
-	* @param {Node} node
-	* @param {Function} [pred] - predicate function
-	*/
 	function listDescendant(node, pred) {
 		const descendants = [];
 		pred = pred || func_default.ok;
@@ -2195,13 +1898,6 @@ var summernote = (function() {
 		})(node);
 		return descendants;
 	}
-	/**
-	* wrap node with new tag.
-	*
-	* @param {Node} node
-	* @param {Node} tagName of wrapper
-	* @return {Node} - wrapper
-	*/
 	function wrap(node, wrapperName) {
 		const parent = node.parentNode;
 		const wrapper = document.createElement(wrapperName);
@@ -2209,12 +1905,6 @@ var summernote = (function() {
 		wrapper.appendChild(node);
 		return wrapper;
 	}
-	/**
-	* insert node after preceding
-	*
-	* @param {Node} node
-	* @param {Node} preceding - predicate function
-	*/
 	function insertAfter(node, preceding) {
 		const next = preceding.nextSibling;
 		let parent = preceding.parentNode;
@@ -2222,12 +1912,6 @@ var summernote = (function() {
 		else parent.appendChild(node);
 		return node;
 	}
-	/**
-	* append elements.
-	*
-	* @param {Node} node
-	* @param {Collection} aChild
-	*/
 	function appendChildNodes(node, aChild, isSkipPaddingBlankHTML) {
 		$$.each(aChild, function(idx, child) {
 			if (!isSkipPaddingBlankHTML && isLi(node) && node.firstChild === null && isList(child)) node.appendChild(create("br"));
@@ -2235,40 +1919,15 @@ var summernote = (function() {
 		});
 		return node;
 	}
-	/**
-	* returns whether boundaryPoint is left edge or not.
-	*
-	* @param {BoundaryPoint} point
-	* @return {Boolean}
-	*/
 	function isLeftEdgePoint(point) {
 		return point.offset === 0;
 	}
-	/**
-	* returns whether boundaryPoint is right edge or not.
-	*
-	* @param {BoundaryPoint} point
-	* @return {Boolean}
-	*/
 	function isRightEdgePoint(point) {
 		return point.offset === nodeLength(point.node);
 	}
-	/**
-	* returns whether boundaryPoint is edge or not.
-	*
-	* @param {BoundaryPoint} point
-	* @return {Boolean}
-	*/
 	function isEdgePoint(point) {
 		return isLeftEdgePoint(point) || isRightEdgePoint(point);
 	}
-	/**
-	* returns whether node is left edge of ancestor or not.
-	*
-	* @param {Node} node
-	* @param {Node} ancestor
-	* @return {Boolean}
-	*/
 	function isLeftEdgeOf(node, ancestor) {
 		while (node && node !== ancestor) {
 			if (position(node) !== 0) return false;
@@ -2276,13 +1935,6 @@ var summernote = (function() {
 		}
 		return true;
 	}
-	/**
-	* returns whether node is right edge of ancestor or not.
-	*
-	* @param {Node} node
-	* @param {Node} ancestor
-	* @return {Boolean}
-	*/
 	function isRightEdgeOf(node, ancestor) {
 		if (!ancestor) return false;
 		while (node && node !== ancestor) {
@@ -2291,29 +1943,12 @@ var summernote = (function() {
 		}
 		return true;
 	}
-	/**
-	* returns whether point is left edge of ancestor or not.
-	* @param {BoundaryPoint} point
-	* @param {Node} ancestor
-	* @return {Boolean}
-	*/
 	function isLeftEdgePointOf(point, ancestor) {
 		return isLeftEdgePoint(point) && isLeftEdgeOf(point.node, ancestor);
 	}
-	/**
-	* returns whether point is right edge of ancestor or not.
-	* @param {BoundaryPoint} point
-	* @param {Node} ancestor
-	* @return {Boolean}
-	*/
 	function isRightEdgePointOf(point, ancestor) {
 		return isRightEdgePoint(point) && isRightEdgeOf(point.node, ancestor);
 	}
-	/**
-	* returns offset from parent.
-	*
-	* @param {Node} node
-	*/
 	function position(node) {
 		let offset = 0;
 		while (node = node.previousSibling) offset += 1;
@@ -2322,13 +1957,6 @@ var summernote = (function() {
 	function hasChildren(node) {
 		return !!(node && node.childNodes && node.childNodes.length);
 	}
-	/**
-	* returns previous boundaryPoint
-	*
-	* @param {BoundaryPoint} point
-	* @param {Boolean} isSkipInnerOffset
-	* @return {BoundaryPoint}
-	*/
 	function prevPoint(point, isSkipInnerOffset) {
 		let node;
 		let offset;
@@ -2348,13 +1976,6 @@ var summernote = (function() {
 			offset
 		};
 	}
-	/**
-	* returns next boundaryPoint
-	*
-	* @param {BoundaryPoint} point
-	* @param {Boolean} isSkipInnerOffset
-	* @return {BoundaryPoint}
-	*/
 	function nextPoint(point, isSkipInnerOffset) {
 		let node, offset;
 		if (nodeLength(point.node) === point.offset) {
@@ -2379,14 +2000,6 @@ var summernote = (function() {
 			offset
 		};
 	}
-	/**
-	* Find next boundaryPoint for preorder / depth first traversal of the DOM
-	* returns next boundaryPoint with empty node
-	*
-	* @param {BoundaryPoint} point
-	* @param {Boolean} isSkipInnerOffset
-	* @return {BoundaryPoint}
-	*/
 	function nextPointWithEmptyNode(point, isSkipInnerOffset) {
 		let node;
 		let offset;
@@ -2416,22 +2029,9 @@ var summernote = (function() {
 		if (isText(actual.nextSibling)) return actual.nextSibling;
 		else return getNextTextNode(actual.nextSibling);
 	}
-	/**
-	* returns whether pointA and pointB is same or not.
-	*
-	* @param {BoundaryPoint} pointA
-	* @param {BoundaryPoint} pointB
-	* @return {Boolean}
-	*/
 	function isSamePoint(pointA, pointB) {
 		return pointA.node === pointB.node && pointA.offset === pointB.offset;
 	}
-	/**
-	* returns whether point is visible (can set cursor) or not.
-	*
-	* @param {BoundaryPoint} point
-	* @return {Boolean}
-	*/
 	function isVisiblePoint(point) {
 		if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) return true;
 		const leftNode = point.node.childNodes[point.offset - 1];
@@ -2439,13 +2039,6 @@ var summernote = (function() {
 		if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode)) || isTable(rightNode)) return true;
 		return false;
 	}
-	/**
-	* @method prevPointUtil
-	*
-	* @param {BoundaryPoint} point
-	* @param {Function} pred
-	* @return {BoundaryPoint}
-	*/
 	function prevPointUntil(point, pred) {
 		while (point) {
 			if (pred(point)) return point;
@@ -2453,13 +2046,6 @@ var summernote = (function() {
 		}
 		return null;
 	}
-	/**
-	* @method nextPointUntil
-	*
-	* @param {BoundaryPoint} point
-	* @param {Function} pred
-	* @return {BoundaryPoint}
-	*/
 	function nextPointUntil(point, pred) {
 		while (point) {
 			if (pred(point)) return point;
@@ -2467,36 +2053,16 @@ var summernote = (function() {
 		}
 		return null;
 	}
-	/**
-	* returns whether point has character or not.
-	*
-	* @param {Point} point
-	* @return {Boolean}
-	*/
 	function isCharPoint(point) {
 		if (!isText(point.node)) return false;
 		const ch = point.node.nodeValue.charAt(point.offset - 1);
 		return ch && ch !== " " && ch !== NBSP_CHAR;
 	}
-	/**
-	* returns whether point has space or not.
-	*
-	* @param {Point} point
-	* @return {Boolean}
-	*/
 	function isSpacePoint(point) {
 		if (!isText(point.node)) return false;
 		const ch = point.node.nodeValue.charAt(point.offset - 1);
 		return ch === " " || ch === NBSP_CHAR;
 	}
-	/**
-	* @method walkPoint - preorder / depth first traversal of the DOM
-	*
-	* @param {BoundaryPoint} startPoint
-	* @param {BoundaryPoint} endPoint
-	* @param {Function} handler
-	* @param {Boolean} isSkipInnerOffset
-	*/
 	function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
 		let point = startPoint;
 		while (point && point.node) {
@@ -2506,43 +2072,15 @@ var summernote = (function() {
 			point = nextPointWithEmptyNode(point, isSkipOffset);
 		}
 	}
-	/**
-	* @method makeOffsetPath
-	*
-	* return offsetPath(array of offset) from ancestor
-	*
-	* @param {Node} ancestor - ancestor node
-	* @param {Node} node
-	*/
 	function makeOffsetPath(ancestor, node) {
 		return listAncestor(node, func_default.eq(ancestor)).map(position).reverse();
 	}
-	/**
-	* @method fromOffsetPath
-	*
-	* return element from offsetPath(array of offset)
-	*
-	* @param {Node} ancestor - ancestor node
-	* @param {array} offsets - offsetPath
-	*/
 	function fromOffsetPath(ancestor, offsets) {
 		let current = ancestor;
 		for (let i = 0, len = offsets.length; i < len; i++) if (current.childNodes.length <= offsets[i]) current = current.childNodes[current.childNodes.length - 1];
 		else current = current.childNodes[offsets[i]];
 		return current;
 	}
-	/**
-	* @method splitNode
-	*
-	* split element or #text
-	*
-	* @param {BoundaryPoint} point
-	* @param {Object} [options]
-	* @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
-	* @param {Boolean} [options.isNotSplitEdgePoint] - default: false
-	* @param {Boolean} [options.isDiscardEmptySplits] - default: false
-	* @return {Node} right node of boundaryPoint
-	*/
 	function splitNode(point, options) {
 		let isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
 		const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
@@ -2572,18 +2110,6 @@ var summernote = (function() {
 			return clone;
 		}
 	}
-	/**
-	* @method splitTree
-	*
-	* split tree by point
-	*
-	* @param {Node} root - split root
-	* @param {BoundaryPoint} point
-	* @param {Object} [options]
-	* @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
-	* @param {Boolean} [options.isNotSplitEdgePoint] - default: false
-	* @return {Node} right node of boundaryPoint
-	*/
 	function splitTree(root, point, options) {
 		let ancestors = listAncestor(point.node, func_default.eq(root));
 		if (!ancestors.length) return null;
@@ -2618,13 +2144,6 @@ var summernote = (function() {
 			}, options);
 		});
 	}
-	/**
-	* split point
-	*
-	* @param {Point} point
-	* @param {Boolean} isInline
-	* @return {Object}
-	*/
 	function splitPoint(point, isInline) {
 		const pred = isInline ? isPara : isBodyContainer;
 		const ancestors = listAncestor(point.node, pred);
@@ -2653,14 +2172,6 @@ var summernote = (function() {
 	function createText(text) {
 		return document.createTextNode(text);
 	}
-	/**
-	* @method remove
-	*
-	* remove node, (isRemoveChild: remove child or not)
-	*
-	* @param {Node} node
-	* @param {Boolean} isRemoveChild
-	*/
 	function remove(node, isRemoveChild) {
 		if (!node || !node.parentNode) return;
 		if (node.removeNode) return node.removeNode(isRemoveChild);
@@ -2672,12 +2183,6 @@ var summernote = (function() {
 		}
 		parent.removeChild(node);
 	}
-	/**
-	* @method removeWhile
-	*
-	* @param {Node} node
-	* @param {Function} pred
-	*/
 	function removeWhile(node, pred) {
 		while (node) {
 			if (isEditable(node) || !pred(node)) break;
@@ -2686,15 +2191,6 @@ var summernote = (function() {
 			node = parent;
 		}
 	}
-	/**
-	* @method replace
-	*
-	* replace node with provided nodeName
-	*
-	* @param {Node} node
-	* @param {String} nodeName
-	* @return {Node} - new node
-	*/
 	function replace(node, nodeName) {
 		if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) return node;
 		const newNode = create(nodeName);
@@ -2705,24 +2201,12 @@ var summernote = (function() {
 		return newNode;
 	}
 	var isTextarea = makePredByNodeName("TEXTAREA");
-	/**
-	* @param {DomQuery|Element} $node
-	* @param {Boolean} [stripLinebreaks] - default: false
-	*/
 	function value($node, stripLinebreaks) {
 		const el = $node.get ? $node.get(0) : $node[0];
 		const val = isTextarea(el) ? el.value || $node.val() : $node.html();
 		if (stripLinebreaks) return val.replace(/[\n\r]/g, "");
 		return val;
 	}
-	/**
-	* @method html
-	*
-	* get the HTML contents of node
-	*
-	* @param {DomQuery|Element} $node
-	* @param {Boolean} [isNewlineOnBlock]
-	*/
 	function html($node, isNewlineOnBlock) {
 		let markup = value($node);
 		if (isNewlineOnBlock) {
@@ -2755,25 +2239,13 @@ var summernote = (function() {
 			$node.off(key, events[key]);
 		});
 	}
-	/**
-	* @method isCustomStyleTag
-	*
-	* assert if a node contains a "note-styletag" class,
-	* which implies that's a custom-made style tag node
-	*
-	* @param {Node} an HTML DOM node
-	*/
 	function isCustomStyleTag(node) {
 		return node && !isText(node) && lists_default.contains(node.classList, "note-styletag");
 	}
 	var dom_default = {
-		/** @property {String} NBSP_CHAR */
 		NBSP_CHAR,
-		/** @property {String} ZERO_WIDTH_NBSP_CHAR */
 		ZERO_WIDTH_NBSP_CHAR,
-		/** @property {String} blank */
 		blank: blankHTML,
-		/** @property {String} emptyPara */
 		emptyPara: `<p>${blankHTML}</p>`,
 		makePredByNodeName,
 		isEditable,
@@ -2867,10 +2339,6 @@ var summernote = (function() {
 	//#endregion
 	//#region src/js/Context.js
 	var Context = class Context {
-		/**
-		* @param {DomQuery} $note
-		* @param {Object} options
-		*/
 		constructor($note, options) {
 			this.$note = $note;
 			this.memos = {};
@@ -2883,9 +2351,6 @@ var summernote = (function() {
 			this.ui = $$.summernote.ui;
 			this.initialize();
 		}
-		/**
-		* create layout and initialize modules and other resources
-		*/
 		initialize() {
 			this.layoutInfo = this.ui.createLayout(this.$note);
 			this.applyLayoutClassNames();
@@ -2908,9 +2373,6 @@ var summernote = (function() {
 				if ($node && $node.length && classNames.length) $node.addClass(classNames.join(" "));
 			});
 		}
-		/**
-		* destroy modules and other resources and remove layout
-		*/
 		destroy() {
 			this._destroy();
 			this.$note.removeData("summernote");
@@ -2931,9 +2393,6 @@ var summernote = (function() {
 			else if (options.focus) context.invoke("editor.focus");
 			return context;
 		}
-		/**
-		* destory modules and other resources and initialize it again
-		*/
 		reset() {
 			const disabled = this.isDisabled();
 			this.code(dom_default.emptyPara);
@@ -3031,9 +2490,6 @@ var summernote = (function() {
 			if (this.memos[key] && this.memos[key].destroy) this.memos[key].destroy();
 			delete this.memos[key];
 		}
-		/**
-		* Some buttons need to change their visual style immediately once they get pressed
-		*/
 		createInvokeHandlerAndUpdateState(namespace, value) {
 			return (event) => {
 				this.createInvokeHandler(namespace, value)(event);
@@ -3074,12 +2530,6 @@ var summernote = (function() {
 	function unwrapResult(results) {
 		return results.length === 1 ? results[0] : results;
 	}
-	/**
-	* Summernote API
-	*
-	* @param {Object|String}
-	* @return {this}
-	*/
 	DomQuery.prototype.summernote = function() {
 		const type = typeof lists_default.head(arguments);
 		const isExternalAPICalled = type === "string";
@@ -3123,15 +2573,6 @@ var summernote = (function() {
 	});
 	//#endregion
 	//#region src/js/core/range.js
-	/**
-	* return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
-	*
-	* @param {TextRange} textRange
-	* @param {Boolean} isStart
-	* @return {BoundaryPoint}
-	*
-	* @see http://msdn.microsoft.com/en-us/library/ie/ms535872(v=vs.85).aspx
-	*/
 	function textRangeToPoint(textRange, isStart) {
 		let container = textRange.parentElement();
 		let offset;
@@ -3156,7 +2597,6 @@ var summernote = (function() {
 				textCount -= curTextNode.nodeValue.length;
 				curTextNode = curTextNode.nextSibling;
 			}
-			curTextNode.nodeValue;
 			if (isStart && curTextNode.nextSibling && dom_default.isText(curTextNode.nextSibling) && textCount === curTextNode.nodeValue.length) {
 				textCount -= curTextNode.nodeValue.length;
 				curTextNode = curTextNode.nextSibling;
@@ -3169,11 +2609,6 @@ var summernote = (function() {
 			offset
 		};
 	}
-	/**
-	* return TextRange from boundary point (inspired by google closure-library)
-	* @param {BoundaryPoint} point
-	* @return {TextRange}
-	*/
 	function pointToTextRange(point) {
 		const textRangeInfo = function(container, offset) {
 			let node, isCollapseToStart;
@@ -3202,15 +2637,6 @@ var summernote = (function() {
 		textRange.moveStart("character", info.offset);
 		return textRange;
 	}
-	/**
-	* Wrapped Range
-	*
-	* @constructor
-	* @param {Node} sc - start container
-	* @param {Number} so - start offset
-	* @param {Node} ec - end container
-	* @param {Number} eo - end offset
-	*/
 	var WrappedRange = class WrappedRange {
 		constructor(sc, so, ec, eo) {
 			this.sc = sc;
@@ -3261,9 +2687,6 @@ var summernote = (function() {
 				offset: this.eo
 			};
 		}
-		/**
-		* select update visible range
-		*/
 		select() {
 			const nativeRng = this.nativeRange();
 			if (env_default.isW3CRangeSupport) {
@@ -3273,26 +2696,12 @@ var summernote = (function() {
 			} else nativeRng.select();
 			return this;
 		}
-		/**
-		* Moves the scrollbar to start container(sc) of current range
-		*
-		* @return {WrappedRange}
-		*/
 		scrollIntoView(container) {
 			const height = $$(container).height();
 			if (container.scrollTop + height < this.sc.offsetTop) container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
 			return this;
 		}
-		/**
-		* @return {WrappedRange}
-		*/
 		normalize() {
-			/**
-			* @param {BoundaryPoint} point
-			* @param {Boolean} isLeftToRight - true: prefer to choose right node
-			*                                - false: prefer to choose left node
-			* @return {BoundaryPoint}
-			*/
 			const getVisiblePoint = function(point, isLeftToRight) {
 				if (dom_default.isVisiblePoint(point)) {
 					if (!dom_default.isEdgePoint(point) || dom_default.isRightEdgePoint(point) && !isLeftToRight || dom_default.isLeftEdgePoint(point) && isLeftToRight || dom_default.isRightEdgePoint(point) && isLeftToRight && dom_default.isVoid(point.node.nextSibling) || dom_default.isLeftEdgePoint(point) && !isLeftToRight && dom_default.isVoid(point.node.previousSibling) || dom_default.isBlock(point.node) && dom_default.isEmpty(point.node)) return point;
@@ -3312,15 +2721,6 @@ var summernote = (function() {
 			const startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
 			return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
 		}
-		/**
-		* returns matched nodes on range
-		*
-		* @param {Function} [pred] - predicate function
-		* @param {Object} [options]
-		* @param {Boolean} [options.includeAncestor]
-		* @param {Boolean} [options.fullyContains]
-		* @return {Node[]}
-		*/
 		nodes(pred, options) {
 			pred = pred || func_default.ok;
 			const includeAncestor = options && options.includeAncestor;
@@ -3341,19 +2741,9 @@ var summernote = (function() {
 			}, true);
 			return lists_default.unique(nodes);
 		}
-		/**
-		* returns commonAncestor of range
-		* @return {Element} - commonAncestor
-		*/
 		commonAncestor() {
 			return dom_default.commonAncestor(this.sc, this.ec);
 		}
-		/**
-		* returns expanded range by pred
-		*
-		* @param {Function} pred - predicate function
-		* @return {WrappedRange}
-		*/
 		expand(pred) {
 			const startAncestor = dom_default.ancestor(this.sc, pred);
 			const endAncestor = dom_default.ancestor(this.ec, pred);
@@ -3369,17 +2759,10 @@ var summernote = (function() {
 			}
 			return new WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
 		}
-		/**
-		* @param {Boolean} isCollapseToStart
-		* @return {WrappedRange}
-		*/
 		collapse(isCollapseToStart) {
 			if (isCollapseToStart) return new WrappedRange(this.sc, this.so, this.sc, this.so);
 			else return new WrappedRange(this.ec, this.eo, this.ec, this.eo);
 		}
-		/**
-		* splitText on range
-		*/
 		splitText() {
 			const isSameContainer = this.sc === this.ec;
 			const boundaryPoints = this.getPoints();
@@ -3394,10 +2777,6 @@ var summernote = (function() {
 			}
 			return new WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
 		}
-		/**
-		* delete contents on range
-		* @return {WrappedRange}
-		*/
 		deleteContents() {
 			if (this.isCollapsed()) return this;
 			const rng = this.splitText();
@@ -3416,45 +2795,25 @@ var summernote = (function() {
 			});
 			return new WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
 		}
-		/**
-		* makeIsOn: return isOn(pred) function
-		*/
 		makeIsOn(pred) {
 			return function() {
 				const ancestor = dom_default.ancestor(this.sc, pred);
 				return !!ancestor && ancestor === dom_default.ancestor(this.ec, pred);
 			};
 		}
-		/**
-		* @param {Function} pred
-		* @return {Boolean}
-		*/
 		isLeftEdgeOf(pred) {
 			if (!dom_default.isLeftEdgePoint(this.getStartPoint())) return false;
 			const node = dom_default.ancestor(this.sc, pred);
 			return node && dom_default.isLeftEdgeOf(this.sc, node);
 		}
-		/**
-		* returns whether range was collapsed or not
-		*/
 		isCollapsed() {
 			return this.sc === this.ec && this.so === this.eo;
 		}
-		/**
-		* wrap inline nodes which children of body with paragraph
-		*
-		* @return {WrappedRange}
-		*/
 		wrapBodyInlineWithPara() {
 			if (dom_default.isBodyContainer(this.sc) && dom_default.isEmpty(this.sc)) {
 				this.sc.innerHTML = dom_default.emptyPara;
 				return new WrappedRange(this.sc.firstChild, 0, this.sc.firstChild, 0);
 			}
-			/**
-			* [workaround] firefox often create range on not visible point. so normalize here.
-			*  - firefox: |<p>text</p>|
-			*  - chrome: <p>|text|</p>
-			*/
 			const rng = this.normalize();
 			if (dom_default.isParaInline(this.sc) || dom_default.isPara(this.sc)) return rng;
 			let topAncestor;
@@ -3473,13 +2832,6 @@ var summernote = (function() {
 			}
 			return this.normalize();
 		}
-		/**
-		* insert node at current cursor
-		*
-		* @param {Node} node
-		* @param {Boolean} doNotInsertPara - default is false, removes added <p> that's added if true
-		* @return {Node}
-		*/
 		insertNode(node, doNotInsertPara = false) {
 			let rng = this;
 			if (dom_default.isText(node) || dom_default.isInline(node)) rng = this.wrapBodyInlineWithPara().deleteContents();
@@ -3490,9 +2842,6 @@ var summernote = (function() {
 			} else info.container.appendChild(node);
 			return node;
 		}
-		/**
-		* insert html at current cursor
-		*/
 		pasteHTML(markup) {
 			markup = ((markup || "") + "").trim();
 			const contentsContainer = document.createElement("div");
@@ -3504,21 +2853,10 @@ var summernote = (function() {
 			});
 			return childNodes.reverse();
 		}
-		/**
-		* returns text in range
-		*
-		* @return {String}
-		*/
 		toString() {
 			const nativeRng = this.nativeRange();
 			return env_default.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
 		}
-		/**
-		* returns range for word before cursor
-		*
-		* @param {Boolean} [findAfter] - find after cursor, default: false
-		* @return {WrappedRange}
-		*/
 		getWordRange(findAfter) {
 			let endPoint = this.getEndPoint();
 			if (!dom_default.isCharPoint(endPoint)) return this;
@@ -3530,12 +2868,6 @@ var summernote = (function() {
 			});
 			return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
 		}
-		/**
-		* returns range for words before cursor
-		*
-		* @param {Boolean} [findAfter] - find after cursor, default: false
-		* @return {WrappedRange}
-		*/
 		getWordsRange(findAfter) {
 			var endPoint = this.getEndPoint();
 			var isNotTextPoint = function(point) {
@@ -3546,17 +2878,6 @@ var summernote = (function() {
 			if (findAfter) endPoint = dom_default.nextPointUntil(endPoint, isNotTextPoint);
 			return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
 		}
-		/**
-		* returns range for words before cursor that match with a Regex
-		*
-		* example:
-		*  range: 'hi @Peter Pan'
-		*  regex: '/@[a-z ]+/i'
-		*  return range: '@Peter Pan'
-		*
-		* @param {RegExp} [regex]
-		* @return {WrappedRange|null}
-		*/
 		getWordsMatchRange(regex) {
 			var endPoint = this.getEndPoint();
 			var startPoint = dom_default.prevPointUntil(endPoint, function(point) {
@@ -3571,11 +2892,6 @@ var summernote = (function() {
 			if (result && result[0].length === text.length) return rng;
 			else return null;
 		}
-		/**
-		* create offsetPath bookmark
-		*
-		* @param {Node} editable
-		*/
 		bookmark(editable) {
 			return {
 				s: {
@@ -3588,11 +2904,6 @@ var summernote = (function() {
 				}
 			};
 		}
-		/**
-		* create offsetPath bookmark base on paragraph
-		*
-		* @param {Node[]} paras
-		*/
 		paraBookmark(paras) {
 			return {
 				s: {
@@ -3605,31 +2916,11 @@ var summernote = (function() {
 				}
 			};
 		}
-		/**
-		* getClientRects
-		* @return {Rect[]}
-		*/
 		getClientRects() {
 			return this.nativeRange().getClientRects();
 		}
 	};
-	/**
-	* Data structure
-	*  * BoundaryPoint: a point of dom tree
-	*  * BoundaryPoints: two boundaryPoints corresponding to the start and the end of the Range
-	*
-	* See to http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
-	*/
 	var range_default = {
-		/**
-		* create Range Object From arguments or Browser Selection
-		*
-		* @param {Node} sc - start container
-		* @param {Number} so - start offset
-		* @param {Node} ec - end container
-		* @param {Number} eo - end offset
-		* @return {WrappedRange}
-		*/
 		create: function(sc, so, ec, eo) {
 			if (arguments.length === 4) return new WrappedRange(sc, so, ec, eo);
 			else if (arguments.length === 2) {
@@ -3682,14 +2973,6 @@ var summernote = (function() {
 			}
 			return new WrappedRange(sc, so, ec, eo);
 		},
-		/**
-		* @method
-		*
-		* create WrappedRange from node
-		*
-		* @param {Node} node
-		* @return {WrappedRange}
-		*/
 		createFromNode: function(node) {
 			let sc = node;
 			let so = 0;
@@ -3708,33 +2991,12 @@ var summernote = (function() {
 			}
 			return this.create(sc, so, ec, eo);
 		},
-		/**
-		* create WrappedRange from node after position
-		*
-		* @param {Node} node
-		* @return {WrappedRange}
-		*/
 		createFromNodeBefore: function(node) {
 			return this.createFromNode(node).collapse(true);
 		},
-		/**
-		* create WrappedRange from node after position
-		*
-		* @param {Node} node
-		* @return {WrappedRange}
-		*/
 		createFromNodeAfter: function(node) {
 			return this.createFromNode(node).collapse();
 		},
-		/**
-		* @method
-		*
-		* create WrappedRange from bookmark
-		*
-		* @param {Node} editable
-		* @param {Object} bookmark
-		* @return {WrappedRange}
-		*/
 		createFromBookmark: function(editable, bookmark) {
 			const sc = dom_default.fromOffsetPath(editable, bookmark.s.path);
 			const so = bookmark.s.offset;
@@ -3742,15 +3004,6 @@ var summernote = (function() {
 			const eo = bookmark.e.offset;
 			return new WrappedRange(sc, so, ec, eo);
 		},
-		/**
-		* @method
-		*
-		* create WrappedRange from paraBookmark
-		*
-		* @param {Object} bookmark
-		* @param {Node[]} paras
-		* @return {WrappedRange}
-		*/
 		createFromParaBookmark: function(bookmark, paras) {
 			const so = bookmark.s.offset;
 			const eo = bookmark.e.offset;
@@ -3800,21 +3053,7 @@ var summernote = (function() {
 		"PAGEUP": 33,
 		"PAGEDOWN": 34
 	};
-	/**
-	* @class core.key
-	*
-	* Object for keycodes.
-	*
-	* @singleton
-	* @alternateClassName key
-	*/
 	var key_default = {
-		/**
-		* @method isEdit
-		*
-		* @param {Number} keyCode
-		* @return {Boolean}
-		*/
 		isEdit: (keyCode) => {
 			return lists_default.contains([
 				KEY_MAP.BACKSPACE,
@@ -3824,21 +3063,9 @@ var summernote = (function() {
 				KEY_MAP.DELETE
 			], keyCode);
 		},
-		/**
-		* @method isRemove
-		*
-		* @param {Number} keyCode
-		* @return {Boolean}
-		*/
 		isRemove: (keyCode) => {
 			return lists_default.contains([KEY_MAP.BACKSPACE, KEY_MAP.DELETE], keyCode);
 		},
-		/**
-		* @method isMove
-		*
-		* @param {Number} keyCode
-		* @return {Boolean}
-		*/
 		isMove: (keyCode) => {
 			return lists_default.contains([
 				KEY_MAP.LEFT,
@@ -3847,12 +3074,6 @@ var summernote = (function() {
 				KEY_MAP.DOWN
 			], keyCode);
 		},
-		/**
-		* @method isNavigation
-		*
-		* @param {Number} keyCode
-		* @return {Boolean}
-		*/
 		isNavigation: (keyCode) => {
 			return lists_default.contains([
 				KEY_MAP.HOME,
@@ -3861,23 +3082,11 @@ var summernote = (function() {
 				KEY_MAP.PAGEDOWN
 			], keyCode);
 		},
-		/**
-		* @property {Object} nameFromCode
-		* @property {String} nameFromCode.8 "BACKSPACE"
-		*/
 		nameFromCode: func_default.invertObject(KEY_MAP),
 		code: KEY_MAP
 	};
 	//#endregion
 	//#region src/js/core/async.js
-	/**
-	* @method readFileAsDataURL
-	*
-	* read contents of file as representing URL
-	*
-	* @param {File} file
-	* @return {Promise} - then: dataUrl
-	*/
 	function readFileAsDataURL(file) {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
@@ -3891,14 +3100,6 @@ var summernote = (function() {
 			reader.readAsDataURL(file);
 		});
 	}
-	/**
-	* @method createImage
-	*
-	* create `<image>` from url string
-	*
-	* @param {String} url
-	* @return {Promise} - then: $image
-	*/
 	function createImage(url) {
 		return new Promise((resolve, reject) => {
 			const img = document.createElement("img");
@@ -3953,38 +3154,22 @@ var summernote = (function() {
 			if (snapshot.contents !== null) this.$editable.html(snapshot.contents);
 			if (snapshot.bookmark !== null) range_default.createFromBookmark(this.editable, snapshot.bookmark).select();
 		}
-		/**
-		* @method rewind
-		* Rewinds the history stack back to the first snapshot taken.
-		* Leaves the stack intact, so that "Redo" can still be used.
-		*/
 		rewind() {
 			if (this.$editable.html() !== this.stack[this.stackOffset].contents) this.recordUndo();
 			this.stackOffset = 0;
 			this.applySnapshot(this.stack[this.stackOffset]);
 		}
-		/**
-		*  @method commit
-		*  Resets history stack, but keeps current editor's content.
-		*/
 		commit() {
 			this.stack = [];
 			this.stackOffset = -1;
 			this.recordUndo();
 		}
-		/**
-		* @method reset
-		* Resets the history stack completely; reverting to an empty editor.
-		*/
 		reset() {
 			this.stack = [];
 			this.stackOffset = -1;
 			this.$editable.html("");
 			this.recordUndo();
 		}
-		/**
-		* undo
-		*/
 		undo() {
 			if (this.$editable.html() !== this.stack[this.stackOffset].contents) this.recordUndo();
 			if (this.stackOffset > 0) {
@@ -3992,18 +3177,12 @@ var summernote = (function() {
 				this.applySnapshot(this.stack[this.stackOffset]);
 			}
 		}
-		/**
-		* redo
-		*/
 		redo() {
 			if (this.stack.length - 1 > this.stackOffset) {
 				this.stackOffset++;
 				this.applySnapshot(this.stack[this.stackOffset]);
 			}
 		}
-		/**
-		* recorded undo
-		*/
 		recordUndo() {
 			this.stackOffset++;
 			if (this.stack.length > this.stackOffset) this.stack = this.stack.slice(0, this.stackOffset);
@@ -4017,15 +3196,6 @@ var summernote = (function() {
 	//#endregion
 	//#region src/js/editing/Style.js
 	var Style = class {
-		/**
-		* Collect CSS property values from a node using native computed styles.
-		* Inline styles still win when the browser reports them directly.
-		*
-		* @private
-		* @param  {DomQuery|Element} node
-		* @param  {Array} propertyNames - An array of one or more CSS properties.
-		* @return {Object}
-		*/
 		readStyleProperties(node, propertyNames) {
 			const target = node instanceof Element ? node : $$(node).get(0);
 			const result = {};
@@ -4036,12 +3206,6 @@ var summernote = (function() {
 			});
 			return result;
 		}
-		/**
-		* returns style object from node
-		*
-		* @param {DomQuery|Element} $node
-		* @return {Object}
-		*/
 		fromNode($node) {
 			const node = $node instanceof Element ? $node : $$($node).get(0);
 			const styleInfo = this.readStyleProperties(node, [
@@ -4056,27 +3220,11 @@ var summernote = (function() {
 			styleInfo["font-size-unit"] = fontSize.match(/[a-z%]+$/);
 			return styleInfo;
 		}
-		/**
-		* paragraph level style
-		*
-		* @param {WrappedRange} rng
-		* @param {Object} styleInfo
-		*/
 		stylePara(rng, styleInfo) {
 			$$.each(rng.nodes(dom_default.isPara, { includeAncestor: true }), (idx, para) => {
 				$$(para).css(styleInfo);
 			});
 		}
-		/**
-		* insert and returns styleNodes on range.
-		*
-		* @param {WrappedRange} rng
-		* @param {Object} [options] - options for styleNodes
-		* @param {String} [options.nodeName] - default: `SPAN`
-		* @param {Boolean} [options.expandClosestSibling] - default: `false`
-		* @param {Boolean} [options.onlyPartialContains] - default: `false`
-		* @return {Node[]}
-		*/
 		styleNodes(rng, options) {
 			rng = rng.splitText();
 			const nodeName = options && options.nodeName || "SPAN";
@@ -4106,12 +3254,6 @@ var summernote = (function() {
 				});
 			} else return nodes;
 		}
-		/**
-		* get current style on cursor
-		*
-		* @param {WrappedRange} rng
-		* @return {Object} - object contains style properties.
-		*/
 		current(rng) {
 			const $cont = $$(!dom_default.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
 			let styleInfo = this.fromNode($cont);
@@ -4154,21 +3296,12 @@ var summernote = (function() {
 	//#endregion
 	//#region src/js/editing/Bullet.js
 	var Bullet = class {
-		/**
-		* toggle ordered list
-		*/
 		insertOrderedList(editable) {
 			this.toggleList("OL", editable);
 		}
-		/**
-		* toggle unordered list
-		*/
 		insertUnorderedList(editable) {
 			this.toggleList("UL", editable);
 		}
-		/**
-		* indent
-		*/
 		indent(editable) {
 			const rng = range_default.create(editable).wrapBodyInlineWithPara();
 			const paras = rng.nodes(dom_default.isPara, { includeAncestor: true });
@@ -4189,9 +3322,6 @@ var summernote = (function() {
 			});
 			rng.select();
 		}
-		/**
-		* outdent
-		*/
 		outdent(editable) {
 			const rng = range_default.create(editable).wrapBodyInlineWithPara();
 			const paras = rng.nodes(dom_default.isPara, { includeAncestor: true });
@@ -4206,11 +3336,6 @@ var summernote = (function() {
 			});
 			rng.select();
 		}
-		/**
-		* toggle list
-		*
-		* @param {String} listName - OL or UL
-		*/
 		toggleList(listName, editable) {
 			const rng = range_default.create(editable).wrapBodyInlineWithPara();
 			let paras = rng.nodes(dom_default.isPara, { includeAncestor: true });
@@ -4233,11 +3358,6 @@ var summernote = (function() {
 			}
 			range_default.createFromParaBookmark(bookmark, paras).select();
 		}
-		/**
-		* @param {Node[]} paras
-		* @param {String} listName
-		* @return {Node[]}
-		*/
 		wrapList(paras, listName) {
 			const head = lists_default.head(paras);
 			const last = lists_default.last(paras);
@@ -4254,13 +3374,6 @@ var summernote = (function() {
 			}
 			return paras;
 		}
-		/**
-		* @method releaseList
-		*
-		* @param {Array[]} clustereds
-		* @param {Boolean} isEscapseToBody
-		* @return {Node[]}
-		*/
 		releaseList(clustereds, isEscapseToBody) {
 			let releasedParas = [];
 			$$.each(clustereds, (idx, paras) => {
@@ -4312,37 +3425,12 @@ var summernote = (function() {
 			});
 			return releasedParas;
 		}
-		/**
-		* @method appendToPrevious
-		*
-		* Appends list to previous list item, if
-		* none exist it wraps the list in a new list item.
-		*
-		* @param {HTMLNode} ListItem
-		* @return {HTMLNode}
-		*/
 		appendToPrevious(node) {
 			return node.previousSibling ? dom_default.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], "LI");
 		}
-		/**
-		* @method findList
-		*
-		* Finds an existing list in list item
-		*
-		* @param {HTMLNode} ListItem
-		* @return {Array[]}
-		*/
 		findList(node) {
 			return node ? lists_default.find(node.children, (child) => ["OL", "UL"].indexOf(child.nodeName) > -1) : null;
 		}
-		/**
-		* @method findNextSiblings
-		*
-		* Finds all list item siblings that follow it
-		*
-		* @param {HTMLNode} ListItem
-		* @return {HTMLNode}
-		*/
 		findNextSiblings(node) {
 			const siblings = [];
 			while (node.nextSibling) {
@@ -4354,23 +3442,11 @@ var summernote = (function() {
 	};
 	//#endregion
 	//#region src/js/editing/Typing.js
-	/**
-	* @class editing.Typing
-	*
-	* Typing
-	*
-	*/
 	var Typing = class {
 		constructor(context) {
 			this.bullet = new Bullet();
 			this.options = context.options;
 		}
-		/**
-		* insert tab
-		*
-		* @param {WrappedRange} rng
-		* @param {Number} tabsize
-		*/
 		insertTab(rng, tabsize) {
 			const tab = dom_default.createText(new Array(tabsize + 1).join(dom_default.NBSP_CHAR));
 			rng = rng.deleteContents();
@@ -4378,17 +3454,6 @@ var summernote = (function() {
 			rng = range_default.create(tab, tabsize);
 			rng.select();
 		}
-		/**
-		* insert paragraph
-		*
-		* @param {Element} editable
-		* @param {WrappedRange} rng Can be used in unit tests to "mock" the range
-		*
-		* blockquoteBreakingLevel
-		*   0 - No break, the new paragraph remains inside the quote
-		*   1 - Break the first blockquote in the ancestors list
-		*   2 - Break all blockquotes, so that the new paragraph is not quoted (this is the default)
-		*/
 		insertParagraph(editable, rng) {
 			rng = rng || range_default.create(editable);
 			rng = rng.deleteContents();
@@ -4429,13 +3494,6 @@ var summernote = (function() {
 	};
 	//#endregion
 	//#region src/js/editing/Table.js
-	/**
-	* @class Create a virtual table to create what actions to do in change.
-	* @param {object} startPoint Cell selected to apply change.
-	* @param {enum} where  Where change will be applied Row or Col. Use enum: TableResultAction.where
-	* @param {enum} action Action to be applied. Use enum: TableResultAction.requestAction
-	* @param {object} domTable Dom element of table to make changes.
-	*/
 	var TableResultAction = function(startPoint, where, action, domTable) {
 		const _startPoint = {
 			"colPos": 0,
@@ -4443,22 +3501,10 @@ var summernote = (function() {
 		};
 		const _virtualTable = [];
 		const _actionCellList = [];
-		/**
-		* Set the startPoint of action.
-		*/
 		function setStartPoint() {
 			_startPoint.colPos = startPoint.cellIndex;
 			_startPoint.rowPos = startPoint.parentElement.rowIndex;
 		}
-		/**
-		* Define virtual table position info object.
-		*
-		* @param {int} rowIndex Index position in line of virtual table.
-		* @param {int} cellIndex Index position in column of virtual table.
-		* @param {object} baseRow Row affected by this position.
-		* @param {object} baseCell Cell affected by this position.
-		* @param {bool} isSpan Inform if it is an span cell/row.
-		*/
 		function setVirtualTablePosition(rowIndex, cellIndex, baseRow, baseCell, isRowSpan, isColSpan, isVirtualCell) {
 			const objPosition = {
 				"baseRow": baseRow,
@@ -4470,12 +3516,6 @@ var summernote = (function() {
 			if (!_virtualTable[rowIndex]) _virtualTable[rowIndex] = [];
 			_virtualTable[rowIndex][cellIndex] = objPosition;
 		}
-		/**
-		* Create action cell object.
-		*
-		* @param {object} virtualTableCellObj Object of specific position on virtual table.
-		* @param {enum} resultAction Action to be applied in that item.
-		*/
 		function getActionCell(virtualTableCellObj, resultAction, virtualRowPosition, virtualColPosition) {
 			return {
 				"baseCell": virtualTableCellObj.baseCell,
@@ -4486,12 +3526,6 @@ var summernote = (function() {
 				}
 			};
 		}
-		/**
-		* Recover free index of row to append Cell.
-		*
-		* @param {int} rowIndex Index of row to find free space.
-		* @param {int} cellIndex Index of cell to find free space in table.
-		*/
 		function recoverCellIndex(rowIndex, cellIndex) {
 			if (!_virtualTable[rowIndex]) return cellIndex;
 			if (!_virtualTable[rowIndex][cellIndex]) return cellIndex;
@@ -4501,12 +3535,6 @@ var summernote = (function() {
 				if (!_virtualTable[rowIndex][newCellIndex]) return newCellIndex;
 			}
 		}
-		/**
-		* Recover info about row and cell and add information to virtual table.
-		*
-		* @param {object} row Row to recover information.
-		* @param {object} cell Cell to recover information.
-		*/
 		function addCellInfoToVirtual(row, cell) {
 			const cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
 			const cellHasColspan = cell.colSpan > 1;
@@ -4526,20 +3554,9 @@ var summernote = (function() {
 				setVirtualTablePosition(row.rowIndex, cellspanIndex, row, cell, cellHasRowspan, true, true);
 			}
 		}
-		/**
-		* Process validation and adjust of start point if needed
-		*
-		* @param {int} rowIndex
-		* @param {int} cellIndex
-		* @param {object} cell
-		* @param {bool} isSelectedCell
-		*/
 		function adjustStartPoint(rowIndex, cellIndex, cell, isSelectedCell) {
 			if (rowIndex === _startPoint.rowPos && _startPoint.colPos >= cell.cellIndex && cell.cellIndex <= cellIndex && !isSelectedCell) _startPoint.colPos++;
 		}
-		/**
-		* Create virtual table of cells with all cells, including span cells.
-		*/
 		function createVirtualTable() {
 			const rows = domTable.rows;
 			for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
@@ -4547,11 +3564,6 @@ var summernote = (function() {
 				for (let cellIndex = 0; cellIndex < cells.length; cellIndex++) addCellInfoToVirtual(rows[rowIndex], cells[cellIndex]);
 			}
 		}
-		/**
-		* Get action to be applied on the cell.
-		*
-		* @param {object} cell virtual table cell to apply action
-		*/
 		function getDeleteResultActionToCell(cell) {
 			switch (where) {
 				case TableResultAction.where.Column:
@@ -4564,11 +3576,6 @@ var summernote = (function() {
 			}
 			return TableResultAction.resultAction.RemoveCell;
 		}
-		/**
-		* Get action to be applied on the cell.
-		*
-		* @param {object} cell virtual table cell to apply action
-		*/
 		function getAddResultActionToCell(cell) {
 			switch (where) {
 				case TableResultAction.where.Column:
@@ -4586,9 +3593,6 @@ var summernote = (function() {
 			setStartPoint();
 			createVirtualTable();
 		}
-		/**
-		* Recover array os what to do in table.
-		*/
 		this.getActionList = function() {
 			const fixedRow = where === TableResultAction.where.Row ? _startPoint.rowPos : -1;
 			const fixedCol = where === TableResultAction.where.Column ? _startPoint.colPos : -1;
@@ -4615,26 +3619,14 @@ var summernote = (function() {
 		};
 		init();
 	};
-	/**
-	*
-	* Where action occours enum.
-	*/
 	TableResultAction.where = {
 		"Row": 0,
 		"Column": 1
 	};
-	/**
-	*
-	* Requested action to apply enum.
-	*/
 	TableResultAction.requestAction = {
 		"Add": 0,
 		"Delete": 1
 	};
-	/**
-	*
-	* Result action to be executed enum.
-	*/
 	TableResultAction.resultAction = {
 		"Ignore": 0,
 		"SubtractSpanCount": 1,
@@ -4642,20 +3634,7 @@ var summernote = (function() {
 		"AddCell": 3,
 		"SumSpanCount": 4
 	};
-	/**
-	*
-	* @class editing.Table
-	*
-	* Table
-	*
-	*/
 	var Table = class {
-		/**
-		* handle tab key
-		*
-		* @param {WrappedRange} rng
-		* @param {Boolean} isShift
-		*/
 		tab(rng, isShift) {
 			const cell = dom_default.ancestor(rng.commonAncestor(), dom_default.isCell);
 			const table = dom_default.ancestor(cell, dom_default.isTable);
@@ -4663,13 +3642,6 @@ var summernote = (function() {
 			const nextCell = lists_default[isShift ? "prev" : "next"](cells, cell);
 			if (nextCell) range_default.create(nextCell, 0).select();
 		}
-		/**
-		* Add a new row
-		*
-		* @param {WrappedRange} rng
-		* @param {String} position (top/bottom)
-		* @return {Node}
-		*/
 		addRow(rng, position) {
 			const cell = dom_default.ancestor(rng.commonAncestor(), dom_default.isCell);
 			const currentTr = $$(cell).closest("tr");
@@ -4708,13 +3680,6 @@ var summernote = (function() {
 				currentTr.after(html);
 			}
 		}
-		/**
-		* Add a new col
-		*
-		* @param {WrappedRange} rng
-		* @param {String} position (left/right)
-		* @return {Node}
-		*/
 		addCol(rng, position) {
 			const cell = dom_default.ancestor(rng.commonAncestor(), dom_default.isCell);
 			const row = $$(cell).closest("tr");
@@ -4747,12 +3712,6 @@ var summernote = (function() {
 			}
 			return resultStr;
 		}
-		/**
-		* Delete current row
-		*
-		* @param {WrappedRange} rng
-		* @return {Node}
-		*/
 		deleteRow(rng) {
 			const cell = dom_default.ancestor(rng.commonAncestor(), dom_default.isCell);
 			const row = $$(cell).closest("tr");
@@ -4783,12 +3742,6 @@ var summernote = (function() {
 			}
 			row.remove();
 		}
-		/**
-		* Delete current col
-		*
-		* @param {WrappedRange} rng
-		* @return {Node}
-		*/
 		deleteCol(rng) {
 			const cell = dom_default.ancestor(rng.commonAncestor(), dom_default.isCell);
 			const row = $$(cell).closest("tr");
@@ -4814,13 +3767,6 @@ var summernote = (function() {
 					continue;
 			}
 		}
-		/**
-		* create empty table element
-		*
-		* @param {Number} rowCount
-		* @param {Number} colCount
-		* @return {Node}
-		*/
 		createTable(colCount, rowCount, options) {
 			const tds = [];
 			let tdHTML;
@@ -4834,12 +3780,6 @@ var summernote = (function() {
 			if (options && options.tableClassName) $$(table).addClass(options.tableClassName);
 			return table;
 		}
-		/**
-		* Delete current table
-		*
-		* @param {WrappedRange} rng
-		* @return {Node}
-		*/
 		deleteTable(rng) {
 			$$(dom_default.ancestor(rng.commonAncestor(), dom_default.isCell)).closest("table").remove();
 		}
@@ -4850,9 +3790,6 @@ var summernote = (function() {
 	var MAILTO_PATTERN$1 = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	var TEL_PATTERN$1 = /^\+?\d[\d\s-]{5,}\d$/;
 	var URL_SCHEME_PATTERN$1 = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
-	/**
-	* @class Editor
-	*/
 	var Editor = class {
 		constructor(context) {
 			this.context = context;
@@ -4941,64 +3878,34 @@ var summernote = (function() {
 			this.outdent = this.wrapCommand(() => {
 				this.bullet.outdent(this.editable);
 			});
-			/**
-			* insertNode
-			* insert node
-			* @param {Node} node
-			*/
 			this.insertNode = this.wrapCommand((node) => {
 				if (this.isLimited($$(node).text().length)) return;
 				this.getLastRange().insertNode(node);
 				this.setLastRange(range_default.createFromNodeAfter(node).select());
 			});
-			/**
-			* insert text
-			* @param {String} text
-			*/
 			this.insertText = this.wrapCommand((text) => {
 				if (this.isLimited(text.length)) return;
 				const textNode = this.getLastRange().insertNode(dom_default.createText(text));
 				this.setLastRange(range_default.create(textNode, dom_default.nodeLength(textNode)).select());
 			});
-			/**
-			* paste HTML
-			* @param {String} markup
-			*/
 			this.pasteHTML = this.wrapCommand((markup) => {
 				if (this.isLimited(markup.length)) return;
 				markup = this.context.invoke("codeview.purify", markup);
 				const contents = this.getLastRange().pasteHTML(markup);
 				this.setLastRange(range_default.createFromNodeAfter(lists_default.last(contents)).select());
 			});
-			/**
-			* formatBlock
-			*
-			* @param {String} tagName
-			*/
 			this.formatBlock = this.wrapCommand((tagName, $target) => {
 				const onApplyCustomStyle = this.options.callbacks.onApplyCustomStyle;
 				if (onApplyCustomStyle) onApplyCustomStyle.call(this, $target, this.context, this.onFormatBlock);
 				else this.onFormatBlock(tagName, $target);
 			});
-			/**
-			* insert horizontal rule
-			*/
 			this.insertHorizontalRule = this.wrapCommand(() => {
 				const hrNode = this.getLastRange().insertNode(dom_default.create("HR"));
 				if (hrNode.nextSibling) this.setLastRange(range_default.create(hrNode.nextSibling, 0).normalize().select());
 			});
-			/**
-			* lineHeight
-			* @param {String} value
-			*/
 			this.lineHeight = this.wrapCommand((value) => {
 				this.style.stylePara(this.getLastRange(), { lineHeight: value });
 			});
-			/**
-			* create link (command)
-			*
-			* @param {Object} linkInfo
-			*/
 			this.createLink = this.wrapCommand((linkInfo) => {
 				let rel = [];
 				let linkUrl = linkInfo.url;
@@ -5034,39 +3941,19 @@ var summernote = (function() {
 				});
 				this.setLastRange(this.createRangeFromList(anchors).select());
 			});
-			/**
-			* setting color
-			*
-			* @param {Object} sObjColor  color code
-			* @param {String} sObjColor.foreColor foreground color
-			* @param {String} sObjColor.backColor background color
-			*/
 			this.color = this.wrapCommand((colorInfo) => {
 				const foreColor = colorInfo.foreColor;
 				const backColor = colorInfo.backColor;
 				if (foreColor) document.execCommand("foreColor", false, foreColor);
 				if (backColor) document.execCommand("backColor", false, backColor);
 			});
-			/**
-			* Set foreground color
-			*
-			* @param {String} colorCode foreground color code
-			*/
 			this.foreColor = this.wrapCommand((colorInfo) => {
 				document.execCommand("foreColor", false, colorInfo);
 			});
-			/**
-			* insert Table
-			*
-			* @param {String} dimension of table (ex : "5x5")
-			*/
 			this.insertTable = this.wrapCommand((dim) => {
 				const dimension = dim.split("x");
 				this.getLastRange().deleteContents().insertNode(this.table.createTable(dimension[0], dimension[1], this.options));
 			});
-			/**
-			* remove media object and Figure Elements if media object is img with Figure.
-			*/
 			this.removeMedia = this.wrapCommand(() => {
 				let $target = $$(this.restoreTarget()).parent();
 				if ($target.closest("figure").length) $target.closest("figure").remove();
@@ -5074,21 +3961,12 @@ var summernote = (function() {
 				this.setLastRange(range_default.createFromSelection($target).select());
 				this.context.triggerEvent("media.delete", $target, this.$editable);
 			});
-			/**
-			* float me
-			*
-			* @param {String} value
-			*/
 			this.floatMe = this.wrapCommand((value) => {
 				const $target = $$(this.restoreTarget());
 				$target.toggleClass("note-float-left", value === "left");
 				$target.toggleClass("note-float-right", value === "right");
 				$target.css("float", value === "none" ? "" : value);
 			});
-			/**
-			* resize overlay element
-			* @param {String} value
-			*/
 			this.resize = this.wrapCommand((value) => {
 				const $target = $$(this.restoreTarget());
 				value = parseFloat(value);
@@ -5230,34 +4108,16 @@ var summernote = (function() {
 			else if (!URL_SCHEME_PATTERN$1.test(linkUrl)) return "http://" + linkUrl;
 			return linkUrl;
 		}
-		/**
-		* create range
-		* @return {WrappedRange}
-		*/
 		createRange() {
 			this.focus();
 			this.setLastRange();
 			return this.getLastRange();
 		}
-		/**
-		* create a new range from the list of elements
-		*
-		* @param {list} dom element list
-		* @return {WrappedRange}
-		*/
 		createRangeFromList(lst) {
 			const startPoint = range_default.createFromNodeBefore(lists_default.head(lst)).getStartPoint();
 			const endPoint = range_default.createFromNodeAfter(lists_default.last(lst)).getEndPoint();
 			return range_default.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
 		}
-		/**
-		* set the last range
-		*
-		* if given rng is exist, set rng as the last range
-		* or create a new range at the end of the document
-		*
-		* @param {WrappedRange} rng
-		*/
 		setLastRange(rng) {
 			if (rng) this.lastRange = rng;
 			else {
@@ -5265,14 +4125,6 @@ var summernote = (function() {
 				if ($$(this.lastRange.sc).closest(".note-editable").length === 0) this.lastRange = range_default.createFromBodyElement(this.editable);
 			}
 		}
-		/**
-		* get the last range
-		*
-		* if there is a saved last range, return it
-		* or create a new range and return it
-		*
-		* @return {WrappedRange}
-		*/
 		getLastRange() {
 			const currentSelection = range_default.createFromSelection();
 			const selectionContainer = currentSelection?.sc?.nodeType === Node.TEXT_NODE ? currentSelection.sc.parentElement : currentSelection?.sc;
@@ -5283,22 +4135,10 @@ var summernote = (function() {
 			if (!this.lastRange) this.setLastRange();
 			return this.lastRange;
 		}
-		/**
-		* saveRange
-		*
-		* save current range
-		*
-		* @param {Boolean} [thenCollapse=false]
-		*/
 		saveRange(thenCollapse) {
 			const currentRange = this.getLastRange();
 			if (thenCollapse) currentRange.collapse().select();
 		}
-		/**
-		* restoreRange
-		*
-		* restore lately range
-		*/
 		restoreRange() {
 			if (this.lastRange) {
 				this.lastRange.select();
@@ -5324,28 +4164,13 @@ var summernote = (function() {
 			this.setLastRange(cellRange);
 			return cellRange;
 		}
-		/**
-		* currentStyle
-		*
-		* current style
-		* @return {Object|Boolean} unfocus
-		*/
 		currentStyle() {
 			const rng = this.getLastRange();
 			return rng ? this.style.current(rng.normalize()) : this.style.fromNode(this.$editable);
 		}
-		/**
-		* style from node
-		*
-		* @param {DomQuery|Element} $node
-		* @return {Object}
-		*/
 		styleFromNode($node) {
 			return this.style.fromNode($node);
 		}
-		/**
-		* undo
-		*/
 		undo() {
 			this.context.triggerEvent("before.command", this.$editable.html());
 			this.history.undo();
@@ -5356,34 +4181,21 @@ var summernote = (function() {
 			this.history.commit();
 			this.context.triggerEvent("change", this.$editable.html(), this.$editable);
 		}
-		/**
-		* redo
-		*/
 		redo() {
 			this.context.triggerEvent("before.command", this.$editable.html());
 			this.history.redo();
 			this.context.triggerEvent("change", this.$editable.html(), this.$editable);
 		}
-		/**
-		* before command
-		*/
 		beforeCommand() {
 			this.context.triggerEvent("before.command", this.$editable.html());
 			document.execCommand("styleWithCSS", false, this.options.styleWithCSS);
 			this.focus();
 		}
-		/**
-		* after command
-		* @param {Boolean} isPreventTrigger
-		*/
 		afterCommand(isPreventTrigger) {
 			this.normalizeContent();
 			this.history.recordUndo();
 			if (!isPreventTrigger) this.context.triggerEvent("change", this.$editable.html(), this.$editable);
 		}
-		/**
-		* handle tab key
-		*/
 		tab() {
 			const rng = this.getLastRange();
 			if (rng.isCollapsed() && rng.isOnCell()) this.table.tab(rng);
@@ -5396,17 +4208,11 @@ var summernote = (function() {
 				}
 			}
 		}
-		/**
-		* handle shift+tab key
-		*/
 		untab() {
 			const rng = this.getLastRange();
 			if (rng.isCollapsed() && rng.isOnCell()) this.table.tab(rng, true);
 			else if (this.options.tabSize === 0) return false;
 		}
-		/**
-		* run given function between beforeCommand and afterCommand
-		*/
 		wrapCommand(fn) {
 			return function() {
 				this.beforeCommand();
@@ -5414,9 +4220,6 @@ var summernote = (function() {
 				this.afterCommand();
 			};
 		}
-		/**
-		* removed (function added by 1der1)
-		*/
 		removed(rng, node, tagName) {
 			rng = range_default.create();
 			if (rng.isCollapsed() && rng.isOnCell()) {
@@ -5427,13 +4230,6 @@ var summernote = (function() {
 				}
 			}
 		}
-		/**
-		* insert image
-		*
-		* @param {String} src
-		* @param {String|Function} param
-		* @return {Promise}
-		*/
 		insertImage(src, param) {
 			const insertRange = this.getLastRange();
 			const normalizedInsertRange = dom_default.isEditable(insertRange.sc) && dom_default.isEditable(insertRange.ec) ? range_default.createFromBodyElement(this.editable, insertRange.isCollapsed() && insertRange.so === 0) : insertRange;
@@ -5456,10 +4252,6 @@ var summernote = (function() {
 				this.context.triggerEvent("image.upload.error", e);
 			});
 		}
-		/**
-		* insertImages
-		* @param {File[]} files
-		*/
 		insertImagesAsDataURL(files) {
 			$$.each(files, (idx, file) => {
 				const filename = file.name;
@@ -5471,10 +4263,6 @@ var summernote = (function() {
 				});
 			});
 		}
-		/**
-		* insertImagesOrCallback
-		* @param {File[]} files
-		*/
 		insertImagesOrCallback(files) {
 			const callbacks = this.options.callbacks;
 			const normalizedFiles = Array.from(files || []);
@@ -5482,10 +4270,6 @@ var summernote = (function() {
 			if (callbacks.onImageUpload) this.context.triggerEvent("image.upload", normalizedFiles);
 			else this.insertImagesAsDataURL(normalizedFiles);
 		}
-		/**
-		* return selected plain text
-		* @return {String} text
-		*/
 		getSelectedText() {
 			let rng = this.getLastRange();
 			if (rng.isOnAnchor()) rng = range_default.createFromNode(dom_default.ancestor(rng.sc, dom_default.isAnchor));
@@ -5530,11 +4314,6 @@ var summernote = (function() {
 				}, 5e3);
 			}
 		}
-		/**
-		* unlink
-		*
-		* @type command
-		*/
 		unlink() {
 			let rng = this.getLastRange();
 			if (rng.isOnAnchor()) {
@@ -5547,15 +4326,6 @@ var summernote = (function() {
 				this.afterCommand();
 			}
 		}
-		/**
-		* returns link info
-		*
-		* @return {Object}
-		* @return {WrappedRange} return.range
-		* @return {String} return.text
-		* @return {Boolean} [return.isNewWindow=true]
-		* @return {String} [return.url=""]
-		*/
 		getLinkInfo() {
 			if (!this.hasFocus()) this.focus();
 			const rng = this.getLastRange().expand(dom_default.isAnchor);
@@ -5608,11 +4378,6 @@ var summernote = (function() {
 				this.afterCommand();
 			}
 		}
-		/**
-		* @param {Position} pos
-		* @param {DomQuery} $target - target element
-		* @param {Boolean} [bKeepRatio] - keep ratio
-		*/
 		resizeTo(pos, $target, bKeepRatio) {
 			let imageSize;
 			if (bKeepRatio) {
@@ -5628,15 +4393,9 @@ var summernote = (function() {
 			};
 			$target.css(imageSize);
 		}
-		/**
-		* returns whether editable area has focus or not.
-		*/
 		hasFocus() {
 			return this.$editable.is(":focus");
 		}
-		/**
-		* set focus
-		*/
 		focus() {
 			if (!this.hasFocus()) {
 				const preservedRange = this.lastRange;
@@ -5647,22 +4406,12 @@ var summernote = (function() {
 				}
 			}
 		}
-		/**
-		* returns whether contents is empty or not.
-		* @return {Boolean}
-		*/
 		isEmpty() {
 			return dom_default.isEmpty(this.$editable[0]) || dom_default.emptyPara === this.$editable.html();
 		}
-		/**
-		* Removes all contents and restores the editable instance to an _emptyPara_.
-		*/
 		empty() {
 			this.context.invoke("code", dom_default.emptyPara);
 		}
-		/**
-		* normalize content
-		*/
 		normalizeContent() {
 			this.$editable[0].normalize();
 		}
@@ -5678,11 +4427,6 @@ var summernote = (function() {
 		initialize() {
 			this.$editable.on("paste", this.pasteByEvent.bind(this));
 		}
-		/**
-		* paste by clipboard event
-		*
-		* @param {Event} event
-		*/
 		pasteByEvent(event) {
 			if (this.context.isDisabled()) return;
 			const clipboardData = event.originalEvent.clipboardData;
@@ -5723,9 +4467,6 @@ var summernote = (function() {
 			this.$dropzone = $$(dropzoneEl);
 			this.$editor.prepend(this.$dropzone);
 		}
-		/**
-		* attach Drag and Drop Events
-		*/
 		initialize() {
 			if (this.options.disableDragAndDrop) {
 				this.documentEventHandlers.onDrop = (e) => {
@@ -5735,9 +4476,6 @@ var summernote = (function() {
 				this.$eventListener.on("drop", this.documentEventHandlers.onDrop);
 			} else this.attachDragAndDropEvent();
 		}
-		/**
-		* attach Drag and Drop Events
-		*/
 		attachDragAndDropEvent() {
 			let collection = [];
 			const $dropzoneMessage = this.$dropzone.find(".note-dropzone-message");
@@ -5798,9 +4536,6 @@ var summernote = (function() {
 	};
 	//#endregion
 	//#region src/js/module/Codeview.js
-	/**
-	* @class Codeview
-	*/
 	var CodeView = class {
 		constructor(context) {
 			this.context = context;
@@ -5857,25 +4592,14 @@ var summernote = (function() {
 				if (event.keyCode === key_default.code.ESCAPE) this.deactivate();
 			});
 		}
-		/**
-		* @return {Boolean}
-		*/
 		isActivated() {
 			return this.$editor.hasClass("codeview");
 		}
-		/**
-		* toggle codeview
-		*/
 		toggle() {
 			if (this.isActivated()) this.deactivate();
 			else this.activate();
 			this.context.triggerEvent("codeview.toggled");
 		}
-		/**
-		* purify input value
-		* @param value
-		* @returns {*}
-		*/
 		purify(value) {
 			if (this.options.codeviewFilter) {
 				value = value.replace(this.options.codeviewFilterRegex, "");
@@ -5890,9 +4614,6 @@ var summernote = (function() {
 			}
 			return value;
 		}
-		/**
-		* activate code view
-		*/
 		activate() {
 			const CodeMirror = this.CodeMirrorConstructor;
 			this.$codable.val(dom_default.html(this.$editable, this.options.prettifyHtml));
@@ -5928,9 +4649,6 @@ var summernote = (function() {
 				});
 			}
 		}
-		/**
-		* deactivate code view
-		*/
 		deactivate() {
 			if (this.CodeMirrorConstructor) {
 				const cmEditor = this.$codable.data("cmEditor");
@@ -6020,9 +4738,6 @@ var summernote = (function() {
 			this.$codable.css("height", size.h);
 			if (this.$codable.data("cmeditor")) this.$codable.data("cmeditor").setsize(null, size.h);
 		}
-		/**
-		* toggle fullscreen
-		*/
 		toggle() {
 			if (this.shouldSwitchAirModeFullscreen()) return this.toggleAirModeFullscreen();
 			this.toggleEditorFullscreen();
@@ -6263,9 +4978,6 @@ var summernote = (function() {
 			} else this.hide();
 			return isMedia;
 		}
-		/**
-		* hide
-		*/
 		hide() {
 			$$(".note-video-clip").removeClass("note-video-interactive");
 			this.context.invoke("editor.clearTarget");
@@ -6323,9 +5035,6 @@ var summernote = (function() {
 	};
 	//#endregion
 	//#region src/js/module/AutoSync.js
-	/**
-	* textarea auto sync.
-	*/
 	var AutoSync = class {
 		constructor(context) {
 			this.$note = context.layoutInfo.note;
@@ -6692,7 +5401,7 @@ var summernote = (function() {
 			this.context.memo("button.style", () => {
 				return this.ui.buttonGroup([this.button({
 					className: "dropdown-toggle",
-					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.magic + " note-icon-lg"), this.options),
+					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.magic), this.options),
 					tooltip: this.lang.style.style,
 					data: { toggle: "dropdown" }
 				}), this.ui.dropdownCheck({
@@ -6767,7 +5476,7 @@ var summernote = (function() {
 			this.context.memo("button.superscript", () => {
 				return this.button({
 					className: "note-btn-superscript",
-					contents: this.ui.icon(this.options.icons.superscript + " note-icon-lg"),
+					contents: this.ui.icon(this.options.icons.superscript),
 					tooltip: this.lang.font.superscript,
 					click: this.context.createInvokeHandlerAndUpdateState("editor.superscript")
 				}).render();
@@ -6775,7 +5484,7 @@ var summernote = (function() {
 			this.context.memo("button.subscript", () => {
 				return this.button({
 					className: "note-btn-subscript",
-					contents: this.ui.icon(this.options.icons.subscript + " note-icon-lg"),
+					contents: this.ui.icon(this.options.icons.subscript),
 					tooltip: this.lang.font.subscript,
 					click: this.context.createInvokeHandlerAndUpdateState("editor.subscript")
 				}).render();
@@ -6843,45 +5552,45 @@ var summernote = (function() {
 			});
 			this.context.memo("button.ul", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.unorderedlist),
+					contents: this.ui.icon(this.options.icons.unorderedlist + " note-icon-md"),
 					tooltip: this.lang.lists.unordered + this.representShortcut("insertUnorderedList"),
 					click: this.context.createInvokeHandler("editor.insertUnorderedList")
 				}).render();
 			});
 			this.context.memo("button.ol", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.orderedlist),
+					contents: this.ui.icon(this.options.icons.orderedlist + " note-icon-md"),
 					tooltip: this.lang.lists.ordered + this.representShortcut("insertOrderedList"),
 					click: this.context.createInvokeHandler("editor.insertOrderedList")
 				}).render();
 			});
 			const justifyLeft = this.button({
-				contents: this.ui.icon(this.options.icons.alignLeft),
+				contents: this.ui.icon(this.options.icons.alignLeft + " note-icon-md"),
 				tooltip: this.lang.paragraph.left + this.representShortcut("justifyLeft"),
 				click: this.context.createInvokeHandler("editor.justifyLeft")
 			});
 			const justifyCenter = this.button({
-				contents: this.ui.icon(this.options.icons.alignCenter),
+				contents: this.ui.icon(this.options.icons.alignCenter + " note-icon-md"),
 				tooltip: this.lang.paragraph.center + this.representShortcut("justifyCenter"),
 				click: this.context.createInvokeHandler("editor.justifyCenter")
 			});
 			const justifyRight = this.button({
-				contents: this.ui.icon(this.options.icons.alignRight),
+				contents: this.ui.icon(this.options.icons.alignRight + " note-icon-md"),
 				tooltip: this.lang.paragraph.right + this.representShortcut("justifyRight"),
 				click: this.context.createInvokeHandler("editor.justifyRight")
 			});
 			const justifyFull = this.button({
-				contents: this.ui.icon(this.options.icons.alignJustify),
+				contents: this.ui.icon(this.options.icons.alignJustify + " note-icon-md"),
 				tooltip: this.lang.paragraph.justify + this.representShortcut("justifyFull"),
 				click: this.context.createInvokeHandler("editor.justifyFull")
 			});
 			const outdent = this.button({
-				contents: this.ui.icon(this.options.icons.outdent),
+				contents: this.ui.icon(this.options.icons.outdent + " note-icon-md"),
 				tooltip: this.lang.paragraph.outdent + this.representShortcut("outdent"),
 				click: this.context.createInvokeHandler("editor.outdent")
 			});
 			const indent = this.button({
-				contents: this.ui.icon(this.options.icons.indent),
+				contents: this.ui.icon(this.options.icons.indent + " note-icon-md"),
 				tooltip: this.lang.paragraph.indent + this.representShortcut("indent"),
 				click: this.context.createInvokeHandler("editor.indent")
 			});
@@ -6894,7 +5603,7 @@ var summernote = (function() {
 			this.context.memo("button.paragraph", () => {
 				return this.ui.buttonGroup([this.button({
 					className: "dropdown-toggle",
-					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft), this.options),
+					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft + " note-icon-md"), this.options),
 					tooltip: this.lang.paragraph.paragraph,
 					data: { toggle: "dropdown" }
 				}), this.ui.dropdown([this.ui.buttonGroup({
@@ -6913,7 +5622,7 @@ var summernote = (function() {
 			this.context.memo("button.height", () => {
 				return this.ui.buttonGroup([this.button({
 					className: "dropdown-toggle",
-					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight), this.options),
+					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight + " note-icon-lg"), this.options),
 					tooltip: this.lang.font.height,
 					data: { toggle: "dropdown" }
 				}), this.ui.dropdownCheck({
@@ -6927,7 +5636,7 @@ var summernote = (function() {
 			this.context.memo("button.table", () => {
 				return this.ui.buttonGroup([this.button({
 					className: "dropdown-toggle",
-					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
+					contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table + " note-icon-md"), this.options),
 					tooltip: this.lang.table.table,
 					data: { toggle: "dropdown" }
 				}), this.ui.dropdown({
@@ -6958,21 +5667,21 @@ var summernote = (function() {
 			});
 			this.context.memo("button.link", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.link),
+					contents: this.ui.icon(this.options.icons.link + " note-icon-lg"),
 					tooltip: this.lang.link.link + this.representShortcut("linkDialog.show"),
 					click: this.context.createInvokeHandler("linkDialog.show")
 				}).render();
 			});
 			this.context.memo("button.picture", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.picture),
+					contents: this.ui.icon(this.options.icons.picture + " note-icon-lg"),
 					tooltip: this.lang.image.image,
 					click: this.context.createInvokeHandler("imageDialog.show")
 				}).render();
 			});
 			this.context.memo("button.video", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.video),
+					contents: this.ui.icon(this.options.icons.video + " note-icon-lg"),
 					tooltip: this.lang.video.video,
 					click: this.context.createInvokeHandler("videoDialog.show")
 				}).render();
@@ -6987,7 +5696,7 @@ var summernote = (function() {
 			this.context.memo("button.fullscreen", () => {
 				return this.button({
 					className: "btn-fullscreen note-codeview-keep",
-					contents: this.ui.icon(this.options.icons.arrowsAlt),
+					contents: this.ui.icon(this.options.icons.arrowsAlt + " note-icon-xs"),
 					tooltip: this.lang.options.fullscreen,
 					click: this.context.createInvokeHandler("fullscreen.toggle")
 				}).render();
@@ -6995,21 +5704,21 @@ var summernote = (function() {
 			this.context.memo("button.codeview", () => {
 				return this.button({
 					className: "btn-codeview note-codeview-keep",
-					contents: this.ui.icon(this.options.icons.code + " note-icon-lg"),
+					contents: this.ui.icon(this.options.icons.code + " note-icon-md"),
 					tooltip: this.lang.options.codeview,
 					click: this.context.createInvokeHandler("codeview.toggle")
 				}).render();
 			});
 			this.context.memo("button.redo", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.redo),
+					contents: this.ui.icon(this.options.icons.redo + " note-icon-md"),
 					tooltip: this.lang.history.redo + this.representShortcut("redo"),
 					click: this.context.createInvokeHandler("editor.redo")
 				}).render();
 			});
 			this.context.memo("button.undo", () => {
 				return this.button({
-					contents: this.ui.icon(this.options.icons.undo),
+					contents: this.ui.icon(this.options.icons.undo + " note-icon-md"),
 					tooltip: this.lang.history.undo + this.representShortcut("undo"),
 					click: this.context.createInvokeHandler("editor.undo")
 				}).render();
@@ -7022,13 +5731,6 @@ var summernote = (function() {
 				}).render();
 			});
 		}
-		/**
-		* image: [
-		*   ['imageResize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
-		*   ['float', ['floatLeft', 'floatRight', 'floatNone']],
-		*   ['remove', ['removeMedia']],
-		* ],
-		*/
 		addImagePopoverButtons() {
 			this.context.memo("button.resizeFull", () => {
 				return this.button({
@@ -7168,12 +5870,6 @@ var summernote = (function() {
 				}).render();
 			});
 		}
-		/**
-		* table : [
-		*  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-		*  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
-		* ],
-		*/
 		addTablePopoverButtons() {
 			this.context.memo("button.addRowUp", () => {
 				return this.button({
@@ -7246,9 +5942,6 @@ var summernote = (function() {
 			}
 			if (options.classPrefix) this.applyContainerButtonClassNames($container, options.classPrefix);
 		}
-		/**
-		* @param {DomQuery} [$container]
-		*/
 		updateCurrentStyle($container) {
 			const $cont = $container || this.$toolbar;
 			const styleInfo = this.context.invoke("editor.currentStyle");
@@ -7615,18 +6308,9 @@ var summernote = (function() {
 				event.target.value = event.target.value == "" ? "" : this.checkLinkUrl(event.target.value);
 			});
 		}
-		/**
-		* toggle update button
-		*/
 		toggleLinkBtn($linkBtn, $linkText, $linkUrl) {
 			this.ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
 		}
-		/**
-		* Show link dialog and set event handlers on dialog controls.
-		*
-		* @param {Object} linkInfo
-		* @return {Promise}
-		*/
 		showLinkDialog(linkInfo) {
 			return new Promise((resolve, reject) => {
 				let isSettled = false;
@@ -7680,9 +6364,6 @@ var summernote = (function() {
 				this.ui.showDialog(this.$dialog);
 			});
 		}
-		/**
-		* @param {Object} layoutInfo
-		*/
 		show() {
 			const linkInfo = this.context.invoke("editor.getLinkInfo");
 			this.context.invoke("editor.saveRange");
@@ -7832,11 +6513,6 @@ var summernote = (function() {
 				this.context.invoke("editor.restoreRange");
 			});
 		}
-		/**
-		* show image dialog
-		*
-		* @return {Promise}
-		*/
 		showImageDialog() {
 			return new Promise((resolve, reject) => {
 				let isSettled = false;
@@ -7896,11 +6572,6 @@ var summernote = (function() {
 			placement: top === fallbackTop ? "top" : "bottom"
 		};
 	}
-	/**
-	* Image popover module
-	*  mouse events that show/hide popover will be handled by Handle.js.
-	*  Handle.js will receive the events and invoke 'imagePopover.update'.
-	*/
 	var ImagePopover = class {
 		constructor(context) {
 			this.context = context;
@@ -8283,11 +6954,6 @@ var summernote = (function() {
 				this.context.invoke("editor.restoreRange");
 			});
 		}
-		/**
-		* show video dialog
-		*
-		* @return {Promise}
-		*/
 		showVideoDialog() {
 			return new Promise((resolve, reject) => {
 				let isSettled = false;
@@ -8485,11 +7151,6 @@ var summernote = (function() {
       </div>
     `;
 		}
-		/**
-		* show help dialog
-		*
-		* @return {Promise}
-		*/
 		showHelpDialog() {
 			return new Promise((resolve) => {
 				this.ui.onDialogShown(this.$dialog, () => {
