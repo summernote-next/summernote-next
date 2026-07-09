@@ -51,11 +51,16 @@ $sni-css-prefix: note-icon !default;
 }
 
 // Size modifiers — utility classes that callers can opt into without
-// touching the base styles. `.note-icon-sm` is for icons that should sit
-// inside text (status messages, etc.), `.note-icon-md` gives glyphs a subtle
-// bump so they carry a bit more visual weight in the toolbar (style picker,
-// etc.) and `.note-icon-lg` is the full-fat size for glyphs that need to
-// stand out (code view, etc.).
+// touching the base styles. They step the glyph up or down from the
+// default 1em size so toolbar buttons can carry a visual hierarchy: text-like
+// icons (`.note-icon-xs`) for typographic glyphs, the default for most
+// toolbar actions, and `.note-icon-md` / `.note-icon-lg` for the icons that
+// need a bit more visual weight.
+.#{$sni-css-prefix}-xs > svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
 .#{$sni-css-prefix}-sm > svg {
   width: 0.75em;
   height: 0.75em;

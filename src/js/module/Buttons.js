@@ -351,7 +351,7 @@ export default class Buttons {
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(
-            this.ui.icon(this.options.icons.magic + ' note-icon-lg'), this.options,
+            this.ui.icon(this.options.icons.magic), this.options,
           ),
           tooltip: this.lang.style.style,
           data: {
@@ -444,7 +444,7 @@ export default class Buttons {
     this.context.memo('button.superscript', () => {
       return this.button({
         className: 'note-btn-superscript',
-        contents: this.ui.icon(this.options.icons.superscript + ' note-icon-lg'),
+        contents: this.ui.icon(this.options.icons.superscript),
         tooltip: this.lang.font.superscript,
         click: this.context.createInvokeHandlerAndUpdateState('editor.superscript'),
       }).render();
@@ -453,7 +453,7 @@ export default class Buttons {
     this.context.memo('button.subscript', () => {
       return this.button({
         className: 'note-btn-subscript',
-        contents: this.ui.icon(this.options.icons.subscript + ' note-icon-lg'),
+        contents: this.ui.icon(this.options.icons.subscript),
         tooltip: this.lang.font.subscript,
         click: this.context.createInvokeHandlerAndUpdateState('editor.subscript'),
       }).render();
@@ -552,7 +552,7 @@ export default class Buttons {
 
     this.context.memo('button.ul', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.unorderedlist),
+        contents: this.ui.icon(this.options.icons.unorderedlist + ' note-icon-md'),
         tooltip: this.lang.lists.unordered + this.representShortcut('insertUnorderedList'),
         click: this.context.createInvokeHandler('editor.insertUnorderedList'),
       }).render();
@@ -560,44 +560,44 @@ export default class Buttons {
 
     this.context.memo('button.ol', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.orderedlist),
+        contents: this.ui.icon(this.options.icons.orderedlist + ' note-icon-md'),
         tooltip: this.lang.lists.ordered + this.representShortcut('insertOrderedList'),
         click: this.context.createInvokeHandler('editor.insertOrderedList'),
       }).render();
     });
 
     const justifyLeft = this.button({
-      contents: this.ui.icon(this.options.icons.alignLeft),
+      contents: this.ui.icon(this.options.icons.alignLeft + ' note-icon-md'),
       tooltip: this.lang.paragraph.left + this.representShortcut('justifyLeft'),
       click: this.context.createInvokeHandler('editor.justifyLeft'),
     });
 
     const justifyCenter = this.button({
-      contents: this.ui.icon(this.options.icons.alignCenter),
+      contents: this.ui.icon(this.options.icons.alignCenter + ' note-icon-md'),
       tooltip: this.lang.paragraph.center + this.representShortcut('justifyCenter'),
       click: this.context.createInvokeHandler('editor.justifyCenter'),
     });
 
     const justifyRight = this.button({
-      contents: this.ui.icon(this.options.icons.alignRight),
+      contents: this.ui.icon(this.options.icons.alignRight + ' note-icon-md'),
       tooltip: this.lang.paragraph.right + this.representShortcut('justifyRight'),
       click: this.context.createInvokeHandler('editor.justifyRight'),
     });
 
     const justifyFull = this.button({
-      contents: this.ui.icon(this.options.icons.alignJustify),
+      contents: this.ui.icon(this.options.icons.alignJustify + ' note-icon-md'),
       tooltip: this.lang.paragraph.justify + this.representShortcut('justifyFull'),
       click: this.context.createInvokeHandler('editor.justifyFull'),
     });
 
     const outdent = this.button({
-      contents: this.ui.icon(this.options.icons.outdent),
+      contents: this.ui.icon(this.options.icons.outdent + ' note-icon-md'),
       tooltip: this.lang.paragraph.outdent + this.representShortcut('outdent'),
       click: this.context.createInvokeHandler('editor.outdent'),
     });
 
     const indent = this.button({
-      contents: this.ui.icon(this.options.icons.indent),
+      contents: this.ui.icon(this.options.icons.indent + ' note-icon-md'),
       tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
       click: this.context.createInvokeHandler('editor.indent'),
     });
@@ -613,7 +613,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft), this.options),
+          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft + ' note-icon-md'), this.options),
           tooltip: this.lang.paragraph.paragraph,
           data: {
             toggle: 'dropdown',
@@ -636,7 +636,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight), this.options),
+          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight + ' note-icon-lg'), this.options),
           tooltip: this.lang.font.height,
           data: {
             toggle: 'dropdown',
@@ -656,7 +656,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
+          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table + ' note-icon-md'), this.options),
           tooltip: this.lang.table.table,
           data: {
             toggle: 'dropdown',
@@ -697,7 +697,7 @@ export default class Buttons {
 
     this.context.memo('button.link', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.link),
+        contents: this.ui.icon(this.options.icons.link + ' note-icon-lg'),
         tooltip: this.lang.link.link + this.representShortcut('linkDialog.show'),
         click: this.context.createInvokeHandler('linkDialog.show'),
       }).render();
@@ -705,7 +705,7 @@ export default class Buttons {
 
     this.context.memo('button.picture', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.picture),
+        contents: this.ui.icon(this.options.icons.picture + ' note-icon-lg'),
         tooltip: this.lang.image.image,
         click: this.context.createInvokeHandler('imageDialog.show'),
       }).render();
@@ -713,7 +713,7 @@ export default class Buttons {
 
     this.context.memo('button.video', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.video),
+        contents: this.ui.icon(this.options.icons.video + ' note-icon-lg'),
         tooltip: this.lang.video.video,
         click: this.context.createInvokeHandler('videoDialog.show'),
       }).render();
@@ -730,7 +730,7 @@ export default class Buttons {
     this.context.memo('button.fullscreen', () => {
       return this.button({
         className: 'btn-fullscreen note-codeview-keep',
-        contents: this.ui.icon(this.options.icons.arrowsAlt),
+        contents: this.ui.icon(this.options.icons.arrowsAlt + ' note-icon-xs'),
         tooltip: this.lang.options.fullscreen,
         click: this.context.createInvokeHandler('fullscreen.toggle'),
       }).render();
@@ -739,7 +739,7 @@ export default class Buttons {
     this.context.memo('button.codeview', () => {
       return this.button({
         className: 'btn-codeview note-codeview-keep',
-        contents: this.ui.icon(this.options.icons.code + ' note-icon-lg'),
+        contents: this.ui.icon(this.options.icons.code + ' note-icon-md'),
         tooltip: this.lang.options.codeview,
         click: this.context.createInvokeHandler('codeview.toggle'),
       }).render();
@@ -747,7 +747,7 @@ export default class Buttons {
 
     this.context.memo('button.redo', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.redo),
+        contents: this.ui.icon(this.options.icons.redo + ' note-icon-md'),
         tooltip: this.lang.history.redo + this.representShortcut('redo'),
         click: this.context.createInvokeHandler('editor.redo'),
       }).render();
@@ -755,7 +755,7 @@ export default class Buttons {
 
     this.context.memo('button.undo', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.undo),
+        contents: this.ui.icon(this.options.icons.undo + ' note-icon-md'),
         tooltip: this.lang.history.undo + this.representShortcut('undo'),
         click: this.context.createInvokeHandler('editor.undo'),
       }).render();
