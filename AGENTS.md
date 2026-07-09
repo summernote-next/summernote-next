@@ -10,6 +10,7 @@
 # Coding Guidelines
 - only use bootstrap 5
 - only use VanillaJS
+- do not write comments, only type declarations at most
 - after every task, build the project
 
 # Testing Guidelines
