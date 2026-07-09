@@ -82,6 +82,86 @@ describe('Summernote Next plugin showcase', () => {
     cy.get('.note-editable').invoke('text').should('match', /\S+/);
   });
 
+  it('keeps the toolbar enabled after inserting an emoji', () => {
+    cy.get('.note-editable').click();
+    cy.window().then((win) => {
+      const editable = win.document.querySelector('.note-editable');
+      const range = win.document.createRange();
+      range.selectNodeContents(editable);
+      const sel = win.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    cy.get('.sn-plugin-emoji-toggle').click();
+    cy.get('.sn-plugin-emoji-picker').should('have.class', 'show');
+    cy.get('.sn-plugin-emoji-cell').first().click();
+
+    cy.get('.note-editable').invoke('text').should('contain', '😀');
+    cy.get('.note-toolbar button[disabled]').should('have.length', 0);
+    cy.get('.note-toolbar button.disabled').should('have.length', 0);
+
+    cy.get('.note-editable').click();
+    cy.window().then((win) => {
+      const editable = win.document.querySelector('.note-editable');
+      editable.focus();
+      const textNode = editable.querySelector('p').firstChild;
+      if (textNode && textNode.nodeType === 3) {
+        const range = win.document.createRange();
+        range.setStart(textNode, 0);
+        range.setEnd(textNode, textNode.length);
+        const sel = win.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        win.summernote.invoke('#plugin-showcase-editor', 'editor.setLastRange',
+          win.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
+      }
+    });
+
+    cy.get('.note-btn-bold').click();
+    cy.get('.note-editable').invoke('html').should('match', /<(strong|b)>/);
+    cy.screenshot('plugin-showcase-emoji-inserted');
+  });
+
+  it('keeps the toolbar enabled after inserting a special character', () => {
+    cy.get('.note-editable').click();
+    cy.window().then((win) => {
+      const editable = win.document.querySelector('.note-editable');
+      const range = win.document.createRange();
+      range.selectNodeContents(editable);
+      const sel = win.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    cy.get('.sn-plugin-special-chars-toggle').click();
+    cy.get('.sn-plugin-special-chars').should('have.class', 'show');
+    cy.get('.sn-plugin-special-chars-cell').first().click();
+
+    cy.get('.note-toolbar button[disabled]').should('have.length', 0);
+    cy.get('.note-toolbar button.disabled').should('have.length', 0);
+
+    cy.get('.note-editable').click();
+    cy.window().then((win) => {
+      const editable = win.document.querySelector('.note-editable');
+      editable.focus();
+      const textNode = editable.querySelector('p').firstChild;
+      if (textNode && textNode.nodeType === 3) {
+        const range = win.document.createRange();
+        range.setStart(textNode, 0);
+        range.setEnd(textNode, textNode.length);
+        const sel = win.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        win.summernote.invoke('#plugin-showcase-editor', 'editor.setLastRange',
+          win.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
+      }
+    });
+
+    cy.get('.note-btn-bold').click();
+    cy.get('.note-editable').invoke('html').should('match', /<(strong|b)>/);
+  });
+
   it('shows the link extractor panel and lists anchors', () => {
     cy.get('[data-sn-link-extractor]').should('exist');
     cy.get('[data-sn-link-extractor] .sn-plugin-link-extractor-item').its('length').should('be.greaterThan', 0);

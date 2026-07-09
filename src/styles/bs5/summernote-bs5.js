@@ -169,8 +169,6 @@ const ensureIconsLoaded = function() {
   });
 };
 
-export const __paintIcon__ = paintIcon;
-
 const initializeTooltip = function($node, options, editorOptions) {
   if (!options || !options.tooltip) {
     return;
@@ -351,6 +349,7 @@ const ui = function(editorOptions) {
 $$.summernote = Object.assign($$.summernote, {
   ui_template: ui,
   interface: 'bs5',
+  __paintIcon__: paintIcon,
 });
 
 $$.summernote.options.styleTags = [

@@ -14,6 +14,15 @@
 (function() {
   'use strict';
 
+  function pluginAssetUrl(relativePath) {
+    const script = document.currentScript;
+    if (script && script.src) {
+      const base = script.src.replace(/js\/[^/]*$/, '');
+      return new URL(relativePath.replace(/^\.?\//, ''), base).href;
+    }
+    return relativePath;
+  }
+
   const PLUGIN_NAME = 'alignmentButtons';
 
   const ICONS = {
@@ -89,7 +98,7 @@
     });
     ns.registerPlugin(PLUGIN_NAME, AlignmentButtonsPlugin, {
       stylesheets: [
-        './css/alignment-buttons.css',
+        pluginAssetUrl('./css/alignment-buttons.css'),
       ],
       version: '1.0.0',
       buttons,

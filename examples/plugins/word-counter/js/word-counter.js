@@ -16,6 +16,15 @@
 (function() {
   'use strict';
 
+  function pluginAssetUrl(relativePath) {
+    const script = document.currentScript;
+    if (script && script.src) {
+      const base = script.src.replace(/js\/[^/]*$/, '');
+      return new URL(relativePath.replace(/^\.?\//, ''), base).href;
+    }
+    return relativePath;
+  }
+
   const PLUGIN_NAME = 'wordCounter';
   const TOGGLE_BUTTON = 'wordCounterToggle';
 
@@ -145,7 +154,7 @@
     }
     ns.registerPlugin(PLUGIN_NAME, WordCounterPlugin, {
       stylesheets: [
-        './css/word-counter.css',
+        pluginAssetUrl('./css/word-counter.css'),
       ],
       version: '1.0.0',
       buttons: {

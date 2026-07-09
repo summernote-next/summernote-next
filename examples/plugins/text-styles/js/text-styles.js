@@ -14,6 +14,15 @@
 (function() {
   'use strict';
 
+  function pluginAssetUrl(relativePath) {
+    const script = document.currentScript;
+    if (script && script.src) {
+      const base = script.src.replace(/js\/[^/]*$/, '');
+      return new URL(relativePath.replace(/^\.?\//, ''), base).href;
+    }
+    return relativePath;
+  }
+
   const PLUGIN_NAME = 'textStyles';
 
   const STYLES = {
@@ -100,7 +109,7 @@
     });
     ns.registerPlugin(PLUGIN_NAME, TextStylesPlugin, {
       stylesheets: [
-        './css/text-styles.css',
+        pluginAssetUrl('./css/text-styles.css'),
       ],
       version: '1.0.0',
       buttons,

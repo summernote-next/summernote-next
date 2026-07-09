@@ -16,6 +16,15 @@
 (function() {
   'use strict';
 
+  function pluginAssetUrl(relativePath) {
+    const script = document.currentScript;
+    if (script && script.src) {
+      const base = script.src.replace(/js\/[^/]*$/, '');
+      return new URL(relativePath.replace(/^\.?\//, ''), base).href;
+    }
+    return relativePath;
+  }
+
   const PLUGIN_NAME = 'linkExtractor';
   const BUTTON_NAME = 'linkExtractorToggle';
 
@@ -164,7 +173,7 @@
     }
     ns.registerPlugin(PLUGIN_NAME, LinkExtractorPlugin, {
       stylesheets: [
-        './css/link-extractor.css',
+        pluginAssetUrl('./css/link-extractor.css'),
       ],
       version: '1.0.0',
       buttons: {

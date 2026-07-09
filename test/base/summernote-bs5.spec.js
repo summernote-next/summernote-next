@@ -1,8 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
-import {
-  __paintIcon__,
-} from '@/styles/bs5/summernote-bs5';
 import * as iconsModule from '@/js/icons-svg.js';
 import { loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
@@ -197,7 +194,7 @@ describe('summernote bs5 ui template', () => {
     const originalGetIconSvg = iconsModule.getIconSvg;
     const stubGetIconSvg = (name) => (name === 'bold' ? null : originalGetIconSvg(name));
 
-    __paintIcon__('bold', stubGetIconSvg);
+    $$.summernote.__paintIcon__('bold', stubGetIconSvg);
 
     expect($host.find('i.note-icon-bold svg').length).to.equal(0);
 

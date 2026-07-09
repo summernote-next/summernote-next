@@ -14,6 +14,15 @@
 (function() {
   'use strict';
 
+  function pluginAssetUrl(relativePath) {
+    const script = document.currentScript;
+    if (script && script.src) {
+      const base = script.src.replace(/js\/[^/]*$/, '');
+      return new URL(relativePath.replace(/^\.?\//, ''), base).href;
+    }
+    return relativePath;
+  }
+
   const PLUGIN_NAME = 'emojiPicker';
   const BUTTON_NAME = 'emojiPicker';
 
@@ -81,7 +90,6 @@
           event.preventDefault();
           const emoji = button.dataset.snEmoji;
           this.insert(emoji);
-          this.context.invoke('toolbar.deactivate', true);
         });
       });
       group.dataset.snBound = '1';
@@ -96,21 +104,10 @@
     }
 
     open() {
-      const dropdown = this.findDropdown();
-      if (!dropdown) {
-        return;
-      }
       this.bindDropdown();
-      this.context.invoke('toolbar.activate', true);
     }
 
-    close() {
-      const dropdown = this.findDropdown();
-      if (!dropdown) {
-        return;
-      }
-      this.context.invoke('toolbar.deactivate', true);
-    }
+    close() {}
 
     findDropdown() {
       const layout = this.context.layoutInfo;
@@ -151,7 +148,7 @@
     }
     ns.registerPlugin(PLUGIN_NAME, EmojiPickerPlugin, {
       stylesheets: [
-        './css/emoji-picker.css',
+        pluginAssetUrl('./css/emoji-picker.css'),
       ],
       version: '1.0.0',
       buttons: {

@@ -16,6 +16,15 @@
 (function() {
   'use strict';
 
+  function pluginAssetUrl(relativePath) {
+    const script = document.currentScript;
+    if (script && script.src) {
+      const base = script.src.replace(/js\/[^/]*$/, '');
+      return new URL(relativePath.replace(/^\.?\//, ''), base).href;
+    }
+    return relativePath;
+  }
+
   const PLUGIN_NAME = 'specialCharacters';
   const BUTTON_NAME = 'specialCharacters';
 
@@ -65,6 +74,7 @@
 
     initialize() {
       this.events = {};
+      this.bindDropdown();
     }
 
     destroy() {
@@ -72,21 +82,10 @@
     }
 
     open() {
-      const dropdown = this.findDropdown();
-      if (!dropdown) {
-        return;
-      }
-      this.bindDropdown(dropdown);
-      this.context.invoke('toolbar.activate', true);
+      this.bindDropdown();
     }
 
-    close() {
-      const dropdown = this.findDropdown();
-      if (!dropdown) {
-        return;
-      }
-      this.context.invoke('toolbar.deactivate', true);
-    }
+    close() {}
 
     findDropdown() {
       const layout = this.context.layoutInfo;
@@ -97,7 +96,8 @@
       return groups.closest('.note-btn-group')[0];
     }
 
-    bindDropdown(group) {
+    bindDropdown() {
+      const group = this.findDropdown();
       if (!group || group.dataset.snBound === '1') {
         return;
       }
@@ -107,7 +107,6 @@
           event.preventDefault();
           const symbol = button.dataset.snSpecialChar;
           this.insert(symbol);
-          this.context.invoke('toolbar.deactivate', true);
         });
       });
       group.dataset.snBound = '1';
@@ -151,7 +150,7 @@
     }
     ns.registerPlugin(PLUGIN_NAME, SpecialCharactersPlugin, {
       stylesheets: [
-        './css/special-characters.css',
+        pluginAssetUrl('./css/special-characters.css'),
       ],
       version: '1.0.0',
       buttons: {

@@ -167,6 +167,120 @@ const tests = [
       return { cellCount };
     },
   },
+  {
+    name: 'plugin-showcase-emoji-picker-keeps-toolbar-enabled',
+    async run(page) {
+      await page.click('.note-editable');
+      await page.evaluate(() => {
+        const editable = document.querySelector('.note-editable');
+        const range = document.createRange();
+        range.selectNodeContents(editable);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        window.summernote.invoke('#plugin-showcase-editor', 'editor.setLastRange',
+          window.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
+      });
+
+      await page.click('.sn-plugin-emoji-toggle');
+      await page.waitForSelector('.sn-plugin-emoji-picker.show', { timeout: 5000 });
+      await page.click('.sn-plugin-emoji-cell:first-child');
+      await page.waitForTimeout(150);
+
+      const editableText = await page.locator('.note-editable').textContent();
+      if (!editableText || !editableText.includes('😀')) {
+        throw new Error(`expected emoji to be inserted, got: ${editableText?.slice(0, 200)}`);
+      }
+
+      const disabledCount = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll('.note-toolbar button'))
+          .filter((b) => b.hasAttribute('disabled') || b.classList.contains('disabled')).length;
+      });
+      const totalButtons = await page.locator('.note-toolbar button').count();
+      if (disabledCount !== 0) {
+        throw new Error(`BUG REGRESSION: toolbar deactivated after emoji insert (${disabledCount}/${totalButtons} buttons disabled)`);
+      }
+
+      await page.evaluate(() => {
+        const editable = document.querySelector('.note-editable');
+        editable.focus();
+        const range = document.createRange();
+        const textNode = editable.querySelector('p').firstChild;
+        if (textNode && textNode.nodeType === 3) {
+          range.setStart(textNode, 0);
+          range.setEnd(textNode, textNode.length);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          window.summernote.invoke('#plugin-showcase-editor', 'editor.setLastRange',
+            window.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
+        }
+      });
+      await page.click('.note-btn-bold');
+      await page.waitForTimeout(150);
+      const html = await page.locator('.note-editable').innerHTML();
+      if (!html.includes('<strong>') && !html.includes('<b>')) {
+        throw new Error(`expected bold formatting after clicking bold button, got: ${html.slice(0, 200)}`);
+      }
+
+      await page.screenshot({ path: resolve(screenshotDir, `playwright-plugin-emoji-toolbar-${timestamp()}.png`), fullPage: true });
+      return { disabledCount, totalButtons };
+    },
+  },
+  {
+    name: 'plugin-showcase-special-chars-keeps-toolbar-enabled',
+    async run(page) {
+      await page.click('.note-editable');
+      await page.evaluate(() => {
+        const editable = document.querySelector('.note-editable');
+        const range = document.createRange();
+        range.selectNodeContents(editable);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        window.summernote.invoke('#plugin-showcase-editor', 'editor.setLastRange',
+          window.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
+      });
+
+      await page.click('.sn-plugin-special-chars-toggle');
+      await page.waitForSelector('.sn-plugin-special-chars.show', { timeout: 5000 });
+      await page.click('.sn-plugin-special-chars-cell:first-child');
+      await page.waitForTimeout(150);
+
+      const disabledCount = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll('.note-toolbar button'))
+          .filter((b) => b.hasAttribute('disabled') || b.classList.contains('disabled')).length;
+      });
+      const totalButtons = await page.locator('.note-toolbar button').count();
+      if (disabledCount !== 0) {
+        throw new Error(`BUG REGRESSION: toolbar deactivated after special char insert (${disabledCount}/${totalButtons} buttons disabled)`);
+      }
+
+      await page.evaluate(() => {
+        const editable = document.querySelector('.note-editable');
+        editable.focus();
+        const range = document.createRange();
+        const textNode = editable.querySelector('p').firstChild;
+        if (textNode && textNode.nodeType === 3) {
+          range.setStart(textNode, 0);
+          range.setEnd(textNode, textNode.length);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          window.summernote.invoke('#plugin-showcase-editor', 'editor.setLastRange',
+            window.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
+        }
+      });
+      await page.click('.note-btn-bold');
+      await page.waitForTimeout(150);
+      const html = await page.locator('.note-editable').innerHTML();
+      if (!html.includes('<strong>') && !html.includes('<b>')) {
+        throw new Error(`expected bold formatting after clicking bold button, got: ${html.slice(0, 200)}`);
+      }
+
+      return { disabledCount, totalButtons };
+    },
+  },
 ];
 
 const browser = await chromium.launch({
