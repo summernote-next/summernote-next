@@ -27,7 +27,7 @@ describe('summernote-de-DE', () => {
       },
     };
 
-    await import( `/src/js/summernote-de-DE.js?fresh=${Math.random()}`);
+    await import( /* @vite-ignore */ `/src/js/summernote-de-DE.js?fresh=${Math.random()}`);
 
     expect($$.summernote.lang['de-DE'].font.bold).to.equal('Fett');
     expect($$.summernote.lang['de-DE'].video.play).to.equal('Abspielen');
@@ -39,7 +39,7 @@ describe('summernote-de-DE', () => {
   it('creates the summernote namespace when it does not exist yet', async() => {
     delete $$.summernote;
 
-    await import( `/src/js/summernote-de-DE.js?reuse=${Math.random()}`);
+    await import( /* @vite-ignore */ `/src/js/summernote-de-DE.js?reuse=${Math.random()}`);
 
     expect($$.summernote.lang['de-DE'].link.openInNewWindow).to.equal('In neuem Fenster öffnen');
     expect($$.summernote.lang['de-DE'].color.cpSelect).to.equal('Auswählen');
