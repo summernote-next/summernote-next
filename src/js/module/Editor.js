@@ -190,6 +190,8 @@ export default class Editor {
         linkUrl = this.checkLinkUrl(linkUrl);
       }
 
+      linkUrl = func.sanitizeUrl(linkUrl);
+
       let anchors = [];
       if (isTextChanged) {
         rng = rng.deleteContents();
@@ -492,7 +494,7 @@ export default class Editor {
     } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
       return 'http://' + linkUrl;
     }
-    return linkUrl;
+    return func.sanitizeUrl(linkUrl);
   }
 
   /* @return {WrappedRange} */

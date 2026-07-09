@@ -1,6 +1,7 @@
 import $$ from '../core/dom-query.js';
 import lists from '../core/lists';
 import key from '../core/key';
+import func from '../core/func';
 
 const defaultScheme = 'http://';
 const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@|xmpp:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
@@ -39,11 +40,11 @@ export default class AutoLink {
     const match = keyword.match(linkPattern);
 
     if (match && (match[1] || match[2])) {
-      const link = match[1] ? keyword : defaultScheme + keyword;
+      const link = func.sanitizeUrl(match[1] ? keyword : defaultScheme + keyword);
       const urlText = this.options.showDomainOnlyForAutolink ?
         keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:xmpp?:?)?(?:www\.)?/i, '').split('/')[0]
         : keyword;
-      const node = $$('<a></a>').html(urlText).attr('href', link)[0];
+      const node = $$('<a></a>').text(urlText).attr('href', link)[0];
       if (this.context.options.linkTargetBlank) {
         $$(node).attr('target', '_blank');
       }

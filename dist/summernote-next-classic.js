@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-09T10:30Z
+Date: 2026-07-09T10:38Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -1621,6 +1621,18 @@ var summernote = (function() {
 	function isValidUrl(url) {
 		return /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi.test(url);
 	}
+	var DANGEROUS_URL_SCHEME_PATTERN = /^(?:javascript|vbscript|data|blob|file)\s*:/i;
+	var URL_IGNORED_UNICODE_WS = "\xA0            \u2028\u2029  　﻿";
+	function sanitizeUrl(url) {
+		if (typeof url !== "string" || url === "") return url;
+		let normalized = "";
+		for (let i = 0; i < url.length; i++) {
+			const code = url.charCodeAt(i);
+			if (code > 32 && code !== 127 && URL_IGNORED_UNICODE_WS.indexOf(url[i]) === -1) normalized += url[i];
+		}
+		if (DANGEROUS_URL_SCHEME_PATTERN.test(normalized)) return "#";
+		return url;
+	}
 	var func_default = {
 		eq,
 		eq2,
@@ -1637,7 +1649,8 @@ var summernote = (function() {
 		invertObject,
 		namespaceToCamel,
 		debounce,
-		isValidUrl
+		isValidUrl,
+		sanitizeUrl
 	};
 	//#endregion
 	//#region src/js/core/lists.js
@@ -3920,6 +3933,7 @@ var summernote = (function() {
 				if (typeof linkUrl === "string") linkUrl = linkUrl.trim();
 				if (this.options.onCreateLink) linkUrl = this.options.onCreateLink(linkUrl);
 				else linkUrl = this.checkLinkUrl(linkUrl);
+				linkUrl = func_default.sanitizeUrl(linkUrl);
 				let anchors = [];
 				if (isTextChanged) {
 					rng = rng.deleteContents();
@@ -4106,7 +4120,7 @@ var summernote = (function() {
 			if (MAILTO_PATTERN$1.test(linkUrl)) return "mailto:" + linkUrl;
 			else if (TEL_PATTERN$1.test(linkUrl)) return "tel:" + linkUrl;
 			else if (!URL_SCHEME_PATTERN$1.test(linkUrl)) return "http://" + linkUrl;
-			return linkUrl;
+			return func_default.sanitizeUrl(linkUrl);
 		}
 		createRange() {
 			this.focus();
@@ -5013,9 +5027,9 @@ var summernote = (function() {
 			const keyword = this.lastWordRange.toString();
 			const match = keyword.match(linkPattern);
 			if (match && (match[1] || match[2])) {
-				const link = match[1] ? keyword : defaultScheme + keyword;
+				const link = func_default.sanitizeUrl(match[1] ? keyword : defaultScheme + keyword);
 				const urlText = this.options.showDomainOnlyForAutolink ? keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:xmpp?:?)?(?:www\.)?/i, "").split("/")[0] : keyword;
-				const node = $$("<a></a>").html(urlText).attr("href", link)[0];
+				const node = $$("<a></a>").text(urlText).attr("href", link)[0];
 				if (this.context.options.linkTargetBlank) $$(node).attr("target", "_blank");
 				this.lastWordRange.insertNode(node);
 				this.lastWordRange = null;
@@ -6301,7 +6315,7 @@ var summernote = (function() {
 			if (MAILTO_PATTERN.test(linkUrl)) return "mailto:" + linkUrl;
 			else if (TEL_PATTERN.test(linkUrl)) return "tel:" + linkUrl;
 			else if (!URL_SCHEME_PATTERN.test(linkUrl)) return "http://" + linkUrl;
-			return linkUrl;
+			return func_default.sanitizeUrl(linkUrl);
 		}
 		onCheckLinkUrl($input) {
 			$input.on("blur", (event) => {
