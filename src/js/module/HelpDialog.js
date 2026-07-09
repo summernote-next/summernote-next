@@ -189,11 +189,7 @@ export default class HelpDialog {
     `;
   }
 
-  /**
-   * show help dialog
-   *
-   * @return {Promise}
-   */
+  /* @return {Promise} */
   showHelpDialog() {
     return new Promise((resolve) => {
       this.ui.onDialogShown(this.$dialog, () => {

@@ -491,8 +491,7 @@ describe('Theme module: CSS dark mode triggers', () => {
   });
 
   it('applies dark mode to a popover inside the dark editor', () => {
-    // Pure CSS test: place the dark editor and a child popover in a detached
-    // fragment so no Theme observer is wired up.
+    
     resetDocumentTheme();
     const $editor = $$('<div class="note-editor note-frame card note-editor-dark"></div>');
     const $popover = $$('<div class="note-popover popover note-air-popover"></div>').appendTo($editor);
@@ -673,4 +672,3 @@ describe('Theme module: defensive branches', () => {
     });
   });
 });
-

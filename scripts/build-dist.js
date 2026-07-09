@@ -9,8 +9,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const iconsDir = resolve(__dirname, '..', 'src', 'font', 'icons');
 const manifestPath = resolve(iconsDir, 'index.js');
 
-// Regenerate the icon name manifest so the runtime fetcher knows which
-// `.svg` files to request without bundling their contents.
 function writeIconManifest() {
   const names = readdirSync(iconsDir)
     .filter((file) => file.endsWith('.svg'))
@@ -28,8 +26,6 @@ function writeIconManifest() {
   return names;
 }
 
-// Copy the raw source svgs next to the bundle so they can be fetched on demand
-// (the runtime loader resolves `font/icons/<name>.svg` relative to the script).
 function copyIconAssets(outDir) {
   const destDir = resolve(outDir, 'font', 'icons');
   mkdirSync(destDir, { recursive: true });
@@ -39,7 +35,6 @@ function copyIconAssets(outDir) {
   }
   return svgFiles.length;
 }
-
 
 async function buildVariant(config, fileBase, emptyOutDir) {
   const minifiedConfig = {

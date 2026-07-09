@@ -264,7 +264,7 @@ export default class Buttons {
                   this.lang.color.cpSelect,
                 '</button>',
                 '<input type="color" id="foreColorPicker-'+this.options.id+'" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette-'+this.options.id+'">',
-              '</div>', // Fix missing Div, Commented to find easily if it's wrong
+              '</div>', 
               '<div class="note-holder-custom" id="foreColorPalette-'+this.options.id+'" data-event="foreColor"></div>',
             '</div>',
           ].join('') : ''),
@@ -279,7 +279,7 @@ export default class Buttons {
                 tooltip: this.options.tooltip,
               }).render());
             });
-            /* TODO: do we have to record recent custom colors within cookies? */
+            
             var customColors = [
               ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
             ];
@@ -316,10 +316,8 @@ export default class Buttons {
               const $picker = $parent.find('#' + value);
               const $palette = $$($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
 
-              // Shift palette chips
               const $chip = $palette.find('.note-color-btn').last().detach();
 
-              // Set chip attributes
               const color = $picker.val();
               $chip.css('background-color', color)
                 .attr('title', color)
@@ -364,7 +362,7 @@ export default class Buttons {
           items: this.options.styleTags,
           title: this.lang.style.style,
           template: (item) => {
-            // TBD: need to be simplified
+            
             if (typeof item === 'string') {
               item = {
                 tag: item,
@@ -463,7 +461,7 @@ export default class Buttons {
       const styleInfo = this.context.invoke('editor.currentStyle');
 
       if (this.options.addDefaultFonts) {
-        // Add 'default' fonts into the fontnames array if not exist
+        
         $$.each(styleInfo['font-family'].split(','), (idx, fontname) => {
           fontname = fontname.trim().replace(/['"]+/g, '');
           if (this.isFontDeservedToAdd(fontname)) {
@@ -770,15 +768,8 @@ export default class Buttons {
     });
   }
 
-  /**
-   * image: [
-   *   ['imageResize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
-   *   ['float', ['floatLeft', 'floatRight', 'floatNone']],
-   *   ['remove', ['removeMedia']],
-   * ],
-   */
   addImagePopoverButtons() {
-    // Image Size Buttons
+    
     this.context.memo('button.resizeFull', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">100%</span>',
@@ -808,7 +799,6 @@ export default class Buttons {
       }).render();
     });
 
-    // Float Buttons
     this.context.memo('button.floatLeft', () => {
       return this.button({
         contents: this.ui.icon(this.options.icons.floatLeft),
@@ -833,7 +823,6 @@ export default class Buttons {
       }).render();
     });
 
-    // Remove Buttons
     this.context.memo('button.removeMedia', () => {
       return this.button({
         contents: this.ui.icon(this.options.icons.trash),
@@ -935,12 +924,6 @@ export default class Buttons {
     });
   }
 
-  /**
-   * table : [
-   *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-   *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
-   * ],
-   */
   addTablePopoverButtons() {
     this.context.memo('button.addRowUp', () => {
       return this.button({
@@ -1024,9 +1007,7 @@ export default class Buttons {
     }
   }
 
-  /**
-   * @param {DomQuery} [$container]
-   */
+  /* @param {DomQuery} */
   updateCurrentStyle($container) {
     const $cont = $container || this.$toolbar;
 
@@ -1102,14 +1083,14 @@ export default class Buttons {
 
   tableMoveHandler(event) {
     const PX_PER_EM = 18;
-    const $picker = $$(event.target.parentNode); // target is mousecatcher
+    const $picker = $$(event.target.parentNode); 
     const $dimensionDisplay = $picker.next();
     const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
     const $highlighted = $picker.find('.note-dimension-picker-highlighted');
     const $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
 
     let posOffset;
-    // Firefox can miss offsetX/offsetY on synthetic picker events.
+    
     if (event.offsetX === undefined) {
       const posCatcher = $$(event.target).offset();
       posOffset = {

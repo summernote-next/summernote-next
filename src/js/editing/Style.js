@@ -4,15 +4,7 @@ import lists from '../core/lists';
 import dom from '../core/dom';
 
 export default class Style {
-  /**
-   * Collect CSS property values from a node using native computed styles.
-   * Inline styles still win when the browser reports them directly.
-   *
-   * @private
-   * @param  {DomQuery|Element} node
-   * @param  {Array} propertyNames - An array of one or more CSS properties.
-   * @return {Object}
-   */
+  /* @return {Object} */
   readStyleProperties(node, propertyNames) {
     const target = node instanceof Element ? node : $$(node).get(0);
     const result = {};
@@ -30,12 +22,7 @@ export default class Style {
     return result;
   }
 
-  /**
-   * returns style object from node
-   *
-   * @param {DomQuery|Element} $node
-   * @return {Object}
-   */
+  /* @param {DomQuery|Element} @return {Object} */
   fromNode($node) {
     const node = $node instanceof Element ? $node : $$($node).get(0);
     const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
@@ -49,12 +36,7 @@ export default class Style {
     return styleInfo;
   }
 
-  /**
-   * paragraph level style
-   *
-   * @param {WrappedRange} rng
-   * @param {Object} styleInfo
-   */
+  /* @param {WrappedRange} @param {Object} */
   stylePara(rng, styleInfo) {
     $$.each(rng.nodes(dom.isPara, {
       includeAncestor: true,
@@ -63,16 +45,7 @@ export default class Style {
     });
   }
 
-  /**
-   * insert and returns styleNodes on range.
-   *
-   * @param {WrappedRange} rng
-   * @param {Object} [options] - options for styleNodes
-   * @param {String} [options.nodeName] - default: `SPAN`
-   * @param {Boolean} [options.expandClosestSibling] - default: `false`
-   * @param {Boolean} [options.onlyPartialContains] - default: `false`
-   * @return {Node[]}
-   */
+  /* @param {WrappedRange} @param {Object} @param {String} @param {Boolean} @param {Boolean} @return {Node[]} */
   styleNodes(rng, options) {
     rng = rng.splitText();
 
@@ -94,7 +67,7 @@ export default class Style {
     if (expandClosestSibling) {
       if (onlyPartialContains) {
         const nodesInRange = rng.nodes();
-        // compose with partial contains predication
+        
         pred = func.and(pred, (node) => {
           return lists.contains(nodesInRange, node);
         });
@@ -115,18 +88,11 @@ export default class Style {
     }
   }
 
-  /**
-   * get current style on cursor
-   *
-   * @param {WrappedRange} rng
-   * @return {Object} - object contains style properties.
-   */
+  /* @param {WrappedRange} @return {Object} */
   current(rng) {
     const $cont = $$(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
     let styleInfo = this.fromNode($cont);
 
-    // document.queryCommandState for toggle state
-    // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
     try {
       styleInfo = $$.extend(styleInfo, {
         'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
@@ -138,10 +104,9 @@ export default class Style {
         'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
       });
     } catch {
-      // queryCommand APIs can throw in unsupported contexts.
+      void 0;
     }
 
-    // list-style-type to list-style(unordered, ordered)
     if (!rng.isOnList()) {
       styleInfo['list-style'] = 'none';
     } else {
@@ -154,9 +119,7 @@ export default class Style {
     if (para && para.style.lineHeight) {
       styleInfo['line-height'] = para.style.lineHeight;
     } else if (styleInfo['line-height'] && styleInfo['line-height'] !== 'normal') {
-      // styleInfo['line-height'] is already set from computed style
-      // Keep CSS keywords like "normal" as is
-      // Calculate ratio if it's a numeric value
+      
       const numValue = parseFloat(styleInfo['line-height']);
       if (!Number.isNaN(numValue) && styleInfo['font-size']) {
         const fontSize = parseInt(styleInfo['font-size'], 10);

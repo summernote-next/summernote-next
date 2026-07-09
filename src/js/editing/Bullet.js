@@ -5,23 +5,15 @@ import dom from '../core/dom';
 import range from '../core/range';
 
 export default class Bullet {
-  /**
-   * toggle ordered list
-   */
+  
   insertOrderedList(editable) {
     this.toggleList('OL', editable);
   }
 
-  /**
-   * toggle unordered list
-   */
   insertUnorderedList(editable) {
     this.toggleList('UL', editable);
   }
 
-  /**
-   * indent
-   */
   indent(editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
@@ -49,9 +41,6 @@ export default class Bullet {
     rng.select();
   }
 
-  /**
-   * outdent
-   */
   outdent(editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
@@ -73,11 +62,7 @@ export default class Bullet {
     rng.select();
   }
 
-  /**
-   * toggle list
-   *
-   * @param {String} listName - OL or UL
-   */
+  /* @param {String} */
   toggleList(listName, editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
@@ -85,14 +70,13 @@ export default class Bullet {
     const bookmark = rng.paraBookmark(paras);
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
 
-    // paragraph to list
     if (lists.find(paras, dom.isPurePara)) {
       let wrappedParas = [];
       $$.each(clustereds, (idx, paras) => {
         wrappedParas = wrappedParas.concat(this.wrapList(paras, listName));
       });
       paras = wrappedParas;
-      // list to paragraph or change list style
+      
     } else {
       const diffLists = rng
         .nodes(dom.isList, {
@@ -114,11 +98,7 @@ export default class Bullet {
     range.createFromParaBookmark(bookmark, paras).select();
   }
 
-  /**
-   * @param {Node[]} paras
-   * @param {String} listName
-   * @return {Node[]}
-   */
+  /* @param {Node[]} @param {String} @return {Node[]} */
   wrapList(paras, listName) {
     const head = lists.head(paras);
     const last = lists.last(paras);
@@ -128,12 +108,10 @@ export default class Bullet {
 
     const listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last);
 
-    // P to LI
     paras = paras.map((para) => {
       return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
     });
 
-    // append to list(<ul>, <ol>)
     dom.appendChildNodes(listNode, paras, true);
 
     if (nextList) {
@@ -144,13 +122,7 @@ export default class Bullet {
     return paras;
   }
 
-  /**
-   * @method releaseList
-   *
-   * @param {Array[]} clustereds
-   * @param {Boolean} isEscapseToBody
-   * @return {Node[]}
-   */
+  /* @param {Array[]} @param {Boolean} @return {Node[]} */
   releaseList(clustereds, isEscapseToBody) {
     let releasedParas = [];
 
@@ -214,7 +186,6 @@ export default class Bullet {
           ? dom.listDescendant(middleList, dom.isLi)
           : lists.from(middleList.childNodes).filter(dom.isLi);
 
-        // LI to P
         if (isEscapseToBody || !dom.isList(headList.parentNode)) {
           paras = paras.map((para) => {
             return dom.replace(para, 'P');
@@ -225,7 +196,6 @@ export default class Bullet {
           dom.insertAfter(para, headList);
         });
 
-        // remove empty lists
         const rootLists = lists.compact([headList, middleList, lastList]);
         $$.each(rootLists, (idx, rootList) => {
           const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
@@ -243,39 +213,17 @@ export default class Bullet {
     return releasedParas;
   }
 
-  /**
-   * @method appendToPrevious
-   *
-   * Appends list to previous list item, if
-   * none exist it wraps the list in a new list item.
-   *
-   * @param {HTMLNode} ListItem
-   * @return {HTMLNode}
-   */
+  /* @param {HTMLNode} @return {HTMLNode} */
   appendToPrevious(node) {
     return node.previousSibling ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
   }
 
-  /**
-   * @method findList
-   *
-   * Finds an existing list in list item
-   *
-   * @param {HTMLNode} ListItem
-   * @return {Array[]}
-   */
+  /* @param {HTMLNode} @return {Array[]} */
   findList(node) {
     return node ? lists.find(node.children, (child) => ['OL', 'UL'].indexOf(child.nodeName) > -1) : null;
   }
 
-  /**
-   * @method findNextSiblings
-   *
-   * Finds all list item siblings that follow it
-   *
-   * @param {HTMLNode} ListItem
-   * @return {HTMLNode}
-   */
+  /* @param {HTMLNode} @return {HTMLNode} */
   findNextSiblings(node) {
     const siblings = [];
     while (node.nextSibling) {

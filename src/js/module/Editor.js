@@ -17,9 +17,6 @@ const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const TEL_PATTERN = /^\+?\d[\d\s-]{5,}\d$/;
 const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
 
-/**
- * @class Editor
- */
 export default class Editor {
   constructor(context) {
     this.context = context;
@@ -54,7 +51,6 @@ export default class Editor {
     this.context.memo('help.insertHorizontalRule', this.lang.help.insertHorizontalRule);
     this.context.memo('help.fontName', this.lang.help.fontName);
 
-    // native commands(with execCommand), generate function for execCommand
     const commands = [
       'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
       'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
@@ -115,11 +111,7 @@ export default class Editor {
       this.bullet.outdent(this.editable);
     });
 
-    /**
-     * insertNode
-     * insert node
-     * @param {Node} node
-     */
+    /* @param {Node} */
     this.insertNode = this.wrapCommand((node) => {
       if (this.isLimited($$(node).text().length)) {
         return;
@@ -129,10 +121,7 @@ export default class Editor {
       this.setLastRange(range.createFromNodeAfter(node).select());
     });
 
-    /**
-     * insert text
-     * @param {String} text
-     */
+    /* @param {String} */
     this.insertText = this.wrapCommand((text) => {
       if (this.isLimited(text.length)) {
         return;
@@ -142,10 +131,7 @@ export default class Editor {
       this.setLastRange(range.create(textNode, dom.nodeLength(textNode)).select());
     });
 
-    /**
-     * paste HTML
-     * @param {String} markup
-     */
+    /* @param {String} */
     this.pasteHTML = this.wrapCommand((markup) => {
       if (this.isLimited(markup.length)) {
         return;
@@ -155,11 +141,7 @@ export default class Editor {
       this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
     });
 
-    /**
-     * formatBlock
-     *
-     * @param {String} tagName
-     */
+    /* @param {String} */
     this.formatBlock = this.wrapCommand((tagName, $target) => {
       const onApplyCustomStyle = this.options.callbacks.onApplyCustomStyle;
       if (onApplyCustomStyle) {
@@ -169,9 +151,6 @@ export default class Editor {
       }
     });
 
-    /**
-     * insert horizontal rule
-     */
     this.insertHorizontalRule = this.wrapCommand(() => {
       const hrNode = this.getLastRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
@@ -179,21 +158,14 @@ export default class Editor {
       }
     });
 
-    /**
-     * lineHeight
-     * @param {String} value
-     */
+    /* @param {String} */
     this.lineHeight = this.wrapCommand((value) => {
       this.style.stylePara(this.getLastRange(), {
         lineHeight: value,
       });
     });
 
-    /**
-     * create link (command)
-     *
-     * @param {Object} linkInfo
-     */
+    /* @param {Object} */
     this.createLink = this.wrapCommand((linkInfo) => {
       let rel = [];
       let linkUrl = linkInfo.url;
@@ -208,7 +180,6 @@ export default class Editor {
       }
       const isTextChanged = rng.toString() !== linkText;
 
-      // handle spaced urls from input
       if (typeof linkUrl === 'string') {
         linkUrl = linkUrl.trim();
       }
@@ -255,13 +226,7 @@ export default class Editor {
       );
     });
 
-    /**
-     * setting color
-     *
-     * @param {Object} sObjColor  color code
-     * @param {String} sObjColor.foreColor foreground color
-     * @param {String} sObjColor.backColor background color
-     */
+    /* @param {Object} @param {String} @param {String} */
     this.color = this.wrapCommand((colorInfo) => {
       const foreColor = colorInfo.foreColor;
       const backColor = colorInfo.backColor;
@@ -270,20 +235,12 @@ export default class Editor {
       if (backColor) { document.execCommand('backColor', false, backColor); }
     });
 
-    /**
-     * Set foreground color
-     *
-     * @param {String} colorCode foreground color code
-     */
+    /* @param {String} */
     this.foreColor = this.wrapCommand((colorInfo) => {
       document.execCommand('foreColor', false, colorInfo);
     });
 
-    /**
-     * insert Table
-     *
-     * @param {String} dimension of table (ex : "5x5")
-     */
+    /* @param {String} */
     this.insertTable = this.wrapCommand((dim) => {
       const dimension = dim.split('x');
 
@@ -291,9 +248,6 @@ export default class Editor {
       rng.insertNode(this.table.createTable(dimension[0], dimension[1], this.options));
     });
 
-    /**
-     * remove media object and Figure Elements if media object is img with Figure.
-     */
     this.removeMedia = this.wrapCommand(() => {
       let $target = $$(this.restoreTarget()).parent();
       if ($target.closest('figure').length) {
@@ -306,11 +260,7 @@ export default class Editor {
       this.context.triggerEvent('media.delete', $target, this.$editable);
     });
 
-    /**
-     * float me
-     *
-     * @param {String} value
-     */
+    /* @param {String} */
     this.floatMe = this.wrapCommand((value) => {
       const $target = $$(this.restoreTarget());
       $target.toggleClass('note-float-left', value === 'left');
@@ -318,10 +268,7 @@ export default class Editor {
       $target.css('float', (value === 'none' ? '' : value));
     });
 
-    /**
-     * resize overlay element
-     * @param {String} value
-     */
+    /* @param {String} */
     this.resize = this.wrapCommand((value) => {
       const $target = $$(this.restoreTarget());
       value = parseFloat(value);
@@ -371,14 +318,13 @@ export default class Editor {
   }
 
   initialize() {
-    // bind custom events
+    
     this.$editable.on('keydown', (event) => {
       if (event.keyCode === key.code.ENTER) {
         this.context.triggerEvent('enter', event);
       }
       this.context.triggerEvent('keydown', event);
 
-      // keep a snapshot to limit text on input event
       this.snapshot = this.history.makeSnapshot();
       this.hasKeyShortCut = false;
       if (!event.isDefaultPrevented()) {
@@ -396,7 +342,6 @@ export default class Editor {
       }
       this.setLastRange();
 
-      // record undo in the key event except keyMap.
       if (this.options.recordEveryKeystroke) {
         if (this.hasKeyShortCut === false) {
           this.history.recordUndo();
@@ -424,7 +369,7 @@ export default class Editor {
     }).on('copy', (event) => {
       this.context.triggerEvent('copy', event);
     }).on('input', () => {
-      // To limit composition characters (e.g. Korean)
+      
       if (this.isLimited(0) && this.snapshot) {
         this.history.applySnapshot(this.snapshot);
       }
@@ -438,7 +383,6 @@ export default class Editor {
       this.$editable.attr('data-gramm', false);
     }
 
-    // init content before set event
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
@@ -513,7 +457,7 @@ export default class Editor {
   }
 
   preventDefaultEditableShortCuts(event) {
-    // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
+    
     if ((event.ctrlKey || event.metaKey) &&
       lists.contains([66, 73, 85], event.keyCode)) {
       event.preventDefault();
@@ -551,22 +495,14 @@ export default class Editor {
     return linkUrl;
   }
 
-  /**
-   * create range
-   * @return {WrappedRange}
-   */
+  /* @return {WrappedRange} */
   createRange() {
     this.focus();
     this.setLastRange();
     return this.getLastRange();
   }
 
-  /**
-   * create a new range from the list of elements
-   *
-   * @param {list} dom element list
-   * @return {WrappedRange}
-   */
+  /* @param {list} @return {WrappedRange} */
   createRangeFromList(lst) {
     const startRange = range.createFromNodeBefore(lists.head(lst));
     const startPoint = startRange.getStartPoint();
@@ -581,14 +517,7 @@ export default class Editor {
     );
   }
 
-  /**
-   * set the last range
-   *
-   * if given rng is exist, set rng as the last range
-   * or create a new range at the end of the document
-   *
-   * @param {WrappedRange} rng
-   */
+  /* @param {WrappedRange} */
   setLastRange(rng) {
     if (rng) {
       this.lastRange = rng;
@@ -601,41 +530,27 @@ export default class Editor {
     }
   }
 
-  /**
-   * get the last range
-   *
-   * if there is a saved last range, return it
-   * or create a new range and return it
-   *
-   * @return {WrappedRange}
-   */
+  /* @return {WrappedRange} */
   getLastRange() {
-    // First, check if there's a current selection in the browser
+    
     const currentSelection = range.createFromSelection();
     const selectionContainer = currentSelection?.sc?.nodeType === Node.TEXT_NODE
       ? currentSelection.sc.parentElement
       : currentSelection?.sc;
 
     if (currentSelection && $$(selectionContainer).closest('.note-editable').get(0) === this.editable) {
-      // Update the cached range and return it
+      
       this.lastRange = currentSelection;
       return this.lastRange;
     }
 
-    // Fall back to cached range if no current selection
     if (!this.lastRange) {
       this.setLastRange();
     }
     return this.lastRange;
   }
 
-  /**
-   * saveRange
-   *
-   * save current range
-   *
-   * @param {Boolean} [thenCollapse=false]
-   */
+  /* @param {Boolean} */
   saveRange(thenCollapse) {
     const currentRange = this.getLastRange();
 
@@ -644,11 +559,6 @@ export default class Editor {
     }
   }
 
-  /**
-   * restoreRange
-   *
-   * restore lately range
-   */
   restoreRange() {
     if (this.lastRange) {
       this.lastRange.select();
@@ -685,71 +595,44 @@ export default class Editor {
     return cellRange;
   }
 
-  /**
-   * currentStyle
-   *
-   * current style
-   * @return {Object|Boolean} unfocus
-   */
+  /* @return {Object|Boolean} */
   currentStyle() {
     const rng = this.getLastRange();
     return rng ? this.style.current(rng.normalize()) : this.style.fromNode(this.$editable);
   }
 
-  /**
-   * style from node
-   *
-   * @param {DomQuery|Element} $node
-   * @return {Object}
-   */
+  /* @param {DomQuery|Element} @return {Object} */
   styleFromNode($node) {
     return this.style.fromNode($node);
   }
 
-  /**
-   * undo
-   */
   undo() {
     this.context.triggerEvent('before.command', this.$editable.html());
     this.history.undo();
     this.context.triggerEvent('change', this.$editable.html(), this.$editable);
   }
 
-  /*
-  * commit
-  */
   commit() {
     this.context.triggerEvent('before.command', this.$editable.html());
     this.history.commit();
     this.context.triggerEvent('change', this.$editable.html(), this.$editable);
   }
 
-  /**
-   * redo
-   */
   redo() {
     this.context.triggerEvent('before.command', this.$editable.html());
     this.history.redo();
     this.context.triggerEvent('change', this.$editable.html(), this.$editable);
   }
 
-  /**
-   * before command
-   */
   beforeCommand() {
     this.context.triggerEvent('before.command', this.$editable.html());
 
-    // Set styleWithCSS before run a command
     document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
 
-    // keep focus on editable before command execution
     this.focus();
   }
 
-  /**
-   * after command
-   * @param {Boolean} isPreventTrigger
-   */
+  /* @param {Boolean} */
   afterCommand(isPreventTrigger) {
     this.normalizeContent();
     this.history.recordUndo();
@@ -758,9 +641,6 @@ export default class Editor {
     }
   }
 
-  /**
-   * handle tab key
-   */
   tab() {
     const rng = this.getLastRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
@@ -778,9 +658,6 @@ export default class Editor {
     }
   }
 
-  /**
-   * handle shift+tab key
-   */
   untab() {
     const rng = this.getLastRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
@@ -792,9 +669,6 @@ export default class Editor {
     }
   }
 
-  /**
-   * run given function between beforeCommand and afterCommand
-   */
   wrapCommand(fn) {
     return function() {
       this.beforeCommand();
@@ -802,10 +676,8 @@ export default class Editor {
       this.afterCommand();
     };
   }
-  /**
-   * removed (function added by 1der1)
-  */
-  removed(rng, node, tagName) { // LB
+  
+  removed(rng, node, tagName) { 
     rng = range.create();
     if (rng.isCollapsed() && rng.isOnCell()) {
       node = rng.ec;
@@ -821,13 +693,7 @@ export default class Editor {
       }
     }
   }
-  /**
-   * insert image
-   *
-   * @param {String} src
-   * @param {String|Function} param
-   * @return {Promise}
-   */
+  /* @param {String} @param {String|Function} @return {Promise} */
   insertImage(src, param) {
     const insertRange = this.getLastRange();
     const normalizedInsertRange = dom.isEditable(insertRange.sc) && dom.isEditable(insertRange.ec)
@@ -863,10 +729,7 @@ export default class Editor {
     });
   }
 
-  /**
-   * insertImages
-   * @param {File[]} files
-   */
+  /* @param {File[]} */
   insertImagesAsDataURL(files) {
     $$.each(files, (idx, file) => {
       const filename = file.name;
@@ -882,10 +745,7 @@ export default class Editor {
     });
   }
 
-  /**
-   * insertImagesOrCallback
-   * @param {File[]} files
-   */
+  /* @param {File[]} */
   insertImagesOrCallback(files) {
     const callbacks = this.options.callbacks;
     const normalizedFiles = Array.from(files || []);
@@ -894,23 +754,18 @@ export default class Editor {
       return;
     }
 
-    // If onImageUpload set,
     if (callbacks.onImageUpload) {
       this.context.triggerEvent('image.upload', normalizedFiles);
-      // else insert Image as dataURL
+      
     } else {
       this.insertImagesAsDataURL(normalizedFiles);
     }
   }
 
-  /**
-   * return selected plain text
-   * @return {String} text
-   */
+  /* @return {String} */
   getSelectedText() {
     let rng = this.getLastRange();
 
-    // if range on anchor, expand range with anchor
     if (rng.isOnAnchor()) {
       rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
     }
@@ -919,12 +774,11 @@ export default class Editor {
   }
 
   onFormatBlock(tagName, $target) {
-    // [workaround] for MSIE, IE need `<`
+    
     document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName);
 
-    // support custom class
     if ($target && $target.length) {
-      // find the exact element has given tagName
+      
       if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
         $target = $target.find(tagName);
       }
@@ -932,7 +786,7 @@ export default class Editor {
       if ($target && $target.length) {
         const currentRange = this.createRange();
         const $parent = $$([currentRange.sc, currentRange.ec]).closest(tagName);
-        // remove class added for current block
+        
         $parent.removeClass();
         const className = $target[0].className || '';
         if (className) {
@@ -954,8 +808,6 @@ export default class Editor {
       this.$editor.find('.note-status-output').html('');
       $$(spans).css(target, value);
 
-      // [workaround] added styled bogus span for style
-      //  - also bogus character needed for cursor position
       if (rng.isCollapsed()) {
         const firstSpan = lists.head(spans);
         if (firstSpan && !dom.nodeLength(firstSpan)) {
@@ -974,11 +826,6 @@ export default class Editor {
     }
   }
 
-  /**
-   * unlink
-   *
-   * @type command
-   */
   unlink() {
     let rng = this.getLastRange();
     if (rng.isOnAnchor()) {
@@ -993,22 +840,14 @@ export default class Editor {
     }
   }
 
-  /**
-   * returns link info
-   *
-   * @return {Object}
-   * @return {WrappedRange} return.range
-   * @return {String} return.text
-   * @return {Boolean} [return.isNewWindow=true]
-   * @return {String} [return.url=""]
-   */
+  /* @return {Object} @return {WrappedRange} @return {String} @return {Boolean} @return {String} */
   getLinkInfo() {
     if (!this.hasFocus()) {
       this.focus();
     }
 
     const rng = this.getLastRange().expand(dom.isAnchor);
-    // Get the first anchor on range(for edit).
+    
     const $anchor = $$(lists.head(rng.nodes(dom.isAnchor)));
     const linkInfo = {
       range: rng,
@@ -1016,9 +855,8 @@ export default class Editor {
       url: $anchor.length ? $anchor.attr('href') : '',
     };
 
-    // When anchor exists,
     if ($anchor.length) {
-      // Set isNewWindow by checking its target.
+      
       linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
     }
 
@@ -1070,11 +908,7 @@ export default class Editor {
     }
   }
 
-  /**
-   * @param {Position} pos
-   * @param {DomQuery} $target - target element
-   * @param {Boolean} [bKeepRatio] - keep ratio
-   */
+  /* @param {Position} @param {DomQuery} @param {Boolean} */
   resizeTo(pos, $target, bKeepRatio) {
     let imageSize;
     if (bKeepRatio) {
@@ -1094,19 +928,12 @@ export default class Editor {
     $target.css(imageSize);
   }
 
-  /**
-   * returns whether editable area has focus or not.
-   */
   hasFocus() {
     return this.$editable.is(':focus');
   }
 
-  /**
-   * set focus
-   */
   focus() {
-    // [workaround] Screen will move when page is scolled in IE.
-    //  - do focus when not focused
+    
     if (!this.hasFocus()) {
       const preservedRange = this.lastRange;
       this.$editable.trigger('focus');
@@ -1117,24 +944,15 @@ export default class Editor {
     }
   }
 
-  /**
-   * returns whether contents is empty or not.
-   * @return {Boolean}
-   */
+  /* @return {Boolean} */
   isEmpty() {
     return dom.isEmpty(this.$editable[0]) || dom.emptyPara === this.$editable.html();
   }
 
-  /**
-   * Removes all contents and restores the editable instance to an _emptyPara_.
-   */
   empty() {
     this.context.invoke('code', dom.emptyPara);
   }
 
-  /**
-   * normalize content
-   */
   normalizeContent() {
     this.$editable[0].normalize();
   }

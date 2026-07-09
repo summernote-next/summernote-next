@@ -33,9 +33,6 @@ export default class Fullscreen {
     }
   }
 
-  /**
-   * toggle fullscreen
-   */
   toggle() {
     if (this.shouldSwitchAirModeFullscreen()) {
       return this.toggleAirModeFullscreen();

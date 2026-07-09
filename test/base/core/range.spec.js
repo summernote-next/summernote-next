@@ -475,8 +475,6 @@ describe('base:core.range', () => {
     it('should return expanded range when there are words before cursor', () => {
       var rng = range.create($cont[0].firstChild, 13).getWordsMatchRange(regex);
 
-      // range: 'hi @Peter Pan'
-      // matched range: '@Peter Pan'
       expect(rng.sc).to.deep.equal($cont[0].firstChild);
       expect(rng.so).to.equal(3);
       expect(rng.ec).to.deep.equal($cont[0].firstChild);
@@ -486,7 +484,6 @@ describe('base:core.range', () => {
     it('should return null when can not match', () => {
       var rng = range.create($cont[0].firstChild, 14).getWordsMatchRange(regex);
 
-      // range: 'hi @Peter Pan.'
       expect(rng).to.be.a('null');
     });
   });

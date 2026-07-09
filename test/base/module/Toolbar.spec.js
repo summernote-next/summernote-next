@@ -7,10 +7,7 @@ import { loadAllIcons } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 async function paintToolbarIcons() {
-  // The icon SVGs are fetched lazily by the bs5 ui template. Wait for the
-  // fetch promise so every glyph used by the current toolbar is painted
-  // before measuring layout, otherwise we would observe placeholder
-  // wrappers instead of the rendered icons.
+  
   await loadAllIcons();
   await nextTick();
 }
@@ -300,10 +297,9 @@ describe('Toolbar', () => {
     const svgRect = $boldSvg[0].getBoundingClientRect();
 
     expect(iconRect.width).to.be.greaterThan(0);
-    // The icon wrapper is a square (1em × 1em) so the rendered glyph
-    // matches the toolbar's font-size.
+    
     expect(Math.abs(iconRect.width - iconRect.height)).to.be.lessThan(0.5);
-    // The SVG fills the wrapper at 100%.
+    
     expect(Math.abs(svgRect.width - iconRect.width)).to.be.lessThan(1);
     expect(Math.abs(svgRect.height - iconRect.height)).to.be.lessThan(1);
   });
@@ -317,8 +313,7 @@ describe('Toolbar', () => {
     );
 
     expect(directIcons).to.have.length(1);
-    // The caret `::after` pseudo-element is rendered so the dropdown
-    // affordance stays visible next to the icon.
+    
     const afterDisplay = window.getComputedStyle(paragraphNode, '::after').display;
     expect(afterDisplay).not.to.equal('none');
   });
@@ -339,8 +334,6 @@ describe('Toolbar', () => {
     const iconRect = $codeIcon[0].getBoundingClientRect();
     const svgRect = $codeSvg[0].getBoundingClientRect();
 
-    // The .note-icon-lg class bumps the glyph to 120% of the wrapper so the
-    // `</>` mark has more visual weight than the other toolbar icons.
     const expectedWidth = iconRect.width * 1.2;
     expect(Math.abs(svgRect.width - expectedWidth)).to.be.lessThan(3);
   });

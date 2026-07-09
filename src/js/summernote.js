@@ -28,12 +28,7 @@ function unwrapResult(results) {
   return results.length === 1 ? results[0] : results;
 }
 
-/**
- * Summernote API
- *
- * @param {Object|String}
- * @return {this}
- */
+/* @param {Object|String} @return {this} */
 DomQuery.prototype.summernote = function() {
   const type = typeof(lists.head(arguments));
   const isExternalAPICalled = type === 'string';
@@ -42,7 +37,6 @@ DomQuery.prototype.summernote = function() {
 
   const options = $$.extend({}, $$.summernote.options, initOptions);
 
-  // Update options
   options.langInfo = $$.extend(true, {}, $$.summernote.lang['en-US'], $$.summernote.lang[options.lang]);
   if (!Object.prototype.hasOwnProperty.call(initOptions, 'colorsName') && options.langInfo.color?.colorsName) {
     options.colorsName = options.langInfo.color.colorsName;

@@ -45,7 +45,6 @@ export default class TablePopover {
       classPrefix: 'popover',
     });
 
-    // [workaround] Disable Firefox's default table editor
     if (env.isFF) {
       document.execCommand('enableInlineTableEditing', false, false);
     }

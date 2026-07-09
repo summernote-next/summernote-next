@@ -182,23 +182,15 @@ body:has(.note-air-popover) {
   border-color: var(--note-border-color, var(--bs-border-color, #dee2e6));
 }
 
-// Toolbar buttons that render an SVG glyph line the icon up vertically and
-// horizontally inside the button's content area. We keep the natural Bootstrap
-// btn-sm width (the icon plus its padding) so the toolbar matches the visual
-// rhythm of the font-icon based legacy build.
 .note-editor .note-btn:has(> .note-icon),
 .note-popover .note-btn:has(> .note-icon),
 .note-modal .note-btn:has(> .note-icon) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(1.5em + 0.5rem + 2px); // match Bootstrap btn-sm height
+  min-height: calc(1.5em + 0.5rem + 2px); 
 }
 
-// The Bootstrap caret is hidden on icon-only buttons (no dropdown attached)
-// so the trailing triangle does not bleed past the square glyph. Dropdown
-// toggles keep the caret so the affordance remains visible alongside the
-// icon.
 .note-editor .note-btn:has(> .note-icon):not(.dropdown-toggle)::after,
 .note-popover .note-btn:has(> .note-icon):not(.dropdown-toggle)::after,
 .note-modal .note-btn:has(> .note-icon):not(.dropdown-toggle)::after {

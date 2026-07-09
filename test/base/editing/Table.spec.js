@@ -1,9 +1,3 @@
-/**
- * Table.spec.js
- * (c) 2015-present Summernote Team
- * (c) 2026-present Jürgen Schwind
- * Summernote Next may be freely distributed under the MIT license.
- */
 import { afterEach, describe, it, expect } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import range from '@/js/core/range';

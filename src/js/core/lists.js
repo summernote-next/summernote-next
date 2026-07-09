@@ -1,44 +1,25 @@
 import func from './func';
 
-/**
- * returns the first item of an array.
- *
- * @param {Array} array
- */
+/* @param {Array} */
 function head(array) {
   return array[0];
 }
 
-/**
- * returns the last item of an array.
- *
- * @param {Array} array
- */
+/* @param {Array} */
 function last(array) {
   return array[array.length - 1];
 }
 
-/**
- * returns everything but the last entry of the array.
- *
- * @param {Array} array
- */
+/* @param {Array} */
 function initial(array) {
   return array.slice(0, array.length - 1);
 }
 
-/**
- * returns the rest of the items in an array.
- *
- * @param {Array} array
- */
+/* @param {Array} */
 function tail(array) {
   return array.slice(1);
 }
 
-/**
- * returns item of array
- */
 function find(array, pred) {
   for (let idx = 0, len = array.length; idx < len; idx++) {
     const item = array[idx];
@@ -48,9 +29,6 @@ function find(array, pred) {
   }
 }
 
-/**
- * returns true if all of the values in the array pass the predicate truth test.
- */
 function all(array, pred) {
   for (let idx = 0, len = array.length; idx < len; idx++) {
     if (!pred(array[idx])) {
@@ -60,27 +38,19 @@ function all(array, pred) {
   return true;
 }
 
-/**
- * returns true if the value is present in the list.
- */
 function contains(array, item) {
   if (array && array.length && item) {
     if (array.indexOf) {
       return array.indexOf(item) !== -1;
     } else if (array.contains) {
-      // `DOMTokenList` doesn't implement `.indexOf`, but it implements `.contains`
+      
       return array.contains(item);
     }
   }
   return false;
 }
 
-/**
- * get sum from a list
- *
- * @param {Array} array - array
- * @param {Function} fn - iterator
- */
+/* @param {Array} @param {Function} */
 function sum(array, fn) {
   fn = fn || func.self;
   return array.reduce(function(memo, v) {
@@ -88,10 +58,7 @@ function sum(array, fn) {
   }, 0);
 }
 
-/**
- * returns a copy of the collection with array type.
- * @param {Collection} collection - collection eg) node.childNodes, ...
- */
+/* @param {Collection} */
 function from(collection) {
   const result = [];
   const length = collection.length;
@@ -102,20 +69,11 @@ function from(collection) {
   return result;
 }
 
-/**
- * returns whether list is empty or not
- */
 function isEmpty(array) {
   return !array || !array.length;
 }
 
-/**
- * cluster elements by predicate function.
- *
- * @param {Array} array - array
- * @param {Function} fn - predicate function for cluster rule
- * @param {Array[]}
- */
+/* @param {Array} @param {Function} @param {Array[]} */
 function clusterBy(array, fn) {
   if (!array.length) { return []; }
   const aTail = tail(array);
@@ -130,12 +88,7 @@ function clusterBy(array, fn) {
   }, [[head(array)]]);
 }
 
-/**
- * returns a copy of the array with all false values removed
- *
- * @param {Array} array - array
- * @param {Function} fn - predicate function for cluster rule
- */
+/* @param {Array} @param {Function} */
 function compact(array) {
   const aResult = [];
   for (let idx = 0, len = array.length; idx < len; idx++) {
@@ -144,11 +97,7 @@ function compact(array) {
   return aResult;
 }
 
-/**
- * produces a duplicate-free version of the array
- *
- * @param {Array} array
- */
+/* @param {Array} */
 function unique(array) {
   const results = [];
 
@@ -161,10 +110,7 @@ function unique(array) {
   return results;
 }
 
-/**
- * returns next item.
- * @param {Array} array
- */
+/* @param {Array} */
 function next(array, item) {
   if (array && array.length && item) {
     const idx = array.indexOf(item);
@@ -173,10 +119,7 @@ function next(array, item) {
   return null;
 }
 
-/**
- * returns prev item.
- * @param {Array} array
- */
+/* @param {Array} */
 function prev(array, item) {
   if (array && array.length && item) {
     const idx = array.indexOf(item);
@@ -185,14 +128,6 @@ function prev(array, item) {
   return null;
 }
 
-/**
- * @class core.list
- *
- * list utils
- *
- * @singleton
- * @alternateClassName list
- */
 export default {
   head,
   last,

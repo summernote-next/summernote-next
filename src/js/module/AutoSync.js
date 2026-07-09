@@ -1,8 +1,5 @@
 import dom from '../core/dom';
 
-/**
- * textarea auto sync.
- */
 export default class AutoSync {
   constructor(context) {
     this.$note = context.layoutInfo.note;

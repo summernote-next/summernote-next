@@ -4,10 +4,7 @@ import lists from './core/lists';
 import dom from './core/dom';
 
 export default class Context {
-  /**
-   * @param {DomQuery} $note
-   * @param {Object} options
-   */
+  /* @param {DomQuery} @param {Object} */
   constructor($note, options) {
     this.$note = $note;
 
@@ -18,16 +15,12 @@ export default class Context {
     this.options = $$.extend(true, {}, options);
     this.options.container = this.options.container || false;
 
-    // init ui with options
     $$.summernote.ui = $$.summernote.ui_template(this.options);
     this.ui = $$.summernote.ui;
 
     this.initialize();
   }
 
-  /**
-   * create layout and initialize modules and other resources
-   */
   initialize() {
     this.layoutInfo = this.ui.createLayout(this.$note);
     this.applyLayoutClassNames();
@@ -57,9 +50,6 @@ export default class Context {
     });
   }
 
-  /**
-   * destroy modules and other resources and remove layout
-   */
   destroy() {
     this._destroy();
     this.$note.removeData('summernote');
@@ -90,9 +80,6 @@ export default class Context {
     return context;
   }
 
-  /**
-   * destory modules and other resources and initialize it again
-   */
   reset() {
     const disabled = this.isDisabled();
     this.code(dom.emptyPara);
@@ -105,12 +92,11 @@ export default class Context {
   }
 
   _initialize() {
-    // set own id
+    
     this.options.id = func.uniqueId(Date.now());
-    // set default container for tooltips, popovers, and dialogs
+    
     this.options.container = this.options.container || this.layoutInfo.editor;
 
-    // add optional buttons
     const buttons = $$.extend({}, this.options.buttons);
     const buttonKeys = Object.keys(buttons);
     buttonKeys.forEach((key) => {
@@ -120,7 +106,6 @@ export default class Context {
     const modules = $$.extend({}, this.options.modules, $$.summernote.plugins || {});
     const moduleKeys = Object.keys(modules);
 
-    // add and initialize modules
     moduleKeys.forEach((key) => {
       this.module(key, modules[key], true);
     });
@@ -131,7 +116,7 @@ export default class Context {
   }
 
   _destroy() {
-    // destroy modules with reversed order
+    
     const moduleKeys = Object.keys(this.modules);
     moduleKeys
       .reverse()
@@ -142,7 +127,7 @@ export default class Context {
     Object.keys(this.memos).forEach((key) => {
       this.removeMemo(key);
     });
-    // trigger custom onDestroy callback
+    
     this.triggerEvent('destroy', this);
   }
 
@@ -175,7 +160,7 @@ export default class Context {
   }
 
   disable() {
-    // close codeview if codeview is opend
+    
     if (this.invoke('codeview.isActivated')) {
       this.invoke('codeview.deactivate');
     }
@@ -204,12 +189,10 @@ export default class Context {
       return;
     }
 
-    // initialize module
     if (module.initialize) {
       module.initialize();
     }
 
-    // attach events
     if (module.events) {
       dom.attachEvents(this.$note, module.events);
     }
@@ -262,9 +245,6 @@ export default class Context {
     delete this.memos[key];
   }
 
-  /**
-   * Some buttons need to change their visual style immediately once they get pressed
-   */
   createInvokeHandlerAndUpdateState(namespace, value) {
     return (event) => {
       this.createInvokeHandler(namespace, value)(event);

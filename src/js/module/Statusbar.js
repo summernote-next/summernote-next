@@ -33,7 +33,6 @@ export default class Statusbar {
         heightCode = (this.options.minHeight > 0) ? Math.max(heightCode, this.options.minHeight) : heightCode;
         heightCode = (this.options.maxHeight > 0) ? Math.min(heightCode, this.options.maxHeight) : heightCode;
 
-
         this.$editable.height(height);
         this.$codable.height(heightCode);
       };

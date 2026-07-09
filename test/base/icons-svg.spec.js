@@ -133,4 +133,3 @@ describe('icons-svg', () => {
     expect(getIconSvg('italic')).to.equal(ICONS.italic);
   });
 });
-

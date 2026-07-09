@@ -36,11 +36,6 @@ export function computeImagePopoverPlacement({
   return { left, top, placement };
 }
 
-/**
- * Image popover module
- *  mouse events that show/hide popover will be handled by Handle.js.
- *  Handle.js will receive the events and invoke 'imagePopover.update'.
- */
 export default class ImagePopover {
   constructor(context) {
     this.context = context;

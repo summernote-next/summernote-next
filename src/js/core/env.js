@@ -1,15 +1,8 @@
-// Environment and browser capability helpers.
-
 export function hasDocument() {
   return typeof document !== 'undefined';
 }
 
-/**
- * returns whether font is installed or not.
- *
- * @param {String} fontName
- * @return {Boolean}
- */
+/* @param {String} @return {Boolean} */
 const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
@@ -34,7 +27,7 @@ function createIsFontInstalledFunc() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     context.font = fontSize + ' ' + validFontName(font) + ', "' + testFontName + '"';
     context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
-    // Get pixel information
+    
     var pxInfo = context.getImageData(0, 0, canvasWidth, canvasHeight).data;
     return pxInfo.join("");
   }
@@ -68,18 +61,8 @@ const isSupportTouch =
    (navigator.MaxTouchPoints > 0) ||
    (navigator.msMaxTouchPoints > 0));
 
-// [workaround] IE doesn't have input events for contentEditable
-// - see: https://goo.gl/4bfIvA
 const inputEventName = (isMSIE) ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
 
-/**
- * @class core.env
- *
- * Object which check platform and agent
- *
- * @singleton
- * @alternateClassName env
- */
 export default {
   isMac: navigator.appVersion.indexOf('Mac') > -1,
   isMSIE,

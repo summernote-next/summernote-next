@@ -740,7 +740,7 @@ describe('base:core.dom-query', () => {
       try {
         expect(() => $dialog.modal('show')).to.throw('blocked');
       } catch {
-        // expected
+        void 0;
       }
 
       appendSpy.mockRestore();

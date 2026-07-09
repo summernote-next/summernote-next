@@ -3,39 +3,18 @@ import dom from '../core/dom';
 import range from '../core/range';
 import lists from '../core/lists';
 
-/**
- * @class Create a virtual table to create what actions to do in change.
- * @param {object} startPoint Cell selected to apply change.
- * @param {enum} where  Where change will be applied Row or Col. Use enum: TableResultAction.where
- * @param {enum} action Action to be applied. Use enum: TableResultAction.requestAction
- * @param {object} domTable Dom element of table to make changes.
- */
+/* @param {object} @param {enum} @param {enum} @param {object} */
 const TableResultAction = function(startPoint, where, action, domTable) {
   const _startPoint = { 'colPos': 0, 'rowPos': 0 };
   const _virtualTable = [];
   const _actionCellList = [];
 
-  /// ///////////////////////////////////////////
-  // Private functions
-  /// ///////////////////////////////////////////
-
-  /**
-   * Set the startPoint of action.
-   */
   function setStartPoint() {
     _startPoint.colPos = startPoint.cellIndex;
     _startPoint.rowPos = startPoint.parentElement.rowIndex;
   }
 
-  /**
-   * Define virtual table position info object.
-   *
-   * @param {int} rowIndex Index position in line of virtual table.
-   * @param {int} cellIndex Index position in column of virtual table.
-   * @param {object} baseRow Row affected by this position.
-   * @param {object} baseCell Cell affected by this position.
-   * @param {bool} isSpan Inform if it is an span cell/row.
-   */
+  /* @param {int} @param {int} @param {object} @param {object} @param {bool} */
   function setVirtualTablePosition(rowIndex, cellIndex, baseRow, baseCell, isRowSpan, isColSpan, isVirtualCell) {
     const objPosition = {
       'baseRow': baseRow,
@@ -50,12 +29,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     _virtualTable[rowIndex][cellIndex] = objPosition;
   }
 
-  /**
-   * Create action cell object.
-   *
-   * @param {object} virtualTableCellObj Object of specific position on virtual table.
-   * @param {enum} resultAction Action to be applied in that item.
-   */
+  /* @param {object} @param {enum} */
   function getActionCell(virtualTableCellObj, resultAction, virtualRowPosition, virtualColPosition) {
     return {
       'baseCell': virtualTableCellObj.baseCell,
@@ -67,12 +41,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     };
   }
 
-  /**
-   * Recover free index of row to append Cell.
-   *
-   * @param {int} rowIndex Index of row to find free space.
-   * @param {int} cellIndex Index of cell to find free space in table.
-   */
+  /* @param {int} @param {int} */
   function recoverCellIndex(rowIndex, cellIndex) {
     if (!_virtualTable[rowIndex]) {
       return cellIndex;
@@ -90,12 +59,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     }
   }
 
-  /**
-   * Recover info about row and cell and add information to virtual table.
-   *
-   * @param {object} row Row to recover information.
-   * @param {object} cell Cell to recover information.
-   */
+  /* @param {object} @param {object} */
   function addCellInfoToVirtual(row, cell) {
     const cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
     const cellHasColspan = (cell.colSpan > 1);
@@ -103,7 +67,6 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     const isThisSelectedCell = (row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos);
     setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan, false);
 
-    // Add span rows to virtual Table.
     const rowspanNumber = cell.attributes.rowSpan ? parseInt(cell.attributes.rowSpan.value, 10) : 0;
     if (rowspanNumber > 1) {
       for (let rp = 1; rp < rowspanNumber; rp++) {
@@ -113,7 +76,6 @@ const TableResultAction = function(startPoint, where, action, domTable) {
       }
     }
 
-    // Add span cols to virtual table.
     const colspanNumber = cell.attributes.colSpan ? parseInt(cell.attributes.colSpan.value, 10) : 0;
     if (colspanNumber > 1) {
       for (let cp = 1; cp < colspanNumber; cp++) {
@@ -124,23 +86,13 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     }
   }
 
-  /**
-   * Process validation and adjust of start point if needed
-   *
-   * @param {int} rowIndex
-   * @param {int} cellIndex
-   * @param {object} cell
-   * @param {bool} isSelectedCell
-   */
+  /* @param {int} @param {int} @param {object} @param {bool} */
   function adjustStartPoint(rowIndex, cellIndex, cell, isSelectedCell) {
     if (rowIndex === _startPoint.rowPos && _startPoint.colPos >= cell.cellIndex && cell.cellIndex <= cellIndex && !isSelectedCell) {
       _startPoint.colPos++;
     }
   }
 
-  /**
-   * Create virtual table of cells with all cells, including span cells.
-   */
   function createVirtualTable() {
     const rows = domTable.rows;
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
@@ -151,11 +103,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     }
   }
 
-  /**
-   * Get action to be applied on the cell.
-   *
-   * @param {object} cell virtual table cell to apply action
-   */
+  /* @param {object} */
   function getDeleteResultActionToCell(cell) {
     switch (where) {
       case TableResultAction.where.Column:
@@ -174,11 +122,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     return TableResultAction.resultAction.RemoveCell;
   }
 
-  /**
-   * Get action to be applied on the cell.
-   *
-   * @param {object} cell virtual table cell to apply action
-   */
+  /* @param {object} */
   function getAddResultActionToCell(cell) {
     switch (where) {
       case TableResultAction.where.Column:
@@ -204,13 +148,6 @@ const TableResultAction = function(startPoint, where, action, domTable) {
     createVirtualTable();
   }
 
-  /// ///////////////////////////////////////////
-  // Public functions
-  /// ///////////////////////////////////////////
-
-  /**
-   * Recover array os what to do in table.
-   */
   this.getActionList = function() {
     const fixedRow = (where === TableResultAction.where.Row) ? _startPoint.rowPos : -1;
     const fixedCol = (where === TableResultAction.where.Column) ? _startPoint.colPos : -1;
@@ -228,7 +165,6 @@ const TableResultAction = function(startPoint, where, action, domTable) {
         return _actionCellList;
       }
 
-      // Define action to be applied in this cell
       let resultAction = TableResultAction.resultAction.Ignore;
       switch (action) {
         case TableResultAction.requestAction.Add:
@@ -245,36 +181,15 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   init();
 };
-/**
- *
- * Where action occours enum.
- */
+
 TableResultAction.where = { 'Row': 0, 'Column': 1 };
-/**
- *
- * Requested action to apply enum.
- */
+
 TableResultAction.requestAction = { 'Add': 0, 'Delete': 1 };
-/**
- *
- * Result action to be executed enum.
- */
+
 TableResultAction.resultAction = { 'Ignore': 0, 'SubtractSpanCount': 1, 'RemoveCell': 2, 'AddCell': 3, 'SumSpanCount': 4 };
 
-/**
- *
- * @class editing.Table
- *
- * Table
- *
- */
 export default class Table {
-  /**
-   * handle tab key
-   *
-   * @param {WrappedRange} rng
-   * @param {Boolean} isShift
-   */
+  /* @param {WrappedRange} @param {Boolean} */
   tab(rng, isShift) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     const table = dom.ancestor(cell, dom.isTable);
@@ -286,13 +201,7 @@ export default class Table {
     }
   }
 
-  /**
-   * Add a new row
-   *
-   * @param {WrappedRange} rng
-   * @param {String} position (top/bottom)
-   * @return {Node}
-   */
+  /* @param {WrappedRange} @param {String} @return {Node} */
   addRow(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
 
@@ -342,13 +251,7 @@ export default class Table {
     }
   }
 
-  /**
-   * Add a new col
-   *
-   * @param {WrappedRange} rng
-   * @param {String} position (left/right)
-   * @return {Node}
-   */
+  /* @param {WrappedRange} @param {String} @return {Node} */
   addCol(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     const row = $$(cell).closest('tr');
@@ -381,12 +284,7 @@ export default class Table {
     }
   }
 
-  /*
-  * Copy attributes from element.
-  *
-  * @param {object} Element to recover attributes.
-  * @return {string} Copied string elements.
-  */
+  /* @param {object} @return {string} */
   recoverAttributes(el) {
     let resultStr = '';
 
@@ -407,12 +305,7 @@ export default class Table {
     return resultStr;
   }
 
-  /**
-   * Delete current row
-   *
-   * @param {WrappedRange} rng
-   * @return {Node}
-   */
+  /* @param {WrappedRange} @return {Node} */
   deleteRow(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     const row = $$(cell).closest('tr');
@@ -451,19 +344,14 @@ export default class Table {
           } 
           continue;
         case TableResultAction.resultAction.RemoveCell:
-          // Do not need remove cell because row will be deleted.
+          
           continue;
       }
     }
     row.remove();
   }
 
-  /**
-   * Delete current col
-   *
-   * @param {WrappedRange} rng
-   * @return {Node}
-   */
+  /* @param {WrappedRange} @return {Node} */
   deleteCol(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     const row = $$(cell).closest('tr');
@@ -498,13 +386,7 @@ export default class Table {
     }
   }
 
-  /**
-   * create empty table element
-   *
-   * @param {Number} rowCount
-   * @param {Number} colCount
-   * @return {Node}
-   */
+  /* @param {Number} @param {Number} @return {Node} */
   createTable(colCount, rowCount, options) {
     const tds = [];
     let tdHTML;
@@ -527,12 +409,7 @@ export default class Table {
     return table;
   }
 
-  /**
-   * Delete current table
-   *
-   * @param {WrappedRange} rng
-   * @return {Node}
-   */
+  /* @param {WrappedRange} @return {Node} */
   deleteTable(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     $$(cell).closest('table').remove();

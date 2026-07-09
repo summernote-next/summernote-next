@@ -95,19 +95,11 @@ export default class LinkDialog {
     });
   }
 
-  /**
-   * toggle update button
-   */
   toggleLinkBtn($linkBtn, $linkText, $linkUrl) {
     this.ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
   }
 
-  /**
-   * Show link dialog and set event handlers on dialog controls.
-   *
-   * @param {Object} linkInfo
-   * @return {Promise}
-   */
+  /* @param {Object} @return {Promise} */
   showLinkDialog(linkInfo) {
     return new Promise((resolve, reject) => {
       let isSettled = false;
@@ -120,14 +112,12 @@ export default class LinkDialog {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        // If no url was given and given text is valid URL then copy that into URL Field
         if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
           linkInfo.url = this.checkLinkUrl(linkInfo.text);
         }
 
         $linkText.on('input paste propertychange', () => {
-          // If linktext was modified by input events,
-          // cloning text from linkUrl will be stopped.
+          
           let text = $linkText.val();
           let div = document.createElement('div');
           div.innerText = text;
@@ -137,8 +127,7 @@ export default class LinkDialog {
         }).val(linkInfo.text);
 
         $linkUrl.on('input paste propertychange', () => {
-          // Display same text on `Text to display` as default
-          // when linktext has no text
+          
           if (!linkInfo.text) {
             $linkText.val($linkUrl.val());
           }
@@ -174,7 +163,7 @@ export default class LinkDialog {
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        // detach events
+        
         $linkText.off();
         $linkUrl.off();
         $linkBtn.off();
@@ -189,9 +178,7 @@ export default class LinkDialog {
     });
   }
 
-  /**
-   * @param {Object} layoutInfo
-   */
+  /* @param {Object} */
   show() {
     const linkInfo = this.context.invoke('editor.getLinkInfo');
 

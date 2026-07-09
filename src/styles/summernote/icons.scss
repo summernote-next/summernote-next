@@ -1,26 +1,4 @@
-// Variables
-
 $sni-css-prefix: note-icon !default;
-
-// Icon sizing/colouring for inline SVG icons.
-// Icons are rendered as `<i class="note-icon note-icon-<name>"><svg>...</svg></i>`
-// by the icon() helper; the glyph inherits the parent's `currentColor` so the
-// icon picks up text colour and hover/active states for free.
-//
-// The `.note-icon` wrapper is a square inline-flex that fills the parent
-// button and centres its child SVG both horizontally and vertically ("mittig
-// mittig"). By default the SVG fills the wrapper so the rendered glyph is
-// the same size as the surrounding `font-size`, which keeps every toolbar
-// button the same height as a natural Bootstrap `btn-sm`. The icons.scss
-// utilities (`.note-icon-sm`, `.note-icon-lg`, etc.) override that default
-// when a specific glyph needs to read larger or smaller without re-styling
-// the host button.
-//
-// Superscript and subscript both draw an "X" with a small marker, but the
-// source paths position the marker in opposite halves of the viewBox. The
-// `.note-icon-superscript` / `.note-icon-subscript` adjustments below nudge
-// each glyph vertically so the "X" characters share a baseline in the
-// toolbar.
 
 .#{$sni-css-prefix} {
   display: inline-flex;
@@ -50,12 +28,6 @@ $sni-css-prefix: note-icon !default;
   }
 }
 
-// Size modifiers — utility classes that callers can opt into without
-// touching the base styles. They step the glyph up or down from the
-// default 1em size so toolbar buttons can carry a visual hierarchy: text-like
-// icons (`.note-icon-xs`) for typographic glyphs, the default for most
-// toolbar actions, and `.note-icon-md` / `.note-icon-lg` for the icons that
-// need a bit more visual weight.
 .#{$sni-css-prefix}-xs > svg {
   width: 0.875em;
   height: 0.875em;
@@ -76,14 +48,6 @@ $sni-css-prefix: note-icon !default;
   height: 1.25em;
 }
 
-// Superscript and subscript draw the same "X" with a small marker, but the
-// source paths drop the marker in opposite halves of the viewBox. The
-// superscript glyph is rendered without any shift (its X sits roughly in the
-// middle of the icon), while the subscript glyph is nudged down so the two
-// X characters line up on a shared baseline when placed side by side in the
-// toolbar. Both glyphs also pull in the `.note-icon-lg` utility class via
-// the Buttons module so they carry the same visual weight as the other
-// enlarged toolbar glyphs.
 .#{$sni-css-prefix}-superscript > svg {
   transform: translateY(0);
 }
@@ -91,8 +55,6 @@ $sni-css-prefix: note-icon !default;
 .#{$sni-css-prefix}-subscript > svg {
   transform: translateY(8%);
 }
-
-// Extras
 
 .#{$sni-css-prefix}-fw {
   text-align: center;

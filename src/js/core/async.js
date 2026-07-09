@@ -1,13 +1,6 @@
 import $$ from './dom-query.js';
 
-/**
- * @method readFileAsDataURL
- *
- * read contents of file as representing URL
- *
- * @param {File} file
- * @return {Promise} - then: dataUrl
- */
+/* @param {File} @return {Promise} */
 export function readFileAsDataURL(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -22,14 +15,7 @@ export function readFileAsDataURL(file) {
   });
 }
 
-/**
- * @method createImage
- *
- * create `<image>` from url string
- *
- * @param {String} url
- * @return {Promise} - then: $image
- */
+/* @param {String} @return {Promise} */
 export function createImage(url) {
   return new Promise((resolve, reject) => {
     const img = document.createElement('img');

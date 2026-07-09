@@ -1,11 +1,3 @@
-/**
- * Typing.spec.js
- * (c) 2015-present Summernote Team
- * (c) 2026-present Jürgen Schwind
- * Summernote Next may be freely distributed under the MIT license.
- */
-/* jshint unused: false */
-/* jshint -W101 */
 import { afterEach, describe, it, expect, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import dom from '@/js/core/dom';
