@@ -1,16 +1,20 @@
 /*! 
 Summernote Next
 Super simple WYSIWYG editor
-Version 1.0.1
+Version 1.0.2
 https://juergen-schwind.com/summernote-next
 
 Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-09T10:38Z
+Date: 2026-07-09T11:47Z
  */
-var summernote = (function() {
+var summernote = (function(exports) {
+	Object.defineProperties(exports, {
+		__esModule: { value: true },
+		[Symbol.toStringTag]: { value: "Module" }
+	});
 	//#region src/js/core/dom-query.js
 	var elementDataStore = /* @__PURE__ */ new WeakMap();
 	var defaultDisplayCache = /* @__PURE__ */ new Map();
@@ -7288,7 +7292,7 @@ var summernote = (function() {
 	//#endregion
 	//#region src/js/settings.js
 	$$.summernote = $$.extend($$.summernote, {
-		version: "1.0.1",
+		version: "1.0.2",
 		plugins: {},
 		dom: dom_default,
 		range: range_default,
@@ -7942,10 +7946,10 @@ var summernote = (function() {
 	var loaderByName = {};
 	for (const name of icons_default) loaderByName[name] = true;
 	var inFlight = {};
-	var iconBaseUrl = detectIconBaseUrl();
-	function detectIconBaseUrl() {
-		if (typeof document === "undefined") return "font/icons/";
-		const scripts = document.getElementsByTagName("script");
+	function detectIconBaseUrl(hostDoc) {
+		if (hostDoc === void 0 || hostDoc === null) return "font/icons/";
+		if (typeof hostDoc.getElementsByTagName !== "function") return "font/icons/";
+		const scripts = hostDoc.getElementsByTagName("script");
 		for (let i = scripts.length - 1; i >= 0; i--) {
 			const src = scripts[i].src;
 			if (!src) continue;
@@ -7954,6 +7958,7 @@ var summernote = (function() {
 		}
 		return "font/icons/";
 	}
+	var iconBaseUrl = detectIconBaseUrl(document);
 	function getIconUrl(name) {
 		return iconBaseUrl + name + ".svg";
 	}
@@ -8083,8 +8088,8 @@ var summernote = (function() {
 		const svg = getIconSvg(name) || "";
 		return "<i class=\"" + cls + "\" aria-hidden=\"true\">" + svg + "</i>";
 	};
-	var paintIcon = function(name) {
-		const svg = getIconSvg(name);
+	var paintIcon = function(name, lookup) {
+		const svg = (lookup || getIconSvg)(name);
 		if (!svg) return;
 		document.querySelectorAll("i." + ICON_PREFIX + name).forEach((el) => {
 			if (!el.querySelector(":scope > svg")) el.innerHTML = svg;
@@ -8098,10 +8103,11 @@ var summernote = (function() {
 		const promise = loadAllIcons();
 		if (promise === paintedPromise) return;
 		paintedPromise = promise;
-		promise.then(paintAllIcons).catch(() => {
+		promise.then(() => paintAllIcons()).catch(() => {
 			paintedPromise = null;
 		});
 	};
+	var __paintIcon__ = paintIcon;
 	var initializeTooltip = function($node, options, editorOptions) {
 		if (!options || !options.tooltip) return;
 		const tooltipContainer = options.container || editorOptions.container || void 0;
@@ -8267,8 +8273,11 @@ var summernote = (function() {
 		"h5",
 		"h6"
 	];
+	var summernote_bs5_default = $$;
 	//#endregion
-	return $$;
-})();
+	exports.__paintIcon__ = __paintIcon__;
+	exports.default = summernote_bs5_default;
+	return exports;
+})({});
 
 //# sourceMappingURL=summernote-next.js.map
