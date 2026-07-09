@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
-import { loadAllIcons, resetIconCache } from '@/js/icons-svg.js';
+import {
+  __paintIcon__,
+} from '@/styles/bs5/summernote-bs5';
+import * as iconsModule from '@/js/icons-svg.js';
+import { loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote bs5 ui template', () => {
@@ -145,6 +149,7 @@ describe('summernote bs5 ui template', () => {
 
     expect(ui.icon('<svg class="icon"></svg>')).to.equal('<svg class="icon"></svg>');
     expect(ui.icon('bi bi-type-bold', 'span')).to.equal('<span class="bi bi-type-bold"></span>');
+    expect(ui.icon('bi bi-type-bold')).to.equal('<i class="bi bi-type-bold"></i>');
     expect(ui.icon('')).to.equal('');
     expect(ui.icon(undefined)).to.equal('');
 
@@ -183,6 +188,33 @@ describe('summernote bs5 ui template', () => {
     });
 
     $host.remove();
+  });
+
+  it('skips painting when the loaded svg is not available for an icon name', () => {
+    const $host = $$('<div></div>').appendTo('body');
+    $host.html('<i class="note-icon note-icon-bold"></i>');
+
+    const originalGetIconSvg = iconsModule.getIconSvg;
+    const stubGetIconSvg = (name) => (name === 'bold' ? null : originalGetIconSvg(name));
+
+    __paintIcon__('bold', stubGetIconSvg);
+
+    expect($host.find('i.note-icon-bold svg').length).to.equal(0);
+
+    $host.remove();
+  });
+
+  it('resets the painted-promise tracker when loadAllIcons rejects', async() => {
+    resetIconCache();
+    setIconBaseUrl('/definitely/not/where/icons/live/');
+
+    try {
+      $$.summernote.ui_template({});
+      await expect(loadAllIcons()).rejects.toThrow();
+    } finally {
+      setIconBaseUrl('/src/font/icons/');
+      resetIconCache();
+    }
   });
 
   it('initializes tooltips for buttons and palettes with every container source', () => {

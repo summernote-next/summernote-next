@@ -28,13 +28,14 @@ for (const name of iconManifest) {
 
 const inFlight = {};
 
-let iconBaseUrl = detectIconBaseUrl();
-
-function detectIconBaseUrl() {
-  if (typeof document === 'undefined') {
+function detectIconBaseUrl(hostDoc) {
+  if (hostDoc === undefined || hostDoc === null) {
     return 'font/icons/';
   }
-  const scripts = document.getElementsByTagName('script');
+  if (typeof hostDoc.getElementsByTagName !== 'function') {
+    return 'font/icons/';
+  }
+  const scripts = hostDoc.getElementsByTagName('script');
   for (let i = scripts.length - 1; i >= 0; i--) {
     const src = scripts[i].src;
     if (!src) {
@@ -47,6 +48,12 @@ function detectIconBaseUrl() {
     }
   }
   return 'font/icons/';
+}
+
+let iconBaseUrl = detectIconBaseUrl(document);
+
+export function __detectIconBaseUrl__(hostDoc) {
+  return detectIconBaseUrl(hostDoc);
 }
 
 export function setIconBaseUrl(url) {

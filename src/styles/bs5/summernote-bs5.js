@@ -139,8 +139,9 @@ const icon = function(iconClassName, tagName) {
   return '<i class="' + cls + '" aria-hidden="true">' + svg + '</i>';
 };
 
-const paintIcon = function(name) {
-  const svg = getIconSvg(name);
+const paintIcon = function(name, lookup) {
+  const sourceLookup = lookup || getIconSvg;
+  const svg = sourceLookup(name);
   if (!svg) {
     return;
   }
@@ -163,10 +164,12 @@ const ensureIconsLoaded = function() {
     return;
   }
   paintedPromise = promise;
-  promise.then(paintAllIcons).catch(() => {
+  promise.then(() => paintAllIcons()).catch(() => {
     paintedPromise = null;
   });
 };
+
+export const __paintIcon__ = paintIcon;
 
 const initializeTooltip = function($node, options, editorOptions) {
   if (!options || !options.tooltip) {

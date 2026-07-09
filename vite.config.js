@@ -84,6 +84,7 @@ for (const [style, variant] of Object.entries(styles)) {
         output: {
           assetFileNames: `${variant.fileBase}.[ext]`,
           entryFileNames: `${variant.fileBase}.js`,
+          exports: 'named',
         },
       },
     },
