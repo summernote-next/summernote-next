@@ -2,24 +2,50 @@
  * Summernote Next - Special Characters Plugin stylesheet
  */
 
+.note-toolbar .note-btn.sn-plugin-special-chars-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-toolbar .note-btn.sn-plugin-special-chars-toggle .note-icon {
+  font-size: 1em;
+}
+
 .sn-plugin-special-chars {
-  max-width: 22rem;
-  padding: 0.5rem;
+  max-width: 24rem;
+  padding: 0.65rem;
+  border-radius: 0.5rem;
 }
 
 .sn-plugin-special-chars-group + .sn-plugin-special-chars-group {
-  margin-top: 0.5rem;
-  border-top: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.1));
-  padding-top: 0.5rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--bs-border-color-translucent, rgba(0, 0, 0, 0.08));
 }
 
 .sn-plugin-special-chars-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: var(--bs-secondary-color, #6c757d);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.4rem;
+  padding-inline: 0.1rem;
+}
+
+.sn-plugin-special-chars-group-title .note-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--bs-secondary-color, #6c757d);
+}
+
+.sn-plugin-special-chars-group-title .note-icon > svg {
+  width: 100%;
+  height: 100%;
 }
 
 .sn-plugin-special-chars-grid {
@@ -32,16 +58,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.85rem;
-  height: 1.85rem;
+  width: auto;
+  min-width: 0;
+  aspect-ratio: 1;
+  height: auto;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 0.25rem;
+  border-radius: 0.4rem;
   background: transparent;
-  font-size: 0.95rem;
   cursor: pointer;
   color: inherit;
-  transition: background-color 0.12s ease, border-color 0.12s ease;
+  transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.sn-plugin-special-chars-cell-glyph {
+  font-size: 1.15rem;
+  line-height: 1;
+  font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  display: inline-block;
+  transition: transform 0.12s ease;
 }
 
 .sn-plugin-special-chars-cell:hover,
@@ -51,7 +86,12 @@
   outline: none;
 }
 
-.sn-plugin-special-chars-toggle .sn-plugin-special-chars-glyph {
-  font-weight: 600;
-  font-size: 0.95rem;
+.sn-plugin-special-chars-cell:hover .sn-plugin-special-chars-cell-glyph,
+.sn-plugin-special-chars-cell:focus-visible .sn-plugin-special-chars-cell-glyph {
+  transform: scale(1.18);
+}
+
+.sn-plugin-special-chars-cell:active {
+  background-color: var(--bs-primary-bg-subtle, rgba(13, 110, 253, 0.15));
+  transform: scale(0.95);
 }

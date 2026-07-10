@@ -15,6 +15,24 @@ const pluginSource = import.meta.glob('../../examples/plugins/special-characters
   import: 'default',
 })['../../examples/plugins/special-characters/js/special-characters.js'];
 
+const helpersSource = import.meta.glob('../../examples/assets/plugin-button-helpers.js', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+})['../../examples/assets/plugin-button-helpers.js'];
+
+function loadScript(source, dataset) {
+  const script = document.createElement('script');
+  if (dataset) {
+    Object.keys(dataset).forEach((key) => {
+      script.dataset[key] = dataset[key];
+    });
+  }
+  script.textContent = source;
+  document.head.appendChild(script);
+  script.remove();
+}
+
 function flush() {
   return new Promise((r) => setTimeout(r, 0));
 }
@@ -52,10 +70,8 @@ describe('Special Characters plugin', () => {
       window.summernote = $$;
     }
 
-    const script = document.createElement('script');
-    script.textContent = pluginSource;
-    document.head.appendChild(script);
-    script.remove();
+    loadScript(helpersSource, { snPluginHelpers: 'special-characters-test' });
+    loadScript(pluginSource, { snPluginTest: 'special-characters' });
 
     restore = () => {
       $$.summernote.plugins = previousPlugins;

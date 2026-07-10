@@ -159,7 +159,7 @@ const tests = [
       if (cellCount < 5) {
         throw new Error(`expected many character cells, got ${cellCount}`);
       }
-      await page.click('.sn-plugin-special-chars-cell:first-child');
+      await page.locator('.sn-plugin-special-chars-cell').first().click();
       const editableText = await page.locator('.note-editable').textContent();
       if (!editableText || editableText.trim().length === 0) {
         throw new Error('expected editor content after inserting a character');
@@ -242,9 +242,9 @@ const tests = [
           window.summernote.getInstance('#plugin-showcase-editor').modules.editor.createRange());
       });
 
-      await page.click('.sn-plugin-special-chars-toggle');
+await page.click('.sn-plugin-special-chars-toggle');
       await page.waitForSelector('.sn-plugin-special-chars.show', { timeout: 5000 });
-      await page.click('.sn-plugin-special-chars-cell:first-child');
+      await page.locator('.sn-plugin-special-chars-cell').first().click();
       await page.waitForTimeout(150);
 
       const disabledCount = await page.evaluate(() => {
@@ -259,9 +259,9 @@ const tests = [
       await page.evaluate(() => {
         const editable = document.querySelector('.note-editable');
         editable.focus();
-        const range = document.createRange();
         const textNode = editable.querySelector('p').firstChild;
         if (textNode && textNode.nodeType === 3) {
+          const range = document.createRange();
           range.setStart(textNode, 0);
           range.setEnd(textNode, textNode.length);
           const sel = window.getSelection();

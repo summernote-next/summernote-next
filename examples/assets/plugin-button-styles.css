@@ -1,0 +1,63 @@
+/**
+ * Summernote Next - Plugin button shared styles
+ *
+ * Standardized rendering for plugin toolbar buttons. Three variants:
+ *
+ *   - sn-plugin-button-svg-mode:   small icon button matching the built-in
+ *                                  toolbar buttons (default)
+ *   - sn-plugin-button-text-mode:  compact uppercase label, same height and
+ *                                  padding as the SVG variant
+ *   - sn-plugin-button-glyph-mode: emoji / special-character glyph used as
+ *                                  the button content (for plugins that
+ *                                  opt-in)
+ */
+
+.note-toolbar .note-btn.sn-plugin-button-svg-mode,
+.note-toolbar .note-btn.sn-plugin-button-text-mode,
+.note-toolbar .note-btn.sn-plugin-button-glyph-mode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  gap: 0.2rem;
+}
+
+.note-toolbar .note-btn.sn-plugin-button-svg-mode .note-icon,
+.note-toolbar .note-btn.sn-plugin-button-text-mode .note-icon,
+.note-toolbar .note-btn.sn-plugin-button-glyph-mode .note-icon {
+  font-size: 1em;
+}
+
+.note-toolbar .note-btn.sn-plugin-button-text-mode {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-inline: 0.55rem;
+}
+
+.note-toolbar .note-btn.sn-plugin-button-text-mode .sn-plugin-button-text {
+  display: inline-block;
+  line-height: 1;
+}
+
+.note-toolbar .note-btn.sn-plugin-button-glyph-mode .sn-plugin-button-glyph {
+  font-size: 1.1rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+.note-toolbar .note-btn.sn-plugin-button-glyph-mode.sn-plugin-emoji-toggle .sn-plugin-button-glyph,
+.note-toolbar .note-btn.sn-plugin-button-glyph-mode.sn-plugin-special-chars-toggle .sn-plugin-button-glyph {
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.note-toolbar .note-btn.sn-plugin-button-svg-mode.active,
+.note-toolbar .note-btn.sn-plugin-button-text-mode.active,
+.note-toolbar .note-btn.sn-plugin-button-glyph-mode.active {
+  background-color: var(--bs-primary, #0d6efd);
+  color: var(--bs-white, #fff);
+  border-color: var(--bs-primary, #0d6efd);
+}

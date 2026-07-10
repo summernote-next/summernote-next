@@ -9,6 +9,10 @@
  *
  * Toolbar:
  *   - 'emojiPicker'
+ *
+ * Button style options (via `plugins.buttonStyle`):
+ *   - 'svg' (default): small SVG icon button
+ *   - 'text': compact uppercase label, same height as the SVG variant
  */
 
 (function() {
@@ -25,32 +29,62 @@
 
   const PLUGIN_NAME = 'emojiPicker';
   const BUTTON_NAME = 'emojiPicker';
+  const HELPERS_URL = '../../assets/plugin-button-helpers.js';
 
   const EMOJI_GROUPS = [
     {
       title: 'Smileys',
+      icon: 'emoji-smile',
       items: ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '☺️', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔'],
     },
     {
       title: 'Gestures',
+      icon: 'gestures',
       items: ['👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👋', '🤚', '🖐️', '✋', '🖖', '👏', '🙌', '🤝', '🙏', '✍️', '💪', '🦾', '🦿', '🦵', '🦶', '👂', '🦻', '👃'],
     },
     {
       title: 'Hearts',
-      items: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '♥️', '💔', '❤️‍🔥', '❤️‍🩹', '❣️', '💌', '💋'],
+      icon: 'heart',
+      items: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '♥️', '❤️‍🔥', '❤️‍🩹', '💌', '💋'],
     },
     {
       title: 'Symbols',
+      icon: 'symbols',
       items: ['🔥', '✨', '⭐', '🌟', '💫', '⚡', '💥', '💯', '🎉', '🎊', '🎁', '🎈', '🎂', '🎄', '🎃', '🎀', '🎗️', '🎟️', '🎫', '🎖️', '🏆', '🏅', '🥇', '🥈', '🥉', '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐'],
     },
   ];
 
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function buildIconMarkup(name) {
+    if (!name || typeof window === 'undefined' || !window.summernote || typeof window.summernote.ui !== 'object') {
+      return '';
+    }
+    try {
+      const ui = window.summernote.ui;
+      if (ui && typeof ui.icon === 'function') {
+        return ui.icon('note-icon-' + name);
+      }
+    } catch (err) {
+      return '';
+    }
+    return '';
+  }
+
   function buildMenuMarkup(groups) {
     return groups.map((group) => {
       const cells = group.items.map((emoji) => {
-        return `<button type="button" class="sn-plugin-emoji-cell" data-sn-emoji="${emoji}" tabindex="-1" aria-label="Insert ${emoji}">${emoji}</button>`;
+        return `<button type="button" class="sn-plugin-emoji-cell" data-sn-emoji="${escapeHtml(emoji)}" tabindex="-1" aria-label="Insert ${escapeHtml(emoji)}"><span class="sn-plugin-emoji-cell-glyph">${escapeHtml(emoji)}</span></button>`;
       }).join('');
-      return `<div class="sn-plugin-emoji-group" role="group" aria-label="${group.title}"><div class="sn-plugin-emoji-group-title">${group.title}</div><div class="sn-plugin-emoji-grid">${cells}</div></div>`;
+      const iconMarkup = buildIconMarkup(group.icon);
+      return `<div class="sn-plugin-emoji-group" role="group" aria-label="${escapeHtml(group.title)}"><div class="sn-plugin-emoji-group-title">${iconMarkup}<span>${escapeHtml(group.title)}</span></div><div class="sn-plugin-emoji-grid">${cells}</div></div>`;
     }).join('');
   }
 
@@ -124,10 +158,25 @@
     const lang = context.options.langInfo;
     const label = (lang && lang.options && lang.options.emojiPicker) || 'Emoji picker';
     const groups = context.options.emojiPickerGroups || EMOJI_GROUPS;
+    const pluginUi = window.summernote && window.summernote.pluginUi;
+    const requestedStyle = context.options && context.options.buttonStyle;
+    const style = pluginUi && pluginUi.normalizeStyle
+      ? pluginUi.normalizeStyle(requestedStyle)
+      : 'svg';
+
+    let innerContent;
+    if (style === 'text') {
+      innerContent = pluginUi ? pluginUi.textLabel('Emoji') : ui.icon('note-icon-emoji');
+    } else if (style === 'glyph') {
+      innerContent = pluginUi ? pluginUi.glyphSpan('😀') : ui.icon('note-icon-emoji');
+    } else {
+      innerContent = ui.icon('note-icon-emoji');
+    }
+
     return ui.buttonGroup([
       ui.button({
-        className: 'dropdown-toggle sn-plugin-emoji-toggle',
-        contents: ui.dropdownButtonContents(`<span class="sn-plugin-emoji-glyph">😀</span>`, context.options),
+        className: `dropdown-toggle sn-plugin-emoji-toggle sn-plugin-button-${style}-mode`,
+        contents: ui.dropdownButtonContents(innerContent, context.options),
         tooltip: label,
         data: {
           toggle: 'dropdown',
@@ -141,6 +190,23 @@
     ]).render();
   }
 
+  function ensureHelpersLoaded(callback) {
+    if (typeof window === 'undefined') {
+      callback();
+      return;
+    }
+    if (window.summernote && window.summernote.pluginUi) {
+      callback();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = HELPERS_URL;
+    script.dataset.snPluginHelpers = 'emoji-picker';
+    script.onload = () => callback();
+    script.onerror = () => callback();
+    document.head.appendChild(script);
+  }
+
   function register() {
     const ns = (typeof window !== 'undefined' && window.summernote) || null;
     if (!ns || typeof ns.registerPlugin !== 'function') {
@@ -152,7 +218,21 @@
       ],
       version: '1.0.0',
       buttons: {
-        [BUTTON_NAME]: EmojiPickerButton,
+        [BUTTON_NAME]: function Button(context) {
+          const render = () => EmojiPickerButton(context);
+          if (window.summernote && window.summernote.pluginUi) {
+            return render();
+          }
+          const wrapper = document.createElement('span');
+          wrapper.dataset.snPluginPending = 'emojiPicker';
+          ensureHelpersLoaded(() => {
+            const node = render();
+            if (wrapper.parentNode) {
+              wrapper.parentNode.replaceChild(node, wrapper);
+            }
+          });
+          return wrapper.outerHTML;
+        },
       },
     });
   }

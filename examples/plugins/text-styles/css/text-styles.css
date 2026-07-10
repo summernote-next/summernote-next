@@ -2,14 +2,14 @@
  * Summernote Next - Text Styles Plugin stylesheet
  */
 
-.sn-plugin-text-styles {
-  font-weight: 500;
+.note-toolbar .note-btn.sn-plugin-text-styles {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.sn-plugin-text-styles .sn-plugin-text-styles-label {
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.note-toolbar .note-btn.sn-plugin-text-styles .note-icon {
+  font-size: 1em;
 }
 
 .note-toolbar .note-btn.sn-plugin-text-styles.active {

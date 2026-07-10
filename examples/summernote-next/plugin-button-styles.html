@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Plugin Button Styles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../assets/examples.css">
+    <link rel="stylesheet" href="../../dist/summernote-next.css">
+
+    <link rel="stylesheet" href="../../assets/plugin-button-styles.css">
+    <link rel="stylesheet" href="../../plugins/word-counter/css/word-counter.css">
+    <link rel="stylesheet" href="../../plugins/alignment-buttons/css/alignment-buttons.css">
+    <link rel="stylesheet" href="../../plugins/special-characters/css/special-characters.css">
+    <link rel="stylesheet" href="../../plugins/text-styles/css/text-styles.css">
+    <link rel="stylesheet" href="../../plugins/link-extractor/css/link-extractor.css">
+    <link rel="stylesheet" href="../../plugins/emoji-picker/css/emoji-picker.css">
+
+    <script type="module" src="../../assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="../../dist/summernote-next.js"></script>
+
+    <script defer src="../../assets/plugin-button-helpers.js"></script>
+    <script defer src="../../plugins/word-counter/js/word-counter.js"></script>
+    <script defer src="../../plugins/alignment-buttons/js/alignment-buttons.js"></script>
+    <script defer src="../../plugins/special-characters/js/special-characters.js"></script>
+    <script defer src="../../plugins/text-styles/js/text-styles.js"></script>
+    <script defer src="../../plugins/link-extractor/js/link-extractor.js"></script>
+    <script defer src="../../plugins/emoji-picker/js/emoji-picker.js"></script>
+  </head>
+  <body>
+
+    <main class="page">
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="./index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Plugin button styles</li>
+        </ol>
+      </nav>
+
+      <h1 class="mt-3">Plugin button styles</h1>
+
+      <p class="page-copy">
+        Three parallel editors demonstrate the button styles supported by the
+        example plugins via <code>buttonStyle</code>:
+      </p>
+      <ul class="page-copy">
+        <li><code>buttonStyle: 'svg'</code> — compact SVG icon buttons that match the built-in toolbar.</li>
+        <li><code>buttonStyle: 'text'</code> — compact uppercase labels, same height and padding as the SVG variant.</li>
+        <li><code>buttonStyle: 'glyph'</code> — emoji / Greek glyph used as the button content (opt-in for emoji picker and special characters).</li>
+      </ul>
+
+      <div class="row row-cols-1 row-cols-xl-3 g-4 mt-2">
+
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">SVG icon style</span>
+              <code class="small">buttonStyle: 'svg'</code>
+            </div>
+            <div class="card-body">
+              <div id="plugin-button-styles-svg">
+                <p>Welcome to the <strong>Summernote Next plugin showcase</strong>.</p>
+                <p>The toolbar above mixes the built-in buttons with the plugin
+                  buttons. Try selecting some text and clicking any of the
+                  plugin buttons. <a href="https://juergen-schwind.com/summernote-next">juergen-schwind.com</a>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">Text label style</span>
+              <code class="small">buttonStyle: 'text'</code>
+            </div>
+            <div class="card-body">
+              <div id="plugin-button-styles-text">
+                <p>Welcome to the <strong>Summernote Next plugin showcase</strong>.</p>
+                <p>The toolbar above mixes the built-in buttons with the plugin
+                  buttons. Try selecting some text and clicking any of the
+                  plugin buttons. <a href="https://juergen-schwind.com/summernote-next">juergen-schwind.com</a>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">Glyph style</span>
+              <code class="small">buttonStyle: 'glyph'</code>
+            </div>
+            <div class="card-body">
+              <div id="plugin-button-styles-glyph">
+                <p>Welcome to the <strong>Summernote Next plugin showcase</strong>.</p>
+                <p>The toolbar above mixes the built-in buttons with the plugin
+                  buttons. Try selecting some text and clicking any of the
+                  plugin buttons. <a href="https://juergen-schwind.com/summernote-next">juergen-schwind.com</a>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Plugin Button Styles</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#plugin-button-styles-svg', {
+  height: 220,
+  buttonStyle: 'svg',
+  toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'underline', 'clear']],
+    ['plugins-paragraph', ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify']],
+    ['plugins-text', ['markText', 'inlineCode', 'kbdText', 'varText', 'sampleText']],
+    ['plugins-insert', ['specialCharacters', 'emojiPicker']],
+    ['plugins-tools', ['wordCounterToggle', 'linkExtractorToggle']],
+  ],
+});
+
+summernote.create('#plugin-button-styles-text', {
+  height: 220,
+  buttonStyle: 'text',
+  toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'underline', 'clear']],
+    ['plugins-paragraph', ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify']],
+    ['plugins-text', ['markText', 'inlineCode', 'kbdText', 'varText', 'sampleText']],
+    ['plugins-insert', ['specialCharacters', 'emojiPicker']],
+    ['plugins-tools', ['wordCounterToggle', 'linkExtractorToggle']],
+  ],
+});
+
+summernote.create('#plugin-button-styles-glyph', {
+  height: 220,
+  buttonStyle: 'glyph',
+  toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'underline', 'clear']],
+    ['plugins-paragraph', ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify']],
+    ['plugins-text', ['markText', 'inlineCode', 'kbdText', 'varText', 'sampleText']],
+    ['plugins-insert', ['specialCharacters', 'emojiPicker']],
+    ['plugins-tools', ['wordCounterToggle', 'linkExtractorToggle']],
+  ],
+});</code></pre>
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const toolbar = [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['plugins-paragraph', ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify']],
+          ['plugins-text', ['markText', 'inlineCode', 'kbdText', 'varText', 'sampleText']],
+          ['plugins-insert', ['specialCharacters', 'emojiPicker']],
+          ['plugins-tools', ['wordCounterToggle', 'linkExtractorToggle']],
+        ];
+
+        summernote.create('#plugin-button-styles-svg', {
+          height: 220,
+          buttonStyle: 'svg',
+          toolbar,
+        });
+
+        summernote.create('#plugin-button-styles-text', {
+          height: 220,
+          buttonStyle: 'text',
+          toolbar,
+        });
+
+        summernote.create('#plugin-button-styles-glyph', {
+          height: 220,
+          buttonStyle: 'glyph',
+          toolbar,
+        });
+      });
+    </script>
+
+  </body>
+</html>

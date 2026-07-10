@@ -17,25 +17,6 @@
   margin-left: auto;
 }
 
-.sn-plugin-word-counter-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
-  font-size: 0.7rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.18);
-  color: inherit;
-  border-radius: 0.35rem;
-  padding: 0.05rem 0.35rem;
-  min-width: 1.5rem;
-}
-
-.note-toolbar .note-btn-word-counter .sn-plugin-word-counter-icon {
-  background: transparent;
-  border: 1px solid currentColor;
-}
-
 .sn-plugin-word-counter[data-sn-words="0"] {
   opacity: 0.6;
 }
@@ -43,4 +24,20 @@
 [data-bs-theme="dark"] .sn-plugin-word-counter {
   background-color: rgba(255, 255, 255, 0.1) !important;
   color: #f8f9fa !important;
+}
+
+.note-toolbar .note-btn.sn-plugin-word-counter-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-toolbar .note-btn.sn-plugin-word-counter-toggle .note-icon {
+  font-size: 1em;
+}
+
+.note-toolbar .note-btn.sn-plugin-word-counter-toggle.active {
+  background-color: var(--bs-primary, #0d6efd);
+  color: var(--bs-white, #fff);
+  border-color: var(--bs-primary, #0d6efd);
 }

@@ -9,6 +9,10 @@
  *
  * Toolbar:
  *   - 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify'
+ *
+ * Button style options (via `plugins.buttonStyle`):
+ *   - 'svg' (default): small SVG icon button
+ *   - 'text': compact uppercase label, same height as the SVG variant
  */
 
 (function() {
@@ -24,12 +28,20 @@
   }
 
   const PLUGIN_NAME = 'alignmentButtons';
+  const HELPERS_URL = '../../assets/plugin-button-helpers.js';
 
-  const ICONS = {
-    left: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M2 3.5h12v1H2zm0 3h8v1H2zm0 3h12v1H2zm0 3h8v1H2z"/></svg>',
-    center: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M2 3.5h12v1H2zm2 3h8v1H4zm-2 3h12v1H2zm2 3h8v1H4z"/></svg>',
-    right: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M2 3.5h12v1H2zm4 3h8v1H6zm-4 3h12v1H2zm4 3h8v1H6z"/></svg>',
-    justify: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M2 3.5h12v1H2zm0 3h12v1H2zm0 3h12v1H2zm0 3h12v1H2z"/></svg>',
+  const ICON_NAMES = {
+    left: 'align-left',
+    center: 'align-center',
+    right: 'align-right',
+    justify: 'align-justify',
+  };
+
+  const SHORT_LABELS = {
+    left: 'Left',
+    center: 'Center',
+    right: 'Right',
+    justify: 'Justify',
   };
 
   const ALIGN_TO_METHOD = {
@@ -72,12 +84,22 @@
   function buttonFactory(value) {
     return function AlignmentButton(context) {
       const ui = context.ui;
+      const pluginUi = window.summernote && window.summernote.pluginUi;
+      const textMode = pluginUi && pluginUi.isTextStyle && pluginUi.isTextStyle(context);
       const labelKey = `align${value[0].toUpperCase()}${value.slice(1)}`;
       const label = (context.options.langInfo && context.options.langInfo.options && context.options.langInfo.options[labelKey])
         || value[0].toUpperCase() + value.slice(1);
+
+      let contents;
+      if (textMode) {
+        contents = pluginUi.textLabel(SHORT_LABELS[value]);
+      } else {
+        contents = ui.icon('note-icon-' + ICON_NAMES[value]);
+      }
+
       return ui.button({
-        className: `note-btn-align-${value} sn-plugin-align`,
-        contents: ICONS[value],
+        className: `note-btn-align-${value} sn-plugin-align${textMode ? ' sn-plugin-button-text-mode' : ' sn-plugin-button-svg-mode'}`,
+        contents,
         tooltip: label,
         click(event) {
           event.preventDefault();
@@ -87,6 +109,23 @@
     };
   }
 
+  function ensureHelpersLoaded(callback) {
+    if (typeof window === 'undefined') {
+      callback();
+      return;
+    }
+    if (window.summernote && window.summernote.pluginUi) {
+      callback();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = HELPERS_URL;
+    script.dataset.snPluginHelpers = 'alignment-buttons';
+    script.onload = () => callback();
+    script.onerror = () => callback();
+    document.head.appendChild(script);
+  }
+
   function register() {
     const ns = (typeof window !== 'undefined' && window.summernote) || null;
     if (!ns || typeof ns.registerPlugin !== 'function') {
@@ -94,7 +133,21 @@
     }
     const buttons = {};
     ALIGNMENTS.forEach((alignment) => {
-      buttons[`align${alignment[0].toUpperCase()}${alignment.slice(1)}`] = buttonFactory(alignment);
+      buttons[`align${alignment[0].toUpperCase()}${alignment.slice(1)}`] = function Button(context) {
+        const render = () => buttonFactory(alignment)(context);
+        if (window.summernote && window.summernote.pluginUi) {
+          return render();
+        }
+        const wrapper = document.createElement('span');
+        wrapper.dataset.snPluginPending = `align-${alignment}`;
+        ensureHelpersLoaded(() => {
+          const node = render();
+          if (wrapper.parentNode) {
+            wrapper.parentNode.replaceChild(node, wrapper);
+          }
+        });
+        return wrapper.outerHTML;
+      };
     });
     ns.registerPlugin(PLUGIN_NAME, AlignmentButtonsPlugin, {
       stylesheets: [

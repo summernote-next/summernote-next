@@ -8,13 +8,9 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-09T12:18Z
+Date: 2026-07-10T09:22Z
  */
-var summernote = (function(exports) {
-	Object.defineProperties(exports, {
-		__esModule: { value: true },
-		[Symbol.toStringTag]: { value: "Module" }
-	});
+var summernote = (function() {
 	//#region src/js/core/dom-query.js
 	var elementDataStore = /* @__PURE__ */ new WeakMap();
 	var defaultDisplayCache = /* @__PURE__ */ new Map();
@@ -8162,6 +8158,7 @@ var summernote = (function(exports) {
 	//#endregion
 	//#region src/font/icons/index.js
 	var icons_default = [
+		"alert",
 		"align",
 		"align-center",
 		"align-indent",
@@ -8173,6 +8170,7 @@ var summernote = (function(exports) {
 		"arrow-circle-left",
 		"arrow-circle-right",
 		"arrow-circle-up",
+		"arrows",
 		"arrows-alt",
 		"arrows-h",
 		"arrows-v",
@@ -8185,17 +8183,36 @@ var summernote = (function(exports) {
 		"col-after",
 		"col-before",
 		"col-remove",
+		"counter",
+		"currency",
+		"emoji",
+		"emoji-cool",
+		"emoji-laugh",
+		"emoji-sad",
+		"emoji-smile",
+		"emoji-wink",
 		"eraser",
 		"float-left",
 		"float-none",
 		"float-right",
 		"font",
 		"frame",
+		"gestures",
+		"greek",
+		"grid",
+		"heart",
+		"inline-code",
 		"italic",
+		"keyboard",
 		"link",
+		"link-list",
+		"list",
 		"magic",
+		"mark",
+		"math",
 		"menu-check",
 		"minus",
+		"minus-circle",
 		"orderedlist",
 		"pencil",
 		"picture",
@@ -8205,18 +8222,21 @@ var summernote = (function(exports) {
 		"row-above",
 		"row-below",
 		"row-remove",
+		"sample",
 		"special-character",
 		"square",
 		"strikethrough",
 		"subscript",
 		"summernote",
 		"superscript",
+		"symbols",
 		"table",
 		"text-height",
 		"trash",
 		"underline",
 		"undo",
 		"unorderedlist",
+		"variable",
 		"video"
 	];
 	//#endregion
@@ -8537,7 +8557,8 @@ var summernote = (function(exports) {
 	};
 	$$.summernote = Object.assign($$.summernote, {
 		ui_template: ui,
-		interface: "bs5"
+		interface: "bs5",
+		__paintIcon__: paintIcon
 	});
 	$$.summernote.options.styleTags = [
 		"p",
@@ -8561,8 +8582,7 @@ var summernote = (function(exports) {
 	if ($$.summernote && $$.summernote.options) $$.summernote.options.darkMode = "auto";
 	$$.summernote = Object.assign($$.summernote, { interface: "classic" });
 	//#endregion
-	exports.default = $$;
-	return exports;
-})({});
+	return $$;
+})();
 
 //# sourceMappingURL=summernote-next-classic.js.map

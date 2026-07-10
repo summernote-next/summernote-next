@@ -16,6 +16,24 @@ const pluginSource = import.meta.glob('../../examples/plugins/emoji-picker/js/em
   import: 'default',
 })['../../examples/plugins/emoji-picker/js/emoji-picker.js'];
 
+const helpersSource = import.meta.glob('../../examples/assets/plugin-button-helpers.js', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+})['../../examples/assets/plugin-button-helpers.js'];
+
+function loadScript(source, dataset) {
+  const script = document.createElement('script');
+  if (dataset) {
+    Object.keys(dataset).forEach((key) => {
+      script.dataset[key] = dataset[key];
+    });
+  }
+  script.textContent = source;
+  document.head.appendChild(script);
+  script.remove();
+}
+
 function flush() {
   return new Promise((r) => setTimeout(r, 0));
 }
@@ -53,10 +71,8 @@ describe('Emoji Picker plugin', () => {
       window.summernote = $$;
     }
 
-    const script = document.createElement('script');
-    script.textContent = pluginSource;
-    document.head.appendChild(script);
-    script.remove();
+    loadScript(helpersSource, { snPluginHelpers: 'emoji-picker-test' });
+    loadScript(pluginSource, { snPluginTest: 'emoji-picker' });
 
     restore = () => {
       $$.summernote.plugins = previousPlugins;

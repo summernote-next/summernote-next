@@ -11,6 +11,10 @@
  *
  * Toolbar:
  *   - 'linkExtractorToggle'
+ *
+ * Button style options (via `plugins.buttonStyle`):
+ *   - 'svg' (default): small SVG icon button
+ *   - 'text': compact uppercase label, same height as the SVG variant
  */
 
 (function() {
@@ -27,6 +31,7 @@
 
   const PLUGIN_NAME = 'linkExtractor';
   const BUTTON_NAME = 'linkExtractorToggle';
+  const HELPERS_URL = '../../assets/plugin-button-helpers.js';
 
   function extractLinks(html) {
     if (!html) {
@@ -152,18 +157,50 @@
   }
 
   function LinkExtractorToggleButton(context) {
-    const ui = context.ui;
     const lang = context.options.langInfo;
     const label = (lang && lang.options && lang.options.linkExtractor) || 'Link extractor';
+    const pluginUi = window.summernote && window.summernote.pluginUi;
+    const ui = context.ui;
+
+    if (pluginUi && typeof pluginUi.buildButton === 'function') {
+      return pluginUi.buildButton(context, {
+        className: 'note-btn-link-extractor sn-plugin-link-extractor-toggle',
+        text: 'Links',
+        icon: 'link-list',
+        tooltip: label,
+        click(event) {
+          event.preventDefault();
+          context.invoke('linkExtractor.toggle');
+        },
+      });
+    }
+
     return ui.button({
       className: 'note-btn-link-extractor sn-plugin-link-extractor-toggle',
-      contents: '<span class="sn-plugin-link-extractor-glyph" aria-hidden="true">↗</span>',
+      contents: ui.icon('note-icon-link-list'),
       tooltip: label,
       click(event) {
         event.preventDefault();
         context.invoke('linkExtractor.toggle');
       },
     }).render();
+  }
+
+  function ensureHelpersLoaded(callback) {
+    if (typeof window === 'undefined') {
+      callback();
+      return;
+    }
+    if (window.summernote && window.summernote.pluginUi) {
+      callback();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = HELPERS_URL;
+    script.dataset.snPluginHelpers = 'link-extractor';
+    script.onload = () => callback();
+    script.onerror = () => callback();
+    document.head.appendChild(script);
   }
 
   function register() {
@@ -177,7 +214,21 @@
       ],
       version: '1.0.0',
       buttons: {
-        [BUTTON_NAME]: LinkExtractorToggleButton,
+        [BUTTON_NAME]: function Button(context) {
+          const render = () => LinkExtractorToggleButton(context);
+          if (window.summernote && window.summernote.pluginUi) {
+            return render();
+          }
+          const wrapper = document.createElement('span');
+          wrapper.dataset.snPluginPending = 'linkExtractor';
+          ensureHelpersLoaded(() => {
+            const node = render();
+            if (wrapper.parentNode) {
+              wrapper.parentNode.replaceChild(node, wrapper);
+            }
+          });
+          return wrapper.outerHTML;
+        },
       },
     });
   }

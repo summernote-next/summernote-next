@@ -11,6 +11,10 @@
  *
  * Toolbar:
  *   - 'specialCharacters'
+ *
+ * Button style options (via `plugins.buttonStyle`):
+ *   - 'svg' (default): small SVG icon button
+ *   - 'text': compact uppercase label, same height as the SVG variant
  */
 
 (function() {
@@ -27,36 +31,67 @@
 
   const PLUGIN_NAME = 'specialCharacters';
   const BUTTON_NAME = 'specialCharacters';
+  const HELPERS_URL = '../../assets/plugin-button-helpers.js';
 
   const DEFAULT_GROUPS = [
     {
       title: 'Currency',
+      icon: 'currency',
       items: ['€', '£', '¥', '$', '¢', '₹', '₽', '₩', '฿', '₺', '₴', '₦'],
     },
     {
       title: 'Math',
+      icon: 'math',
       items: ['±', '×', '÷', '∞', '∑', '∏', '√', '∫', '∂', '∆', '≈', '≠', '≤', '≥', '≡', '∝'],
     },
     {
       title: 'Arrows',
+      icon: 'arrows',
       items: ['←', '→', '↑', '↓', '↔', '↕', '⇒', '⇔', '➔', '➜', '➞', '➲'],
     },
     {
       title: 'Greek',
+      icon: 'greek',
       items: ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω', 'Α', 'Β', 'Γ', 'Δ', 'Θ', 'Λ', 'Π', 'Σ', 'Φ', 'Ω'],
     },
     {
       title: 'Symbols',
+      icon: 'symbols',
       items: ['©', '®', '™', '§', '¶', '†', '‡', '•', '…', '–', '—', '«', '»', '‘', '’', '“', '”', '¿', '¡', '°', 'µ'],
     },
   ];
 
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function buildIconMarkup(name) {
+    if (!name || typeof window === 'undefined' || !window.summernote || typeof window.summernote.ui !== 'object') {
+      return '';
+    }
+    try {
+      const ui = window.summernote.ui;
+      if (ui && typeof ui.icon === 'function') {
+        return ui.icon('note-icon-' + name);
+      }
+    } catch (err) {
+      return '';
+    }
+    return '';
+  }
+
   function buildMenuMarkup(groups) {
     return groups.map((group) => {
       const cells = group.items.map((symbol) => {
-        return `<button type="button" class="sn-plugin-special-chars-cell" data-sn-special-char="${symbol}" tabindex="-1" aria-label="Insert ${symbol}">${symbol}</button>`;
+        return `<button type="button" class="sn-plugin-special-chars-cell" data-sn-special-char="${escapeHtml(symbol)}" tabindex="-1" aria-label="Insert ${escapeHtml(symbol)}"><span class="sn-plugin-special-chars-cell-glyph">${escapeHtml(symbol)}</span></button>`;
       }).join('');
-      return `<div class="sn-plugin-special-chars-group" role="group" aria-label="${group.title}"><div class="sn-plugin-special-chars-group-title">${group.title}</div><div class="sn-plugin-special-chars-grid">${cells}</div></div>`;
+      const iconMarkup = buildIconMarkup(group.icon);
+      return `<div class="sn-plugin-special-chars-group" role="group" aria-label="${escapeHtml(group.title)}"><div class="sn-plugin-special-chars-group-title">${iconMarkup}<span>${escapeHtml(group.title)}</span></div><div class="sn-plugin-special-chars-grid">${cells}</div></div>`;
     }).join('');
   }
 
@@ -126,10 +161,25 @@
     const lang = context.options.langInfo;
     const label = (lang && lang.options && lang.options.specialCharacters) || 'Special characters';
     const groups = context.options.specialCharactersGroups || DEFAULT_GROUPS;
+    const pluginUi = window.summernote && window.summernote.pluginUi;
+    const requestedStyle = context.options && context.options.buttonStyle;
+    const style = pluginUi && pluginUi.normalizeStyle
+      ? pluginUi.normalizeStyle(requestedStyle)
+      : 'svg';
+
+    let innerContent;
+    if (style === 'text') {
+      innerContent = pluginUi ? pluginUi.textLabel('Sym') : ui.icon('note-icon-special-character');
+    } else if (style === 'glyph') {
+      innerContent = pluginUi ? pluginUi.glyphSpan('Ω') : ui.icon('note-icon-special-character');
+    } else {
+      innerContent = ui.icon('note-icon-special-character');
+    }
+
     return ui.buttonGroup([
       ui.button({
-        className: 'dropdown-toggle sn-plugin-special-chars-toggle',
-        contents: ui.dropdownButtonContents(`<span class="sn-plugin-special-chars-glyph">Ω</span>`, context.options),
+        className: `dropdown-toggle sn-plugin-special-chars-toggle sn-plugin-button-${style}-mode`,
+        contents: ui.dropdownButtonContents(innerContent, context.options),
         tooltip: label,
         data: {
           toggle: 'dropdown',
@@ -143,6 +193,23 @@
     ]).render();
   }
 
+  function ensureHelpersLoaded(callback) {
+    if (typeof window === 'undefined') {
+      callback();
+      return;
+    }
+    if (window.summernote && window.summernote.pluginUi) {
+      callback();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = HELPERS_URL;
+    script.dataset.snPluginHelpers = 'special-characters';
+    script.onload = () => callback();
+    script.onerror = () => callback();
+    document.head.appendChild(script);
+  }
+
   function register() {
     const ns = (typeof window !== 'undefined' && window.summernote) || null;
     if (!ns || typeof ns.registerPlugin !== 'function') {
@@ -154,7 +221,21 @@
       ],
       version: '1.0.0',
       buttons: {
-        [BUTTON_NAME]: SpecialCharactersButton,
+        [BUTTON_NAME]: function Button(context) {
+          const render = () => SpecialCharactersButton(context);
+          if (window.summernote && window.summernote.pluginUi) {
+            return render();
+          }
+          const wrapper = document.createElement('span');
+          wrapper.dataset.snPluginPending = 'specialCharacters';
+          ensureHelpersLoaded(() => {
+            const node = render();
+            if (wrapper.parentNode) {
+              wrapper.parentNode.replaceChild(node, wrapper);
+            }
+          });
+          return wrapper.outerHTML;
+        },
       },
     });
   }

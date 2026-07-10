@@ -11,6 +11,10 @@
  *
  * Toolbar:
  *   - 'wordCounterToggle' — toggles the inline counter badge inside the status bar
+ *
+ * Button style options (via `plugins.buttonStyle`):
+ *   - 'svg' (default): small SVG icon button
+ *   - 'text': compact uppercase label, same height as the SVG variant
  */
 
 (function() {
@@ -27,6 +31,7 @@
 
   const PLUGIN_NAME = 'wordCounter';
   const TOGGLE_BUTTON = 'wordCounterToggle';
+  const HELPERS_URL = '../../assets/plugin-button-helpers.js';
 
   function countWords(text) {
     if (!text) {
@@ -130,12 +135,27 @@
     }
 
     static buttonFactory(context) {
-      const ui = context.ui;
       const lang = context.options.langInfo;
       const label = (lang && lang.options && lang.options.wordCounter) || 'Word counter';
+      const pluginUi = window.summernote && window.summernote.pluginUi;
+      const ui = context.ui;
+
+      if (pluginUi && typeof pluginUi.buildButton === 'function') {
+        return pluginUi.buildButton(context, {
+          className: 'note-btn-word-counter sn-plugin-word-counter-toggle',
+          text: 'Count',
+          icon: 'counter',
+          tooltip: label,
+          click(event) {
+            event.preventDefault();
+            context.invoke('wordCounter.toggle');
+          },
+        });
+      }
+
       return ui.button({
-        className: 'note-btn-word-counter',
-        contents: '<span class="sn-plugin-word-counter-icon" aria-hidden="true">123</span>',
+        className: 'note-btn-word-counter sn-plugin-word-counter-toggle',
+        contents: ui.icon('note-icon-counter'),
         tooltip: label,
         click(event) {
           event.preventDefault();
@@ -146,6 +166,23 @@
   }
 
   WordCounterPlugin.buttonName = TOGGLE_BUTTON;
+
+  function ensureHelpersLoaded(callback) {
+    if (typeof window === 'undefined') {
+      callback();
+      return;
+    }
+    if (window.summernote && window.summernote.pluginUi) {
+      callback();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = HELPERS_URL;
+    script.dataset.snPluginHelpers = 'word-counter';
+    script.onload = () => callback();
+    script.onerror = () => callback();
+    document.head.appendChild(script);
+  }
 
   function register() {
     const ns = (typeof window !== 'undefined' && window.summernote) || null;
@@ -158,7 +195,21 @@
       ],
       version: '1.0.0',
       buttons: {
-        [TOGGLE_BUTTON]: WordCounterPlugin.buttonFactory,
+        [TOGGLE_BUTTON]: function Button(context) {
+          const render = () => WordCounterPlugin.buttonFactory(context);
+          if (window.summernote && window.summernote.pluginUi) {
+            return render();
+          }
+          const wrapper = document.createElement('span');
+          wrapper.dataset.snPluginPending = 'wordCounter';
+          ensureHelpersLoaded(() => {
+            const node = render();
+            if (wrapper.parentNode) {
+              wrapper.parentNode.replaceChild(node, wrapper);
+            }
+          });
+          return wrapper.outerHTML;
+        },
       },
     });
   }

@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="../assets/examples.css">
     <link rel="stylesheet" href="../dist/summernote-next.css">
+    <link rel="stylesheet" href="../assets/plugin-button-styles.css">
 
     <!--
       Plugin stylesheets are loaded in the header via the plugin loader.
@@ -22,6 +23,9 @@
     <script type="module" src="../assets/examples.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script defer src="../dist/summernote-next.js"></script>
+
+    <!-- Shared plugin helpers must be loaded before the plugin scripts. -->
+    <script defer src="../assets/plugin-button-helpers.js"></script>
 
     <!-- Plugin scripts are loaded in the header so they self-register before summernote.create() runs. -->
     <script defer src="../plugins/word-counter/js/word-counter.js"></script>

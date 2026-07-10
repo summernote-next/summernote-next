@@ -61,9 +61,14 @@
   color: var(--bs-secondary-color, #6c757d);
 }
 
-.note-toolbar .note-btn.sn-plugin-link-extractor-toggle .sn-plugin-link-extractor-glyph {
-  font-weight: 700;
-  font-size: 0.95rem;
+.note-toolbar .note-btn.sn-plugin-link-extractor-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-toolbar .note-btn.sn-plugin-link-extractor-toggle .note-icon {
+  font-size: 1em;
 }
 
 .note-toolbar .note-btn.sn-plugin-link-extractor-toggle.active {
