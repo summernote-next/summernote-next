@@ -42,7 +42,6 @@ export default defineConfig({
         'examples/**',
         'public/**',
         'dist/**',
-        'font/**',
       ],
     },
 

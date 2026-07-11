@@ -1,6 +1,6 @@
 import { build } from 'vite';
 import { pathToFileURL } from 'url';
-import { existsSync, mkdirSync, readdirSync, copyFileSync } from 'fs';
+import { existsSync } from 'fs';
 import { dirname, resolve, join } from 'path';
 import { fileURLToPath } from 'url';
 import { configs, styles } from '../vite.config.js';

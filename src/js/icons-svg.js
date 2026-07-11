@@ -13,11 +13,6 @@ export function hasIcon(name) {
   return ICON_SET.has(name);
 }
 
-const ICON_REGEX = /-([a-z])(?=[a-z])/g;
-function toCamel(name) {
-  return name.replace(ICON_REGEX, (_, c) => c.toUpperCase());
-}
-
 const inFlight = {};
 const ICON_CACHE = {};
 

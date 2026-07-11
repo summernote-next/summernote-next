@@ -36,7 +36,6 @@
   "jsdelivr": "dist/summernote-next.js",
   "files": [
     "dist/",
-    "font/",
     "LICENSE",
     "README.md"
   ],
