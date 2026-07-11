@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-10T09:22Z
+Date: 2026-07-10T20:21Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -8156,21 +8156,19 @@ var summernote = (function() {
 		};
 	} };
 	//#endregion
-	//#region src/font/icons/index.js
-	var icons_default = [
-		"alert",
-		"align",
+	//#region src/js/icons.js
+	var ICONS = [
 		"align-center",
 		"align-indent",
 		"align-justify",
 		"align-left",
 		"align-outdent",
 		"align-right",
+		"align",
 		"arrow-circle-down",
 		"arrow-circle-left",
 		"arrow-circle-right",
 		"arrow-circle-up",
-		"arrows",
 		"arrows-alt",
 		"arrows-h",
 		"arrows-v",
@@ -8183,36 +8181,17 @@ var summernote = (function() {
 		"col-after",
 		"col-before",
 		"col-remove",
-		"counter",
-		"currency",
-		"emoji",
-		"emoji-cool",
-		"emoji-laugh",
-		"emoji-sad",
-		"emoji-smile",
-		"emoji-wink",
 		"eraser",
 		"float-left",
 		"float-none",
 		"float-right",
 		"font",
 		"frame",
-		"gestures",
-		"greek",
-		"grid",
-		"heart",
-		"inline-code",
 		"italic",
-		"keyboard",
 		"link",
-		"link-list",
-		"list",
 		"magic",
-		"mark",
-		"math",
 		"menu-check",
 		"minus",
-		"minus-circle",
 		"orderedlist",
 		"pencil",
 		"picture",
@@ -8222,68 +8201,65 @@ var summernote = (function() {
 		"row-above",
 		"row-below",
 		"row-remove",
-		"sample",
 		"special-character",
 		"square",
 		"strikethrough",
 		"subscript",
 		"summernote",
 		"superscript",
-		"symbols",
 		"table",
 		"text-height",
 		"trash",
 		"underline",
 		"undo",
 		"unorderedlist",
-		"variable",
 		"video"
 	];
+	ICONS.length;
 	//#endregion
 	//#region src/js/icons-svg.js
+	var ICON_PREFIX = "note-icon-";
+	var ICON_SET = new Set(ICONS);
+	function iconNames() {
+		return ICONS.slice();
+	}
+	function hasIcon(name) {
+		return ICON_SET.has(name);
+	}
+	var inFlight = {};
+	var ICON_CACHE = {};
 	function normalizeSvg(raw) {
 		return raw.replace(/<\?xml[^>]*>\s*/g, "").replace(/<!DOCTYPE[^>]*>\s*/g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/<metadata>[\s\S]*?<\/metadata>\s*/gi, "").replace(/<defs>[\s\S]*?<\/defs>\s*/gi, "").replace(/<style[^>]*>[\s\S]*?<\/style>\s*/gi, "").replace(/\sclass="cls-\d+"/g, " fill=\"currentColor\"").replace(/\sclass="st0"/g, " fill=\"currentColor\"").replace(/\sfill="#[0-9a-fA-F]{3,8}"/g, " fill=\"currentColor\"").replace(/(style="[^"]*fill:\s*)#[0-9a-fA-F]+/gi, "$1currentColor").replace(/\swidth="[^"]*"/, "").replace(/\sheight="[^"]*"/, "").replace(/<svg((?![^>]*\sfill=)[^>]*)>/i, "<svg$1 fill=\"currentColor\">").trim();
 	}
-	var ICONS = {};
-	var ICON_PREFIX = "note-icon-";
-	var loaderByName = {};
-	for (const name of icons_default) loaderByName[name] = true;
-	var inFlight = {};
 	function detectIconBaseUrl(hostDoc) {
-		if (hostDoc === void 0 || hostDoc === null) return "font/icons/";
-		if (typeof hostDoc.getElementsByTagName !== "function") return "font/icons/";
+		if (hostDoc === void 0 || hostDoc === null) return "icons/";
+		if (typeof hostDoc.getElementsByTagName !== "function") return "icons/";
 		const scripts = hostDoc.getElementsByTagName("script");
 		for (let i = scripts.length - 1; i >= 0; i--) {
 			const src = scripts[i].src;
 			if (!src) continue;
 			const cleanName = (src.split("/").pop() || "").split(/[?#]/)[0];
-			if (/^summernote-next(?:-classic)?(?:\.min)?\.js$/i.test(cleanName)) return src.replace(/([?#].*)?[^/]*$/, "") + "font/icons/";
+			if (/^summernote-next(?:-classic)?(?:\.min)?\.js$/i.test(cleanName)) return src.replace(/([?#].*)?[^/]*$/, "") + "icons/";
 		}
-		return "font/icons/";
+		return "icons/";
 	}
-	var iconBaseUrl = detectIconBaseUrl(document);
+	var iconBaseUrl = detectIconBaseUrl(typeof document !== "undefined" ? document : null);
 	function getIconUrl(name) {
 		return iconBaseUrl + name + ".svg";
 	}
-	function iconNames() {
-		return Object.keys(loaderByName);
-	}
-	function hasIcon(name) {
-		return Object.prototype.hasOwnProperty.call(loaderByName, name);
-	}
 	function getIconSvg(name) {
-		return ICONS[name] || null;
+		return ICON_CACHE[name] || null;
 	}
 	function loadIcon(name) {
 		if (!hasIcon(name)) return Promise.resolve(null);
-		if (ICONS[name]) return Promise.resolve(ICONS[name]);
+		if (ICON_CACHE[name]) return Promise.resolve(ICON_CACHE[name]);
 		if (inFlight[name]) return inFlight[name];
 		inFlight[name] = fetch(getIconUrl(name)).then((response) => {
 			if (!response.ok) throw new Error("Failed to load icon \"" + name + "\" (" + response.status + ")");
 			return response.text();
 		}).then((raw) => {
 			const svg = normalizeSvg(raw);
-			ICONS[name] = svg;
+			ICON_CACHE[name] = svg;
 			delete inFlight[name];
 			return svg;
 		}).catch((err) => {
