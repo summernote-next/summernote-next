@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import * as iconsModule from '@/js/icons-svg.js';
-import { loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
+import { loadAllIcons, resetIconCache } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote bs5 ui template', () => {
@@ -170,14 +170,12 @@ describe('summernote bs5 ui template', () => {
     expect(noteIconUnknown).to.contain('class="note-icon note-icon-does-not-exist"');
   });
 
-  it('paints placeholder icons in the DOM once they have been lazily loaded', async() => {
-    resetIconCache();
+  it('paints icons into placeholders in the DOM after they have been loaded', async() => {
     const ui = $$.summernote.ui_template({});
 
     const $host = $$('<div></div>').appendTo('body');
     $host.html(ui.icon('note-icon-bold'));
     expect($host.find('i.note-icon-bold').length).to.equal(1);
-    expect($host.find('i.note-icon-bold svg').length).to.equal(0);
 
     await loadAllIcons();
     await vi.waitFor(() => {
@@ -201,17 +199,10 @@ describe('summernote bs5 ui template', () => {
     $host.remove();
   });
 
-  it('resets the painted-promise tracker when loadAllIcons rejects', async() => {
-    resetIconCache();
-    setIconBaseUrl('/definitely/not/where/icons/live/');
-
-    try {
-      $$.summernote.ui_template({});
-      await expect(loadAllIcons()).rejects.toThrow();
-    } finally {
-      setIconBaseUrl('/src/font/icons/');
-      resetIconCache();
-    }
+  it('always resolves loadAllIcons because icons are inlined', async() => {
+    const result = await loadAllIcons();
+    expect(result).to.be.an('array');
+    expect(result.length).to.be.greaterThan(0);
   });
 
   it('initializes tooltips for buttons and palettes with every container source', () => {

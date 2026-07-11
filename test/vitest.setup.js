@@ -3,7 +3,7 @@ import env from '@/js/core/env';
 import { setIconBaseUrl } from '@/js/icons-svg.js';
 import { expect } from 'vitest';
 
-setIconBaseUrl('/src/font/icons/');
+setIconBaseUrl('/src/icons/');
 
 expect.extend({
   equalsIgnoreCase: (str1, str2) => {
