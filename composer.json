@@ -1,6 +1,6 @@
 {
     "name": "summernote-next/summernote-next",
-    "description": "Super simple WYSIWYG editor on Bootstrap 5",
+    "description": "Vanilla JS WYSIWYG editor with Bootstrap 5 integration and a UI toolkit-independent Classic UI",
     "keywords": [
         "bootstrap",
         "editor",
@@ -25,7 +25,7 @@
         "issues": "https://github.com/summernote-next/summernote-next/issues",
         "source": "https://github.com/summernote-next/summernote-next"
     },
-    "require": {
-        "twbs/bootstrap": "^5.3"
+    "suggest": {
+        "twbs/bootstrap": "Required for the Bootstrap 5 UI integration; not needed for the Classic UI"
     }
 }

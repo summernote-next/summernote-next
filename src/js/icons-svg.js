@@ -1,4 +1,20 @@
-import iconManifest from '../font/icons/index.js';
+import ICONS from './icons.js';
+
+export { ICONS };
+export const ICON_PREFIX = 'note-icon-';
+
+const ICON_SET = new Set(ICONS);
+
+export function iconNames() {
+  return ICONS.slice();
+}
+
+export function hasIcon(name) {
+  return ICON_SET.has(name);
+}
+
+const inFlight = {};
+const ICON_CACHE = {};
 
 function normalizeSvg(raw) {
   return raw
@@ -18,22 +34,12 @@ function normalizeSvg(raw) {
     .trim();
 }
 
-export const ICONS = {};
-export const ICON_PREFIX = 'note-icon-';
-
-const loaderByName = {};
-for (const name of iconManifest) {
-  loaderByName[name] = true;
-}
-
-const inFlight = {};
-
 function detectIconBaseUrl(hostDoc) {
   if (hostDoc === undefined || hostDoc === null) {
-    return 'font/icons/';
+    return 'icons/';
   }
   if (typeof hostDoc.getElementsByTagName !== 'function') {
-    return 'font/icons/';
+    return 'icons/';
   }
   const scripts = hostDoc.getElementsByTagName('script');
   for (let i = scripts.length - 1; i >= 0; i--) {
@@ -44,13 +50,13 @@ function detectIconBaseUrl(hostDoc) {
     const fileName = src.split('/').pop() || '';
     const cleanName = fileName.split(/[?#]/)[0];
     if (/^summernote-next(?:-classic)?(?:\.min)?\.js$/i.test(cleanName)) {
-      return src.replace(/([?#].*)?[^/]*$/, '') + 'font/icons/';
+      return src.replace(/([?#].*)?[^/]*$/, '') + 'icons/';
     }
   }
-  return 'font/icons/';
+  return 'icons/';
 }
 
-let iconBaseUrl = detectIconBaseUrl(document);
+let iconBaseUrl = detectIconBaseUrl(globalThis.document);
 
 export function __detectIconBaseUrl__(hostDoc) {
   return detectIconBaseUrl(hostDoc);
@@ -68,24 +74,16 @@ export function getIconUrl(name) {
   return iconBaseUrl + name + '.svg';
 }
 
-export function iconNames() {
-  return Object.keys(loaderByName);
-}
-
-export function hasIcon(name) {
-  return Object.prototype.hasOwnProperty.call(loaderByName, name);
-}
-
 export function getIconSvg(name) {
-  return ICONS[name] || null;
+  return ICON_CACHE[name] || null;
 }
 
 export function loadIcon(name) {
   if (!hasIcon(name)) {
     return Promise.resolve(null);
   }
-  if (ICONS[name]) {
-    return Promise.resolve(ICONS[name]);
+  if (ICON_CACHE[name]) {
+    return Promise.resolve(ICON_CACHE[name]);
   }
   if (inFlight[name]) {
     return inFlight[name];
@@ -99,7 +97,7 @@ export function loadIcon(name) {
     })
     .then((raw) => {
       const svg = normalizeSvg(raw);
-      ICONS[name] = svg;
+      ICON_CACHE[name] = svg;
       delete inFlight[name];
       return svg;
     })
@@ -119,8 +117,8 @@ export function loadAllIcons() {
 }
 
 export function resetIconCache() {
-  for (const key of Object.keys(ICONS)) {
-    delete ICONS[key];
+  for (const key of Object.keys(ICON_CACHE)) {
+    delete ICON_CACHE[key];
   }
   for (const key of Object.keys(inFlight)) {
     delete inFlight[key];

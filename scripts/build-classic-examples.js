@@ -145,9 +145,7 @@ function swapClassicAssets(markup) {
 }
 
 function rewriteTitle(markup) {
-  return markup
-    .replace(/<title>Summernote Next BS5/g, '<title>Summernote Next Classic')
-    .replace(/<title>Summernote Next (?!Classic)/g, '<title>Summernote Next Classic');
+  return markup.replace(/<title>Summernote Next(?! Classic)/g, '<title>Summernote Next Classic');
 }
 
 function rewriteModalHooks(markup) {

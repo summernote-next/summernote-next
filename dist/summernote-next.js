@@ -1,20 +1,16 @@
 /*! 
 Summernote Next
 Super simple WYSIWYG editor
-Version 1.0.2
+Version 1.0.3
 https://juergen-schwind.com/summernote-next
 
 Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-07-09T11:47Z
+Date: 2026-07-13T10:30Z
  */
-var summernote = (function(exports) {
-	Object.defineProperties(exports, {
-		__esModule: { value: true },
-		[Symbol.toStringTag]: { value: "Module" }
-	});
+var summernote = (function() {
 	//#region src/js/core/dom-query.js
 	var elementDataStore = /* @__PURE__ */ new WeakMap();
 	var defaultDisplayCache = /* @__PURE__ */ new Map();
@@ -2328,7 +2324,15 @@ var summernote = (function(exports) {
 	DomQuery.prototype.summernote = function() {
 		const type = typeof lists_default.head(arguments);
 		const isExternalAPICalled = type === "string";
-		const initOptions = type === "object" ? lists_default.head(arguments) : {};
+		let initOptions = type === "object" ? lists_default.head(arguments) : {};
+		const pluginMeta = $$.summernote && $$.summernote.pluginMeta || {};
+		if (Object.keys(pluginMeta).length) {
+			const mergedButtons = {};
+			Object.values(pluginMeta).forEach((meta) => {
+				if (meta && meta.buttons) Object.assign(mergedButtons, meta.buttons);
+			});
+			if (Object.keys(mergedButtons).length) initOptions = $$.extend({}, initOptions, { buttons: $$.extend({}, mergedButtons, initOptions.buttons || {}) });
+		}
 		const options = $$.extend({}, $$.summernote.options, initOptions);
 		options.langInfo = $$.extend(true, {}, $$.summernote.lang["en-US"], $$.summernote.lang[options.lang]);
 		if (!Object.prototype.hasOwnProperty.call(initOptions, "colorsName") && options.langInfo.color?.colorsName) options.colorsName = options.langInfo.color.colorsName;
@@ -2350,6 +2354,26 @@ var summernote = (function(exports) {
 		}
 		return this;
 	};
+	var loadedStylesheetUrls = /* @__PURE__ */ new Set();
+	function loadStylesheet(url) {
+		if (!url || typeof document === "undefined" || loadedStylesheetUrls.has(url)) return Promise.resolve();
+		loadedStylesheetUrls.add(url);
+		return new Promise((resolve, reject) => {
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+			link.href = url;
+			link.dataset.summernotePluginStylesheet = "";
+			link.addEventListener("load", () => resolve());
+			link.addEventListener("error", (event) => {
+				loadedStylesheetUrls.delete(url);
+				reject(event);
+			});
+			document.head.appendChild(link);
+		});
+	}
+	function loadStylesheets(urls) {
+		return Promise.all((urls || []).map(loadStylesheet));
+	}
 	Object.assign($$, {
 		create(target, options = {}) {
 			const collection = resolveCollection(target);
@@ -2364,6 +2388,39 @@ var summernote = (function(exports) {
 		},
 		invoke(target, method, ...args) {
 			return unwrapResult(getContexts(target).map((context) => context.invoke(method, ...args)));
+		},
+		loadPluginStylesheet(url) {
+			return loadStylesheet(url);
+		},
+		loadPluginStylesheets(urls) {
+			return loadStylesheets(urls);
+		},
+		registerPlugin(name, pluginClass, options = {}) {
+			if (!name || typeof name !== "string") throw new Error("registerPlugin(name, pluginClass) requires a non-empty plugin name.");
+			if (typeof pluginClass !== "function") throw new Error("registerPlugin(name, pluginClass) requires a plugin class constructor.");
+			$$.summernote = $$.summernote || {
+				lang: {},
+				plugins: {}
+			};
+			$$.summernote.plugins = $$.summernote.plugins || {};
+			$$.summernote.pluginMeta = $$.summernote.pluginMeta || {};
+			$$.summernote.plugins[name] = pluginClass;
+			$$.summernote.pluginMeta[name] = Object.freeze({
+				name,
+				stylesheets: Object.freeze([...options.stylesheets || []]),
+				scripts: Object.freeze([...options.scripts || []]),
+				buttons: Object.freeze({ ...options.buttons || {} }),
+				version: options.version || null
+			});
+			const stylesheets = $$.summernote.pluginMeta[name].stylesheets;
+			if (stylesheets.length) loadStylesheets(stylesheets);
+			return pluginClass;
+		},
+		getPluginMeta(name) {
+			return $$.summernote && $$.summernote.pluginMeta && $$.summernote.pluginMeta[name] || null;
+		},
+		listPlugins() {
+			return Object.keys($$.summernote && $$.summernote.plugins || {});
 		}
 	});
 	//#endregion
@@ -7292,7 +7349,7 @@ var summernote = (function(exports) {
 	//#endregion
 	//#region src/js/settings.js
 	$$.summernote = $$.extend($$.summernote, {
-		version: "1.0.2",
+		version: "1.0.3",
 		plugins: {},
 		dom: dom_default,
 		range: range_default,
@@ -7877,15 +7934,15 @@ var summernote = (function(exports) {
 		};
 	} };
 	//#endregion
-	//#region src/font/icons/index.js
-	var icons_default = [
-		"align",
+	//#region src/js/icons.js
+	var ICONS = [
 		"align-center",
 		"align-indent",
 		"align-justify",
 		"align-left",
 		"align-outdent",
 		"align-right",
+		"align",
 		"arrow-circle-down",
 		"arrow-circle-left",
 		"arrow-circle-right",
@@ -7936,51 +7993,51 @@ var summernote = (function(exports) {
 		"unorderedlist",
 		"video"
 	];
+	ICONS.length;
 	//#endregion
 	//#region src/js/icons-svg.js
+	var ICON_PREFIX = "note-icon-";
+	var ICON_SET = new Set(ICONS);
+	function iconNames() {
+		return ICONS.slice();
+	}
+	function hasIcon(name) {
+		return ICON_SET.has(name);
+	}
+	var inFlight = {};
+	var ICON_CACHE = {};
 	function normalizeSvg(raw) {
 		return raw.replace(/<\?xml[^>]*>\s*/g, "").replace(/<!DOCTYPE[^>]*>\s*/g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/<metadata>[\s\S]*?<\/metadata>\s*/gi, "").replace(/<defs>[\s\S]*?<\/defs>\s*/gi, "").replace(/<style[^>]*>[\s\S]*?<\/style>\s*/gi, "").replace(/\sclass="cls-\d+"/g, " fill=\"currentColor\"").replace(/\sclass="st0"/g, " fill=\"currentColor\"").replace(/\sfill="#[0-9a-fA-F]{3,8}"/g, " fill=\"currentColor\"").replace(/(style="[^"]*fill:\s*)#[0-9a-fA-F]+/gi, "$1currentColor").replace(/\swidth="[^"]*"/, "").replace(/\sheight="[^"]*"/, "").replace(/<svg((?![^>]*\sfill=)[^>]*)>/i, "<svg$1 fill=\"currentColor\">").trim();
 	}
-	var ICONS = {};
-	var ICON_PREFIX = "note-icon-";
-	var loaderByName = {};
-	for (const name of icons_default) loaderByName[name] = true;
-	var inFlight = {};
 	function detectIconBaseUrl(hostDoc) {
-		if (hostDoc === void 0 || hostDoc === null) return "font/icons/";
-		if (typeof hostDoc.getElementsByTagName !== "function") return "font/icons/";
+		if (hostDoc === void 0 || hostDoc === null) return "icons/";
+		if (typeof hostDoc.getElementsByTagName !== "function") return "icons/";
 		const scripts = hostDoc.getElementsByTagName("script");
 		for (let i = scripts.length - 1; i >= 0; i--) {
 			const src = scripts[i].src;
 			if (!src) continue;
 			const cleanName = (src.split("/").pop() || "").split(/[?#]/)[0];
-			if (/^summernote-next(?:-classic)?(?:\.min)?\.js$/i.test(cleanName)) return src.replace(/([?#].*)?[^/]*$/, "") + "font/icons/";
+			if (/^summernote-next(?:-classic)?(?:\.min)?\.js$/i.test(cleanName)) return src.replace(/([?#].*)?[^/]*$/, "") + "icons/";
 		}
-		return "font/icons/";
+		return "icons/";
 	}
-	var iconBaseUrl = detectIconBaseUrl(document);
+	var iconBaseUrl = detectIconBaseUrl(globalThis.document);
 	function getIconUrl(name) {
 		return iconBaseUrl + name + ".svg";
 	}
-	function iconNames() {
-		return Object.keys(loaderByName);
-	}
-	function hasIcon(name) {
-		return Object.prototype.hasOwnProperty.call(loaderByName, name);
-	}
 	function getIconSvg(name) {
-		return ICONS[name] || null;
+		return ICON_CACHE[name] || null;
 	}
 	function loadIcon(name) {
 		if (!hasIcon(name)) return Promise.resolve(null);
-		if (ICONS[name]) return Promise.resolve(ICONS[name]);
+		if (ICON_CACHE[name]) return Promise.resolve(ICON_CACHE[name]);
 		if (inFlight[name]) return inFlight[name];
 		inFlight[name] = fetch(getIconUrl(name)).then((response) => {
 			if (!response.ok) throw new Error("Failed to load icon \"" + name + "\" (" + response.status + ")");
 			return response.text();
 		}).then((raw) => {
 			const svg = normalizeSvg(raw);
-			ICONS[name] = svg;
+			ICON_CACHE[name] = svg;
 			delete inFlight[name];
 			return svg;
 		}).catch((err) => {
@@ -8107,7 +8164,6 @@ var summernote = (function(exports) {
 			paintedPromise = null;
 		});
 	};
-	var __paintIcon__ = paintIcon;
 	var initializeTooltip = function($node, options, editorOptions) {
 		if (!options || !options.tooltip) return;
 		const tooltipContainer = options.container || editorOptions.container || void 0;
@@ -8255,7 +8311,8 @@ var summernote = (function(exports) {
 	};
 	$$.summernote = Object.assign($$.summernote, {
 		ui_template: ui,
-		interface: "bs5"
+		interface: "bs5",
+		__paintIcon__: paintIcon
 	});
 	$$.summernote.options.styleTags = [
 		"p",
@@ -8273,11 +8330,8 @@ var summernote = (function(exports) {
 		"h5",
 		"h6"
 	];
-	var summernote_bs5_default = $$;
 	//#endregion
-	exports.__paintIcon__ = __paintIcon__;
-	exports.default = summernote_bs5_default;
-	return exports;
-})({});
+	return $$;
+})();
 
 //# sourceMappingURL=summernote-next.js.map

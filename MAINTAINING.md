@@ -1,6 +1,6 @@
 # Maintaining Summernote Next
 
-Summernote Next is maintained in <https://github.com/summernote-next/summernote-next> and published as public examples at <https://juergen-schwind.com/summernote-next>.
+Summernote Next is maintained in <https://github.com/summernote-next/summernote-next> and published as public examples at <https://juergen-schwind.com/summernote-next>. The shared Vanilla JS editor core ships as a Bootstrap 5 integration and as a standalone, UI toolkit-independent Classic UI.
 
 ## Working locally
 
@@ -14,7 +14,8 @@ Recommended checks:
 
 ```bash
 docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm run lint"
-docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm test"
+docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm run test:coverage"
+docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm run test:scripts"
 docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm run build"
 ```
 
@@ -45,10 +46,11 @@ When updating copyright notices:
 ## Release checklist
 
 1. Update the version in `package.json` and `package-lock.json`.
-2. Run lint, tests, and build in Docker.
-3. Review the generated `dist/` files and example pages.
-4. Commit the release changes and create the corresponding Git tag.
-5. Create a GitHub release in <https://github.com/summernote-next/summernote-next/releases>.
+2. Add the release summary in `docs/rls/`.
+3. Run lint, 100% coverage, script tests, and the build in Docker.
+4. Review the generated `dist/` files and both UI example variants.
+5. Commit the release changes and create the corresponding Git tag.
+6. Create a GitHub release in <https://github.com/summernote-next/summernote-next/releases>.
 
 ## Support channels
 

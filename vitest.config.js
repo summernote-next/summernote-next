@@ -42,8 +42,11 @@ export default defineConfig({
         'examples/**',
         'public/**',
         'dist/**',
-        'font/**',
       ],
+      thresholds: {
+        100: true,
+        perFile: true,
+      },
     },
 
     browser: {

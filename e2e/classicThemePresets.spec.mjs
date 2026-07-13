@@ -47,46 +47,65 @@ const expectations = {
   morph: { mode: 'light', colorScheme: 'light', primary: '#ec4899', frameColor: 'rgb(33, 37, 41)', frameRadius: '12px' },
 };
 
-const tests = Object.entries(expectations).map(([theme, expected]) => ({
-  name: `classic-theme-${theme}`,
-  async run(page) {
-    await page.selectOption('#bootswatch-theme-select', theme);
-    await page.waitForTimeout(80);
+const tests = [
+  {
+    name: 'classic-ui-is-toolkit-independent',
+    async run(page) {
+      const title = await page.title();
+      const bootstrapAssets = await page.locator('link[href*="bootstrap"], script[src*="bootstrap"]').count();
 
-    const mode = await page.evaluate(() => document.documentElement.dataset.exampleThemeMode);
-    const primary = await readEditorVar(page, '--bs-primary');
-    const colorScheme = await readEditorVar(page, 'color-scheme');
-    const frameColor = await readEditorStyle(page, 'color');
-    const frameBg = await readEditorStyle(page, 'backgroundColor');
-    const toolbarBg = await readToolbarStyle(page, 'backgroundColor');
-    const frameRadius = await readEditorStyle(page, 'borderRadius');
+      if (title !== 'Summernote Next Classic - Example Themes') {
+        throw new Error(`expected neutral Classic UI title, got ${title}`);
+      }
+      if (bootstrapAssets !== 0) {
+        throw new Error(`expected no Bootstrap assets, got ${bootstrapAssets}`);
+      }
 
-    if (mode !== expected.mode) {
-      throw new Error(`expected mode ${expected.mode}, got ${mode}`);
-    }
-    if (colorScheme !== expected.colorScheme) {
-      throw new Error(`expected color-scheme ${expected.colorScheme}, got ${colorScheme}`);
-    }
-    if (primary !== expected.primary) {
-      throw new Error(`expected --bs-primary ${expected.primary}, got ${primary}`);
-    }
-    if (frameColor !== expected.frameColor) {
-      throw new Error(`expected frame color ${expected.frameColor}, got ${frameColor}`);
-    }
-    if (frameRadius !== expected.frameRadius) {
-      throw new Error(`expected frame border-radius ${expected.frameRadius}, got ${frameRadius}`);
-    }
-    if (expected.frameBgContains && !frameBg.includes(expected.frameBgContains)) {
-      throw new Error(`expected frame background to contain ${expected.frameBgContains}, got ${frameBg}`);
-    }
-    if (expected.toolbarBgContains && !toolbarBg.includes(expected.toolbarBgContains)) {
-      throw new Error(`expected toolbar background to contain ${expected.toolbarBgContains}, got ${toolbarBg}`);
-    }
-
-    await page.screenshot({ path: resolve(screenshotDir, `playwright-classic-theme-${theme}-${timestamp()}.png`), fullPage: true });
-    return { theme, mode, primary, colorScheme };
+      await page.screenshot({ path: resolve(screenshotDir, `playwright-classic-ui-${timestamp()}.png`), fullPage: true });
+      return { title, bootstrapAssets };
+    },
   },
-}));
+  ...Object.entries(expectations).map(([theme, expected]) => ({
+    name: `classic-theme-${theme}`,
+    async run(page) {
+      await page.selectOption('#bootswatch-theme-select', theme);
+      await page.waitForTimeout(80);
+
+      const mode = await page.evaluate(() => document.documentElement.dataset.exampleThemeMode);
+      const primary = await readEditorVar(page, '--bs-primary');
+      const colorScheme = await readEditorVar(page, 'color-scheme');
+      const frameColor = await readEditorStyle(page, 'color');
+      const frameBg = await readEditorStyle(page, 'backgroundColor');
+      const toolbarBg = await readToolbarStyle(page, 'backgroundColor');
+      const frameRadius = await readEditorStyle(page, 'borderRadius');
+
+      if (mode !== expected.mode) {
+        throw new Error(`expected mode ${expected.mode}, got ${mode}`);
+      }
+      if (colorScheme !== expected.colorScheme) {
+        throw new Error(`expected color-scheme ${expected.colorScheme}, got ${colorScheme}`);
+      }
+      if (primary !== expected.primary) {
+        throw new Error(`expected --bs-primary ${expected.primary}, got ${primary}`);
+      }
+      if (frameColor !== expected.frameColor) {
+        throw new Error(`expected frame color ${expected.frameColor}, got ${frameColor}`);
+      }
+      if (frameRadius !== expected.frameRadius) {
+        throw new Error(`expected frame border-radius ${expected.frameRadius}, got ${frameRadius}`);
+      }
+      if (expected.frameBgContains && !frameBg.includes(expected.frameBgContains)) {
+        throw new Error(`expected frame background to contain ${expected.frameBgContains}, got ${frameBg}`);
+      }
+      if (expected.toolbarBgContains && !toolbarBg.includes(expected.toolbarBgContains)) {
+        throw new Error(`expected toolbar background to contain ${expected.toolbarBgContains}, got ${toolbarBg}`);
+      }
+
+      await page.screenshot({ path: resolve(screenshotDir, `playwright-classic-theme-${theme}-${timestamp()}.png`), fullPage: true });
+      return { theme, mode, primary, colorScheme };
+    },
+  })),
+];
 
 const browser = await chromium.launch({
   headless: true,

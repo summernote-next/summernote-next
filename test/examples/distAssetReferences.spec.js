@@ -98,6 +98,16 @@ describe('example asset references', () => {
     expect(greekSymbolsPage).to.contain('greek-symbols-mode-switch');
   });
 
+  it('describes Summernote Next as one editor with Bootstrap 5 and toolkit-independent Classic UIs', () => {
+    const overviewPage = overviewPages['../../examples/index.html'];
+    const bs5OverviewPage = bs5OverviewPages['../../examples/summernote-next/index.html'];
+
+    expect(overviewPage).to.contain('one integrates with Bootstrap 5, while Classic is standalone and UI toolkit-independent');
+    expect(overviewPage).to.contain('standalone, UI toolkit-independent <code>summernote-next-classic</code>');
+    expect(bs5OverviewPage).to.contain('<title>Summernote Next - Examples Overview</title>');
+    expect(bs5OverviewPage).not.to.contain('Summernote Next BS5');
+  });
+
   it('links the classic example catalog from the overview', () => {
     const overviewPage = overviewPages['../../examples/index.html'];
     const classicOverviewPage = classicExamplePages['../../examples/summernote-next-classic/index.html'];

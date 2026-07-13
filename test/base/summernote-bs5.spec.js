@@ -1,10 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
-import {
-  __paintIcon__,
-} from '@/styles/bs5/summernote-bs5';
 import * as iconsModule from '@/js/icons-svg.js';
-import { loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
+import { getIconBaseUrl, loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote bs5 ui template', () => {
@@ -173,14 +170,12 @@ describe('summernote bs5 ui template', () => {
     expect(noteIconUnknown).to.contain('class="note-icon note-icon-does-not-exist"');
   });
 
-  it('paints placeholder icons in the DOM once they have been lazily loaded', async() => {
-    resetIconCache();
+  it('paints icons into placeholders in the DOM after they have been loaded', async() => {
     const ui = $$.summernote.ui_template({});
 
     const $host = $$('<div></div>').appendTo('body');
     $host.html(ui.icon('note-icon-bold'));
     expect($host.find('i.note-icon-bold').length).to.equal(1);
-    expect($host.find('i.note-icon-bold svg').length).to.equal(0);
 
     await loadAllIcons();
     await vi.waitFor(() => {
@@ -197,24 +192,38 @@ describe('summernote bs5 ui template', () => {
     const originalGetIconSvg = iconsModule.getIconSvg;
     const stubGetIconSvg = (name) => (name === 'bold' ? null : originalGetIconSvg(name));
 
-    __paintIcon__('bold', stubGetIconSvg);
+    $$.summernote.__paintIcon__('bold', stubGetIconSvg);
 
     expect($host.find('i.note-icon-bold svg').length).to.equal(0);
 
     $host.remove();
   });
 
-  it('resets the painted-promise tracker when loadAllIcons rejects', async() => {
-    resetIconCache();
-    setIconBaseUrl('/definitely/not/where/icons/live/');
+  it('recovers when icon loading fails', async() => {
+    const originalBaseUrl = getIconBaseUrl();
 
     try {
-      $$.summernote.ui_template({});
-      await expect(loadAllIcons()).rejects.toThrow();
-    } finally {
-      setIconBaseUrl('/src/font/icons/');
       resetIconCache();
+      setIconBaseUrl('/definitely/not/where/icons/live/');
+      $$.summernote.ui_template({});
+
+      await expect(loadAllIcons()).rejects.toThrow();
+
+      resetIconCache();
+      setIconBaseUrl(originalBaseUrl);
+      $$.summernote.ui_template({});
+
+      await expect(loadAllIcons()).resolves.to.be.an('array');
+    } finally {
+      resetIconCache();
+      setIconBaseUrl(originalBaseUrl);
     }
+  });
+
+  it('always resolves loadAllIcons because icons are inlined', async() => {
+    const result = await loadAllIcons();
+    expect(result).to.be.an('array');
+    expect(result.length).to.be.greaterThan(0);
   });
 
   it('initializes tooltips for buttons and palettes with every container source', () => {

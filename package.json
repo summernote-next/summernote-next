@@ -1,7 +1,7 @@
 {
   "name": "summernote-next",
-  "description": "Super simple WYSIWYG editor on Bootstrap 5",
-  "version": "1.0.2",
+  "description": "Vanilla JS WYSIWYG editor with Bootstrap 5 integration and a UI toolkit-independent Classic UI",
+  "version": "1.0.3",
   "license": "MIT",
   "keywords": [
     "bootstrap",
@@ -36,7 +36,6 @@
   "jsdelivr": "dist/summernote-next.js",
   "files": [
     "dist/",
-    "font/",
     "LICENSE",
     "README.md"
   ],

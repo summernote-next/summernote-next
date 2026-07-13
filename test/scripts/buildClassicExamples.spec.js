@@ -4,11 +4,24 @@ import { join } from 'path';
 import { transformClassicExampleMarkup } from '../../scripts/build-classic-examples.js';
 
 const SOURCE_BOOTSWATCH = join('examples', 'summernote-next', 'bootswatch.html');
+const SOURCE_OVERVIEW = join('examples', 'summernote-next', 'index.html');
 
 async function buildClassicBootswatch() {
   const source = await readFile(SOURCE_BOOTSWATCH, 'utf8');
   return transformClassicExampleMarkup(source, 'bootswatch.html');
 }
+
+describe('buildClassicExamples: product variants', () => {
+  it('keeps the product name neutral and identifies the generated Classic UI', async() => {
+    const source = await readFile(SOURCE_OVERVIEW, 'utf8');
+    const markup = transformClassicExampleMarkup(source, 'index.html');
+
+    expect(source).to.contain('<title>Summernote Next - Examples Overview</title>');
+    expect(source).not.to.contain('Summernote Next BS5');
+    expect(markup).to.contain('<title>Summernote Next Classic - Examples Overview</title>');
+    expect(markup).to.contain('Summernote Next Classic example pages');
+  });
+});
 
 describe('buildClassicExamples: bootswatch theme showcase', () => {
   it('drops the Bootswatch CDN dependency and keeps the classic assets', async() => {
