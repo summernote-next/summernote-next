@@ -43,6 +43,10 @@ export default defineConfig({
         'public/**',
         'dist/**',
       ],
+      thresholds: {
+        100: true,
+        perFile: true,
+      },
     },
 
     browser: {

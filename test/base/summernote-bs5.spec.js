@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import * as iconsModule from '@/js/icons-svg.js';
-import { loadAllIcons, resetIconCache } from '@/js/icons-svg.js';
+import { getIconBaseUrl, loadAllIcons, resetIconCache, setIconBaseUrl } from '@/js/icons-svg.js';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote bs5 ui template', () => {
@@ -197,6 +197,27 @@ describe('summernote bs5 ui template', () => {
     expect($host.find('i.note-icon-bold svg').length).to.equal(0);
 
     $host.remove();
+  });
+
+  it('recovers when icon loading fails', async() => {
+    const originalBaseUrl = getIconBaseUrl();
+
+    try {
+      resetIconCache();
+      setIconBaseUrl('/definitely/not/where/icons/live/');
+      $$.summernote.ui_template({});
+
+      await expect(loadAllIcons()).rejects.toThrow();
+
+      resetIconCache();
+      setIconBaseUrl(originalBaseUrl);
+      $$.summernote.ui_template({});
+
+      await expect(loadAllIcons()).resolves.to.be.an('array');
+    } finally {
+      resetIconCache();
+      setIconBaseUrl(originalBaseUrl);
+    }
   });
 
   it('always resolves loadAllIcons because icons are inlined', async() => {

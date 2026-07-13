@@ -56,7 +56,7 @@ function detectIconBaseUrl(hostDoc) {
   return 'icons/';
 }
 
-let iconBaseUrl = detectIconBaseUrl(typeof document !== 'undefined' ? document : null);
+let iconBaseUrl = detectIconBaseUrl(globalThis.document);
 
 export function __detectIconBaseUrl__(hostDoc) {
   return detectIconBaseUrl(hostDoc);

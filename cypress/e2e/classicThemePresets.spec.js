@@ -18,6 +18,16 @@ describe('summernote classic bootswatch theme presets', () => {
     cy.get('.note-editor', { timeout: 5000 }).should('exist');
   });
 
+  it('presents neutral product naming and a toolkit-independent Classic UI', () => {
+    cy.visit('/summernote-next/index.html');
+    cy.title().should('equal', 'Summernote Next - Examples Overview');
+    cy.get('title').should('not.contain', 'BS5');
+
+    cy.visit(PRESET_URL);
+    cy.title().should('equal', 'Summernote Next Classic - Example Themes');
+    cy.get('link[href*="bootstrap"], script[src*="bootstrap"]').should('not.exist');
+  });
+
   it('applies the default light preset to the editor on load', () => {
     cy.get('html').invoke('attr', 'data-example-theme').should('equal', 'brite');
     cy.get('html').invoke('attr', 'data-example-theme-mode').should('equal', 'light');
